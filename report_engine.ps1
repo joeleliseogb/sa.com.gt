@@ -995,9 +995,82 @@ function Get-EmpresaCatalogo($empresaCode) {
 
 function Search-EmpresasYProductos($query) {
     if ([string]::IsNullOrWhiteSpace($query)) {
-        return @{ empresas = @(); productos = @(); total = 0; query = "" }
+        return @{
+            query      = ""
+            cdpe       = @()
+            empresas   = @()
+            productos  = @()
+            tiendaCdpe = @()
+            dominio    = @{}
+            web        = @()
+            total      = 0
+        }
     }
     $q = $query.Trim().ToLower()
+
+    # ----------------------------------------------------
+    # NIVEL 1: PRIORIDAD MÁXIMA INSTITUCIONAL CDPE & MANUALES
+    # ----------------------------------------------------
+    $cdpeResults = @()
+    $manualesCdpe = @(
+        @{
+            id       = 1
+            codigo   = "CDPE-MAN-01"
+            titulo   = "Manual 1 CDPE: Gestión Comercial, Técnicas de Venta y Diseño de Combos"
+            resumen  = "Directrices estándar CDPE para negocios QSR y comercios. Fórmula del combo rentable (12% a 15% de ahorro), upselling y protocolo de respuesta por WhatsApp en menos de 2 minutos."
+            icono    = "📘"
+            categoria= "Manual de Gestión Comercial"
+            linkUrl  = "https://cdpe.sa.com.gt/"
+            waText   = "Hola CDPE, deseo asesoría sobre el Manual 1 de Ventas y Combos"
+            keywords = "manual|gestion|comercial|venta|combo|menu|ticket|upsell|precio|promocion|cliente"
+        },
+        @{
+            id       = 2
+            codigo   = "CDPE-MAN-02"
+            titulo   = "Manual 2 CDPE: Control de Inventarios, Mermas y Rotación PEPS (FIFO)"
+            resumen  = "Control riguroso de materias primas y productos terminados en SimplyGest 17.5. Tolerancia máxima de descongelación 3-5%, vida útil de aceites y punto de reorden automático."
+            icono    = "📦"
+            categoria= "Manual de Inventarios & Mermas"
+            linkUrl  = "https://cdpe.sa.com.gt/"
+            waText   = "Hola CDPE, deseo asesoría sobre el Manual 2 de Inventarios y Mermas"
+            keywords = "manual|inventario|merma|stock|peps|fifo|almacen|reorden|descongelacion|materia prima"
+        },
+        @{
+            id       = 3
+            codigo   = "CDPE-MAN-03"
+            titulo   = "Manual 3 CDPE: Arqueo de Caja con Doble Ciego y Facturación SAT (FEL)"
+            resumen  = "Auditoría financiera diaria, cuadre de turnos a ciegas (tolerancia ± Q 5.00), cierre Z e integración obligatoria de Facturación Electrónica SAT (FEL) con SimplyGest."
+            icono    = "💰"
+            categoria= "Manual de Arqueo & Facturación SAT"
+            linkUrl  = "https://cdpe.sa.com.gt/"
+            waText   = "Hola CDPE, deseo asesoría sobre el Manual 3 de Arqueo y SAT FEL"
+            keywords = "manual|arqueo|caja|cierre|turno|ciego|sat|fel|factura|impuesto|fiscal|dinero"
+        },
+        @{
+            id       = 4
+            codigo   = "CDPE-MAN-04"
+            titulo   = "Manual 4 CDPE: Estandarización de Franquicias y Activación de Subdominios"
+            resumen  = "Protocolo de apertura de sucursales, Buenas Prácticas de Manufactura (BPM), manual de marca e infraestructura en la nube con subdominio dedicado .sa.com.gt."
+            icono    = "🏢"
+            categoria= "Manual de Franquicias & Expansión"
+            linkUrl  = "https://cdpe.sa.com.gt/"
+            waText   = "Hola CDPE, deseo asesoría sobre el Manual 4 de Franquicias"
+            keywords = "manual|franquicia|expansion|sucursal|bpm|estandar|marca|subdominio|sa.com.gt"
+        }
+    )
+
+    foreach ($m in $manualesCdpe) {
+        if ($m.titulo.ToLower().Contains($q) -or ($m.keywords -and ($q -match $m.keywords)) -or ($q -match "cdpe|manual|asesor|asesoria|capacitacion|guatemala|pyme")) {
+            $cdpeResults += $m
+        }
+    }
+    if ($cdpeResults.Count -eq 0 -and ($q -match "negocio|comercio|gestion|ventas|restaurante|tienda")) {
+        $cdpeResults += $manualesCdpe[0]
+    }
+
+    # ----------------------------------------------------
+    # NIVEL 2: EMPRESAS DE LA RED & ARTÍCULOS SIMPLYGEST
+    # ----------------------------------------------------
     $empresas = Get-EmpresasData
     $matchedEmpresas = @()
     $matchedProductos = @()
@@ -1021,7 +1094,6 @@ function Search-EmpresasYProductos($query) {
         $sub = "$slug.sa.com.gt"
         $isCdpe = ($mainEmp.codigo -eq 4 -or $slug -eq "cdpe")
 
-        # Coincidencia por empresa o subdominio
         if ($nom.Contains($q) -or $slug.Contains($q) -or $q.Contains($slug) -or ($isCdpe -and ($q -match "cdpe|centro|desarrollo|pyme"))) {
             $catTitle = if ($isCdpe) { "CDPE • Centro de Desarrollo de Pequeñas y Medianas Empresas" } else { "$($mainEmp.empresa) • Menú y Tienda Online Oficial" }
             $catSnippet = if ($isCdpe) {
@@ -1045,7 +1117,7 @@ function Search-EmpresasYProductos($query) {
             }
         }
 
-        # Búsqueda en catálogo de artículos de la empresa (solo del ejercicio activo)
+        # Búsqueda en catálogo de artículos SimplyGest
         $cat = Get-EmpresaCatalogo $mainEmp.codigo
         if ($cat -and $cat.articulos) {
             foreach ($item in $cat.articulos) {
@@ -1053,7 +1125,6 @@ function Search-EmpresasYProductos($query) {
                 $iFam = $item.familia.ToLower()
                 $iDesc = if ($item.descripcion) { $item.descripcion.ToLower() } else { "" }
 
-                # Si coincide el nombre del producto, la familia, la descripción o si buscaron la empresa
                 if ($iNom.Contains($q) -or $iFam.Contains($q) -or $iDesc.Contains($q) -or $q.Contains($iNom) -or ($nom.Contains($q) -and $matchedProductos.Count -lt 6)) {
                     $matchedProductos += @{
                         codigo           = $item.codigo
@@ -1098,11 +1169,122 @@ function Search-EmpresasYProductos($query) {
         }
     }
 
+    # ----------------------------------------------------
+    # NIVEL 3: PRODUCTOS DE LA TIENDA DEL CDPE
+    # ----------------------------------------------------
+    $catalogoTiendaCdpe = @(
+        @{
+            codigo      = "CDPE-PRD-01"
+            nombre      = "Compendio de 4 Manuales de Gestión Comercial (Físico + Digital)"
+            precio      = 499.00
+            precioFmt   = "Q 499.00"
+            categoria   = "Manuales Oficiales"
+            icono       = "📚"
+            badge       = "Oficial CDPE"
+            descripcion = "Ventas y Combos, Control de Inventarios PEPS, Arqueos y Facturación SAT FEL, y Estandarización de Franquicias."
+            linkUrl     = "https://cdpe.sa.com.gt/"
+            waText      = "Hola CDPE, deseo ordenar el Compendio de 4 Manuales Comerciales"
+        },
+        @{
+            codigo      = "CDPE-PRD-02"
+            nombre      = "Kit de Digitalización y Punto de Venta SimplyGest Cloud 17.5"
+            precio      = 1850.00
+            precioFmt   = "Q 1,850.00"
+            categoria   = "Equipamiento & Software"
+            icono       = "💻"
+            badge       = "Financiable Coop"
+            descripcion = "Licencia SimplyGest Cloud 17.5 + Subdominio dedicado .sa.com.gt + Configuración SAT FEL y capacitación."
+            linkUrl     = "https://cdpe.sa.com.gt/"
+            waText      = "Hola CDPE, deseo información del Kit de Digitalización SimplyGest"
+        },
+        @{
+            codigo      = "CDPE-PRD-03"
+            nombre      = "Membresía Empresarial CDPE (Acompañamiento Continuo)"
+            precio      = 250.00
+            precioFmt   = "Q 250.00/mes"
+            categoria   = "Servicios CDPE"
+            icono       = "🏅"
+            badge       = "Membresía"
+            descripcion = "Asesoría mensual de mermas e inventarios, auditoría fiscal SAT y acceso a compras colectivas."
+            linkUrl     = "https://cdpe.sa.com.gt/"
+            waText      = "Hola CDPE, deseo inscribirme en la Membresía de Asociado CDPE"
+        }
+    )
+
+    $matchedTiendaCdpe = @()
+    foreach ($p in $catalogoTiendaCdpe) {
+        if ($p.nombre.ToLower().Contains($q) -or $p.descripcion.ToLower().Contains($q) -or $p.categoria.ToLower().Contains($q) -or ($q -match "cdpe|tienda|comprar|manual|software|simplygest|pos|tpv|equipo|asesoria|membresia")) {
+            $matchedTiendaCdpe += $p
+        }
+    }
+
+    # ----------------------------------------------------
+    # NIVEL 4: DOMINIOS Y HOSTING sa.com.gt
+    # ----------------------------------------------------
+    $cleanSlug = ($q -replace '[^a-z0-9]', '')
+    if ([string]::IsNullOrEmpty($cleanSlug)) { $cleanSlug = "miempresa" }
+    $dominioLibre = "$cleanSlug.sa.com.gt"
+    $dominioExiste = ($matchedEmpresas | Where-Object { $_.slug -eq $cleanSlug }).Count -gt 0
+    $dominioInfo = @{
+        subdominio   = $dominioLibre
+        disponible   = (-not $dominioExiste)
+        planSugerido = "Franquicia QSR Pro (Q 599/mes)"
+    }
+
+    # ----------------------------------------------------
+    # NIVEL 5: MOTOR DE BÚSQUEDA WEB GLOBAL (Todo Internet)
+    # ----------------------------------------------------
+    $webResults = @()
+    $encodedQ = [System.Uri]::EscapeDataString($query)
+    try {
+        $wikiUrl = "https://es.wikipedia.org/w/api.php?action=opensearch&search=$encodedQ&limit=4&namespace=0&format=json"
+        $wikiReq = [System.Net.HttpWebRequest]::Create($wikiUrl)
+        $wikiReq.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) sa.com.gt-SearchEngine/2.0"
+        $wikiReq.Timeout = 2500
+        $wikiResp = $wikiReq.GetResponse()
+        $stream = $wikiResp.GetResponseStream()
+        $reader = New-Object System.IO.StreamReader($stream)
+        $wikiJson = $reader.ReadToEnd() | ConvertFrom-Json
+        $reader.Close()
+        $wikiResp.Close()
+
+        if ($wikiJson -and $wikiJson.Count -ge 4) {
+            $titles = $wikiJson[1]
+            $descs  = $wikiJson[2]
+            $urls   = $wikiJson[3]
+            for ($i = 0; $i -lt $titles.Count; $i++) {
+                if (-not [string]::IsNullOrWhiteSpace($titles[$i])) {
+                    $webResults += @{
+                        title   = [string]$titles[$i]
+                        snippet = if ([string]::IsNullOrWhiteSpace($descs[$i])) { "Resultados enciclopédicos y referencias en la web abierta para '$($titles[$i])'." } else { [string]$descs[$i] }
+                        url     = [string]$urls[$i]
+                        fuente  = "Web Abierta"
+                        icon    = "🌐"
+                    }
+                }
+            }
+        }
+    } catch {}
+
+    $webResults += @{
+        title   = "Explorar más resultados de '$query' en Google"
+        snippet = "Consultar el índice web global de Google en una pestaña externa para '$query'."
+        url     = "https://www.google.com/search?q=$encodedQ"
+        fuente  = "Google Web Search"
+        icon    = "🔎"
+    }
+
+    $totalCalculado = $cdpeResults.Count + $matchedEmpresas.Count + $matchedProductos.Count + $matchedTiendaCdpe.Count + $webResults.Count
+
     return @{
-        query     = $query
-        empresas  = $matchedEmpresas
-        productos = $matchedProductos
-        total     = ($matchedEmpresas.Count + $matchedProductos.Count)
+        query       = $query
+        cdpe        = $cdpeResults
+        empresas    = $matchedEmpresas
+        productos   = $matchedProductos
+        tiendaCdpe  = $matchedTiendaCdpe
+        dominio     = $dominioInfo
+        web         = $webResults
+        total       = $totalCalculado
     }
 }
 

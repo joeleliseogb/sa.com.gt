@@ -27,6 +27,9 @@ function Send-Response($context, $content, $contentType, [int]$statusCode = 200,
     $response.Headers.Add("Access-Control-Allow-Origin", "*")
     $response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS, HEAD")
     $response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    $response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate")
+    $response.Headers.Add("Pragma", "no-cache")
+    $response.Headers.Add("Expires", "0")
 
     if ($setCookie) {
         $response.Headers.Add("Set-Cookie", $setCookie)
