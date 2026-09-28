@@ -7,5 +7,9 @@ bin/
 # Logs y temporales
 *.log
 *.pdf
+*.db
+*.sqlite
+web/roundcube/logs/*
+web/roundcube/temp/*
 temp_render.html
 tunnel_info.json

@@ -71,6 +71,94 @@ function Get-SessionUser($token) {
     return $null
 }
 
+function Get-MariaDBAccounts() {
+    $mysql = "C:\SimplyGest\ResumenEjecutivo\bin\mariadb\bin\mysql.exe"
+    if (-not (Test-Path $mysql)) { return @() }
+    try {
+        $raw = & $mysql -h 127.0.0.1 -u hmailserver -pHMail2026Password! hmailserver -s -N -e "SELECT a.accountid, a.accountaddress, a.accountadminlevel, a.accountactive, a.accountpersonfirstname, a.accountpersonlastname, d.domainname, a.accountlastlogontime FROM hm_accounts a JOIN hm_domains d ON a.accountdomainid=d.domainid ORDER BY a.accountaddress ASC;" 2>$null
+        $results = @()
+        foreach ($line in $raw) {
+            if ([string]::IsNullOrWhiteSpace($line)) { continue }
+            $p = $line -split "`t"
+            $results += [PSCustomObject]@{
+                accountid               = $p[0]
+                accountaddress          = $p[1]
+                accountadminlevel       = $p[2]
+                accountactive           = $p[3]
+                accountpersonfirstname  = if ($p.Length -gt 4) { $p[4] } else { "" }
+                accountpersonlastname   = if ($p.Length -gt 5) { $p[5] } else { "" }
+                domainname              = if ($p.Length -gt 6) { $p[6] } else { "" }
+                accountlastlogontime    = if ($p.Length -gt 7) { $p[7] } else { "" }
+            }
+        }
+        return $results
+    } catch {
+        return @()
+    }
+}
+
+function Get-MariaDBScalar($sql) {
+    $mysql = "C:\SimplyGest\ResumenEjecutivo\bin\mariadb\bin\mysql.exe"
+    if (-not (Test-Path $mysql)) { return $null }
+    try {
+        $res = & $mysql -h 127.0.0.1 -u hmailserver -pHMail2026Password! hmailserver -s -N -e $sql 2>$null
+        if ($res) { return ($res -join "").Trim() }
+        return $null
+    } catch {
+        return $null
+    }
+}
+
+function Invoke-MariaDBNonQuery($sql) {
+    $mysql = "C:\SimplyGest\ResumenEjecutivo\bin\mariadb\bin\mysql.exe"
+    if (-not (Test-Path $mysql)) { return $false }
+    try {
+        & $mysql -h 127.0.0.1 -u hmailserver -pHMail2026Password! hmailserver -e $sql 2>$null
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+function Get-PanelStatusData() {
+    $conns = Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty LocalPort
+    
+    $services = [ordered]@{
+        caddy       = [bool]($conns -contains 80 -or $conns -contains 443)
+        hmailserver = [bool]($conns -contains 143 -and $conns -contains 25)
+        roundcube   = [bool]($conns -contains 8080)
+        mariadb     = [bool]($conns -contains 3306)
+        api         = [bool]($conns -contains 56990)
+    }
+
+    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
+    $totalRamMb = if ($os) { [math]::Round($os.TotalVisibleMemorySize / 1024) } else { 0 }
+    $freeRamMb  = if ($os) { [math]::Round($os.FreePhysicalMemory / 1024) } else { 0 }
+    $usedRamMb  = $totalRamMb - $freeRamMb
+
+    $drive = Get-PSDrive C -ErrorAction SilentlyContinue
+    $freeDiskGb  = if ($drive) { [math]::Round($drive.Free / 1GB, 1) } else { 0 }
+    $usedDiskGb  = if ($drive) { [math]::Round($drive.Used / 1GB, 1) } else { 0 }
+
+    $accCount = Get-MariaDBScalar "SELECT count(*) FROM hm_accounts"
+    $domCount = Get-MariaDBScalar "SELECT count(*) FROM hm_domains"
+
+    return [ordered]@{
+        services = $services
+        system   = @{
+            hostname   = $env:COMPUTERNAME
+            os         = "Windows Server 2022 Datacenter"
+            ramTotalMb = $totalRamMb
+            ramUsedMb  = $usedRamMb
+            diskUsedGb = $usedDiskGb
+            diskFreeGb = $freeDiskGb
+            ipPublic   = "169.58.70.76"
+            domains    = [int]$domCount
+            accounts   = [int]$accCount
+        }
+    }
+}
+
 while ($listener.IsListening) {
     try {
         $context = $listener.GetContext()
@@ -111,14 +199,16 @@ while ($listener.IsListening) {
         }
 
         # 1. Frontend Web Files
-        if ($url -eq "/" -or $url -eq "/index.html" -or $url -eq "/portal.html" -or $url -eq "/app.html" -or $url -eq "/gestion" -or $url -eq "/gestion.html" -or $url -eq "/tienda" -or $url -eq "/ecommerce.html" -or $url -eq "/correo" -or $url -eq "/correo.html" -or $url -eq "/webmail") {
+        if ($url -eq "/" -or $url -eq "/index.html" -or $url -eq "/portal.html" -or $url -eq "/app.html" -or $url -eq "/gestion" -or $url -eq "/gestion.html" -or $url -eq "/tienda" -or $url -eq "/ecommerce.html" -or $url -eq "/correo" -or $url -eq "/correo.html" -or $url -eq "/webmail" -or $url -eq "/panel" -or $url -eq "/panel.html" -or $url -eq "/cpanel" -or $url -eq "/cloudpanel") {
             $hostHdr = $request.Headers["X-Forwarded-Host"]
             if ([string]::IsNullOrEmpty($hostHdr)) { $hostHdr = $request.Headers["Host"] }
             $subInfo = Resolve-SubdomainCompany $hostHdr
             $cleanHost = if ($hostHdr) { $hostHdr.Split(':')[0].ToLower().Trim() } else { "" }
 
+            if ($url -eq "/panel" -or $url -eq "/panel.html" -or $url -eq "/cpanel" -or $url -eq "/cloudpanel") {
+                $targetFile = "panel.html"
             # Si el host es correo.sa.com.gt o webmail.sa.com.gt, o si piden /correo o /webmail
-            if ($cleanHost -match "^(correo|webmail)\." -or $url -eq "/correo" -or $url -eq "/correo.html" -or $url -eq "/webmail") {
+            } elseif ($cleanHost -match "^(correo|webmail)\." -or $url -eq "/correo" -or $url -eq "/correo.html" -or $url -eq "/webmail") {
                 $targetFile = "correo.html"
             } elseif (-not $subInfo.isDedicated) {
                 # Si es el host raíz (sa.com.gt o www.sa.com.gt):
@@ -387,6 +477,67 @@ while ($listener.IsListening) {
             }
             $json = ConvertTo-Json $info
             Send-Response $context $json "application/json; charset=utf-8"
+
+        # 11. Panel Status API
+        } elseif ($url -eq "/api/panel/status") {
+            $statusData = Get-PanelStatusData
+            $json = ConvertTo-Json $statusData -Depth 5
+            Send-Response $context $json "application/json; charset=utf-8"
+
+        # 12. Panel Mail Accounts API
+        } elseif ($url -eq "/api/panel/mail/accounts") {
+            if ($request.HttpMethod -eq "GET") {
+                $accounts = Get-MariaDBAccounts
+                $json = ConvertTo-Json $accounts -Depth 4
+                Send-Response $context $json "application/json; charset=utf-8"
+            } elseif ($request.HttpMethod -eq "POST") {
+                $action = if ($postData.action) { $postData.action } else { "create" }
+                if ($action -eq "create") {
+                    $domain = if ($postData.domain) { $postData.domain.Trim() } else { "sa.com.gt" }
+                    $addr   = $postData.address.Trim().ToLower()
+                    $pass   = $postData.password
+                    $name   = if ($postData.name) { $postData.name.Trim() } else { "Asociado" }
+
+                    $domId = Get-MariaDBScalar "SELECT domainid FROM hm_domains WHERE domainname='$domain';"
+                    if (-not [string]::IsNullOrEmpty($domId)) {
+                        $existsId = Get-MariaDBScalar "SELECT accountid FROM hm_accounts WHERE accountaddress='$addr';"
+                        if (-not [string]::IsNullOrEmpty($existsId)) {
+                            $err = @{ error = "La cuenta de correo ya existe." }
+                            Send-Response $context (ConvertTo-Json $err) "application/json; charset=utf-8" 400
+                        } else {
+                            $escapedPass = $pass -replace "'", "''"
+                            $escapedName = $name -replace "'", "''"
+                            $sql = @"
+INSERT INTO hm_accounts (accountdomainid, accountadminlevel, accountaddress, accountpassword, accountactive, accountisad, accountaddomain, accountadusername, accountmaxsize, accountvacationmessageon, accountvacationmessage, accountvacationsubject, accountpwencryption, accountforwardenabled, accountforwardaddress, accountforwardkeeporiginal, accountenablesignature, accountsignatureplaintext, accountsignaturehtml, accountlastlogontime, accountvacationexpires, accountvacationexpiredate, accountpersonfirstname, accountpersonlastname, accountvacationabortspamflagged, accountforwardabortspamflagged)
+VALUES ($domId, 0, '$addr', '$escapedPass', 1, 0, '', '', 0, 0, '', '', 0, 0, '', 0, 0, '', '', NOW(), 0, NOW(), '$escapedName', '', 0, 0);
+"@
+                            Invoke-MariaDBNonQuery $sql | Out-Null
+                            $resp = @{ status = "ok"; address = $addr }
+                            Send-Response $context (ConvertTo-Json $resp) "application/json; charset=utf-8"
+                        }
+                    } else {
+                        $err = @{ error = "El dominio no está registrado en el servidor de correo." }
+                        Send-Response $context (ConvertTo-Json $err) "application/json; charset=utf-8" 400
+                    }
+                } elseif ($action -eq "password") {
+                    $addr = $postData.address.Trim().ToLower()
+                    $pass = $postData.password
+                    $escapedPass = $pass -replace "'", "''"
+                    $sql = "UPDATE hm_accounts SET accountpassword='$escapedPass', accountpwencryption=0 WHERE accountaddress='$addr';"
+                    Invoke-MariaDBNonQuery $sql | Out-Null
+                    $resp = @{ status = "ok"; address = $addr }
+                    Send-Response $context (ConvertTo-Json $resp) "application/json; charset=utf-8"
+                } elseif ($action -eq "delete") {
+                    $addr = $postData.address.Trim().ToLower()
+                    $sql = "DELETE FROM hm_accounts WHERE accountaddress='$addr';"
+                    Invoke-MariaDBNonQuery $sql | Out-Null
+                    $resp = @{ status = "ok"; address = $addr }
+                    Send-Response $context (ConvertTo-Json $resp) "application/json; charset=utf-8"
+                } else {
+                    $err = @{ error = "Acción no reconocida." }
+                    Send-Response $context (ConvertTo-Json $err) "application/json; charset=utf-8" 400
+                }
+            }
 
         } else {
             Send-Response $context "Not Found" "text/plain" 404

@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudPanel CDPE &bull; sa.com.gt | Panel de Control de Servidor y Asociados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #0c111d;
+    --bg-surface: #161e2e;
+    --bg-card: #1f2a3f;
+    --bg-card-hover: #26344d;
+    --border: #2d3b55;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: rgba(37, 99, 235, 0.15);
+    --success: #10b981;
+    --success-light: rgba(16, 185, 129, 0.15);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
+    --coop-gold: #fbbf24;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 270px;
+    background: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 50;
+  }
+  .sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sidebar-logo-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  }
+  .sidebar-brand {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .sidebar-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--coop-gold);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .nav-menu {
+    padding: 20px 14px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .nav-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 10px 12px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 4px;
+  }
+  .nav-item:hover {
+    background: var(--bg-card);
+    color: #fff;
+  }
+  .nav-item.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  }
+  .nav-item-icon {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+  }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background: rgba(12, 17, 29, 0.5);
+  }
+  .server-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+  }
+
+  /* MAIN CONTENT */
+  .main-content {
+    margin-left: 270px;
+    flex: 1;
+    padding: 32px 40px;
+    max-width: 1400px;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-title {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .page-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+  .top-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-card-hover);
+    border-color: #3b82f6;
+  }
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  /* METRIC STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border);
+  }
+  .stat-card.blue::before { background: var(--primary); }
+  .stat-card.green::before { background: var(--success); }
+  .stat-card.gold::before { background: var(--coop-gold); }
+  .stat-card.purple::before { background: #8b5cf6; }
+
+  .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .stat-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .stat-icon {
+    font-size: 18px;
+    opacity: 0.8;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .stat-bar-bg {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: auto;
+  }
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .stat-detail {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* SECTION TABS CONTENT */
+  .tab-pane {
+    display: none;
+  }
+  .tab-pane.active {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TABLE CARD */
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 30px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .card-body {
+    padding: 24px;
+  }
+
+  /* DATA TABLE */
+  .table-responsive {
+    overflow-x: auto;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+  }
+  table.data-table th {
+    padding: 12px 18px;
+    background: rgba(12, 17, 29, 0.4);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  table.data-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  table.data-table tr:last-child td {
+    border-bottom: none;
+  }
+  table.data-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-success { background: var(--success-light); color: var(--success); }
+  .badge-primary { background: var(--primary-light); color: #60a5fa; }
+  .badge-gold { background: var(--warning-light); color: var(--coop-gold); }
+
+  /* APP GRID */
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .app-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+  }
+  .app-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+  }
+  .app-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .app-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+  }
+  .app-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .app-version {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .app-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  .app-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .modal-body {
+    padding: 24px;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+  }
+  .form-control {
+    width: 100%;
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .form-control:focus {
+    border-color: var(--primary);
+  }
+  .modal-footer {
+    padding: 16px 24px;
+    background: rgba(12, 17, 29, 0.5);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  /* CODE BOX */
+  .code-box {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #a5b4fc;
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-icon">☁️</div>
+      <div>
+        <div class="sidebar-brand">CloudPanel CDPE</div>
+        <span class="sidebar-badge">sa.com.gt &bull; Servidor PYME</span>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <div class="nav-section-title">Servicios Principales</div>
+      <a class="nav-item active" onclick="switchTab('dashboard')">
+        <span class="nav-item-icon">📊</span> Panel General
+      </a>
+      <a class="nav-item" onclick="switchTab('mail')">
+        <span class="nav-item-icon">📧</span> Correos & Webmail
+      </a>
+      <a class="nav-item" onclick="switchTab('domains')">
+        <span class="nav-item-icon">🌐</span> Sitios Web & Dominios
+      </a>
+      <a class="nav-item" onclick="switchTab('apps')">
+        <span class="nav-item-icon">🚀</span> Aplicaciones (Softaculous)
+      </a>
+
+      <div class="nav-section-title">Infraestructura</div>
+      <a class="nav-item" onclick="switchTab('services')">
+        <span class="nav-item-icon">⚙️</span> Estado de Servicios
+      </a>
+      <a class="nav-item" href="https://correo.sa.com.gt" target="_blank">
+        <span class="nav-item-icon">✉️</span> Abrir Webmail (Roundcube)
+      </a>
+      <a class="nav-item" href="/" target="_blank">
+        <span class="nav-item-icon">🔍</span> Buscador sa.com.gt
+      </a>
+      <a class="nav-item" href="/gestion" target="_blank">
+        <span class="nav-item-icon">🏢</span> Portal de Gestión
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="server-pill">
+        <div class="status-dot"></div>
+        <div>
+          <strong style="color: #fff; display: block;">Servidor Activo</strong>
+          <span>169.58.70.76 (Guatemala)</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN VIEW -->
+  <main class="main-content">
+    <div class="top-bar">
+      <div>
+        <h1 class="page-title" id="pageTitle">Panel General de Servidor</h1>
+        <p class="page-subtitle" id="pageSubtitle">Administración integral de correos, dominios y aplicaciones para asociados del CDPE</p>
+      </div>
+      <div class="top-actions">
+        <a href="https://correo.sa.com.gt" target="_blank" class="btn btn-secondary">
+          <span>✉️</span> Acceder a Webmail
+        </a>
+        <button class="btn btn-primary" onclick="openCreateMailModal()">
+          <span>+</span> Crear Correo
+        </button>
+      </div>
+    </div>
+
+    <!-- METRICS OVERVIEW -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-header">
+          <span class="stat-title">Cuentas de Correo</span>
+          <span class="stat-icon">📧</span>
+        </div>
+        <div class="stat-value" id="kpiAccounts">4</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 25%; background: var(--primary);"></div></div>
+        <div class="stat-detail"><span>hMailServer + Roundcube</span><span>Activas</span></div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-header">
+          <span class="stat-title">Dominios & Subdominios</span>
+          <span class="stat-icon">🌐</span>
+        </div>
+        <div class="stat-value" id="kpiDomains">3</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 45%; background: var(--success);"></div></div>
+        <div class="stat-detail"><span>sa.com.gt & asociados</span><span>SSL Automático</span></div>
+      </div>
+
+      <div class="stat-card gold">
+        <div class="stat-header">
+          <span class="stat-title">Memoria RAM</span>
+          <span class="stat-icon">⚡</span>
+        </div>
+        <div class="stat-value" id="kpiRam">2.4 / 8 GB</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" id="barRam" style="width: 30%; background: var(--coop-gold);"></div></div>
+        <div class="stat-detail"><span id="lblRamPercent">30% en uso</span><span>Windows Server</span></div>
+      </div>
+
+      <div class="stat-card purple">
+        <div class="stat-header">
+          <span class="stat-title">Servicios en Línea</span>
+          <span class="stat-icon">🛡️</span>
+        </div>
+        <div class="stat-value">5 / 5</div>
+        <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 100%; background: #8b5cf6;"></div></div>
+        <div class="stat-detail"><span>Caddy, MariaDB, Mail, PHP</span><span style="color: var(--success); font-weight:700;">100% OK</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 1: DASHBOARD -->
+    <div id="tab-dashboard" class="tab-pane active">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>📧</span> Cuentas de Correo Corporativo de Asociados</div>
+            <div class="card-subtitle">Buzones asignados en hMailServer con acceso inmediato vía Webmail Roundcube</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openCreateMailModal()">+ Nueva Cuenta</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Dirección de Correo</th>
+                <th>Nombre / Asociado</th>
+                <th>Dominio</th>
+                <th>Tipo</th>
+                <th>Último Acceso</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="mailTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>🚀</span> Aplicaciones y Suites del Ecosistema CDPE</div>
+            <div class="card-subtitle">Plataformas activas administradas en este servidor</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="apps-grid">
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon" style="color: #3b82f6;">✉️</div>
+                <div>
+                  <div class="app-name">Roundcube Webmail</div>
+                  <div class="app-version">v1.6.9 &bull; PHP 8.2 FastCGI</div>
+                </div>
+              </div>
+              <div class="app-desc">Cliente de correo corporativo moderno para asociados con soporte de adjuntos, firmas, filtros y SQLite de alto rendimiento.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">● Activo &bull; Puerto 8080</span>
+                <a href="https://correo.sa.com.gt" target="_blank" class="btn btn-primary btn-sm">Abrir Webmail</a>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon" style="color: #10b981;">🛡️</div>
+                <div>
+                  <div class="app-name">hMailServer Suite</div>
+                  <div class="app-version">v5.7.0 &bull; MariaDB 10.6</div>
+                </div>
+              </div>
+              <div class="app-desc">Servidor de correo autónomo con soporte nativo de SMTP, POP3 e IMAP autenticado, protección contra spam y límites de cuota.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">● Activo &bull; Puertos 25, 143</span>
+                <button class="btn btn-secondary btn-sm" onclick="switchTab('mail')">Administrar</button>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon" style="color: #fbbf24;">🍗</div>
+                <div>
+                  <div class="app-name">SimplyGest API Conector</div>
+                  <div class="app-version">Multi-Empresa &bull; 2026</div>
+                </div>
+              </div>
+              <div class="app-desc">Sincronización en tiempo real con bases de datos SimplyGest para reportes ejecutivos, catálogo de productos y pedidos WhatsApp.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">● Activo &bull; Puerto 56990</span>
+                <a href="/gestion" target="_blank" class="btn btn-secondary btn-sm">Ver Gestión</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: CORREOS -->
+    <div id="tab-mail" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>📧</span> Gestión de Cuentas de Correo y Cuotas</div>
+            <div class="card-subtitle">Crea correos ilimitados para las franquicias y empresas asociadas a sa.com.gt</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openCreateMailModal()">+ Crear Cuenta de Correo</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Dirección</th>
+                <th>Nombre</th>
+                <th>Dominio</th>
+                <th>Rol</th>
+                <th>Último Acceso</th>
+                <th>Estado</th>
+                <th style="text-align: right;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="mailTableFull">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span>📱</span> Guía de Configuración para Celulares y Outlook</div>
+        </div>
+        <div class="card-body">
+          <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 14px;">
+            Los asociados pueden configurar su correo en cualquier aplicación móvil (Gmail, Apple Mail, Outlook) o de escritorio (Thunderbird) usando estos parámetros seguros:
+          </p>
+          <div class="code-box">
+            <strong>Servidor de Entrada (IMAP):</strong> correo.sa.com.gt &bull; Puerto: 143 (o 993 con SSL)<br>
+            <strong>Servidor de Salida (SMTP):</strong> correo.sa.com.gt &bull; Puerto: 25 o 587 (con Autenticación)<br>
+            <strong>Nombre de Usuario:</strong> Tu correo completo (ej. asociado@sa.com.gt)<br>
+            <strong>Contraseña:</strong> Tu clave asignada en este panel<br>
+            <strong>Webmail de Acceso Directo:</strong> <a href="https://correo.sa.com.gt" target="_blank" style="color: #60a5fa;">https://correo.sa.com.gt</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DOMINIOS -->
+    <div id="tab-domains" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>🌐</span> Dominios y Subdominios de la Red sa.com.gt</div>
+            <div class="card-subtitle">Subdominios dedicados para empresas asociadas con certificado SSL Let's Encrypt</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="alert('Para añadir un nuevo subdominio de franquicia, contáctate con el Asesor Técnico CDPE (+502 4555-0004)')">+ Registrar Subdominio</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Dominio / Subdominio</th>
+                <th>Destino / Aplicación</th>
+                <th>Certificado SSL</th>
+                <th>Servicio de Correo</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>sa.com.gt</strong> (y www)</td>
+                <td>Portal Matriz & Buscador Google-Style</td>
+                <td><span class="badge badge-success">✓ Let's Encrypt (Automático)</span></td>
+                <td><span class="badge badge-primary">@sa.com.gt</span></td>
+                <td><span class="badge badge-success">● En Línea</span></td>
+              </tr>
+              <tr>
+                <td><strong>correo.sa.com.gt</strong></td>
+                <td>Roundcube Webmail Corporativo</td>
+                <td><span class="badge badge-success">✓ Let's Encrypt (Automático)</span></td>
+                <td><span class="badge badge-primary">IMAP / SMTP Host</span></td>
+                <td><span class="badge badge-success">● En Línea</span></td>
+              </tr>
+              <tr>
+                <td><strong>cdpe.sa.com.gt</strong></td>
+                <td>Centro de Desarrollo de la Pequeña Empresa</td>
+                <td><span class="badge badge-success">✓ Let's Encrypt (Automático)</span></td>
+                <td><span class="badge badge-primary">@cdpe.sa.com.gt</span></td>
+                <td><span class="badge badge-success">● En Línea</span></td>
+              </tr>
+              <tr>
+                <td><strong>donpollo.sa.com.gt</strong></td>
+                <td>Restaurante Don Pollo (SimplyGest)</td>
+                <td><span class="badge badge-success">✓ Let's Encrypt (Automático)</span></td>
+                <td><span class="badge badge-primary">@donpollo.sa.com.gt</span></td>
+                <td><span class="badge badge-success">● En Línea</span></td>
+              </tr>
+              <tr>
+                <td><strong>webmail.sa.com.gt</strong></td>
+                <td>Alias Webmail Corporativo</td>
+                <td><span class="badge badge-success">✓ Let's Encrypt (Automático)</span></td>
+                <td><span class="badge badge-primary">Acceso Rápido</span></td>
+                <td><span class="badge badge-success">● En Línea</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: APLICACIONES -->
+    <div id="tab-apps" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>🚀</span> Instalador y Catálogo de Aplicaciones (App Installer)</div>
+            <div class="card-subtitle">Aprovisionamiento con un click para asociados del CDPE</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="apps-grid">
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon">✉️</div>
+                <div>
+                  <div class="app-name">Roundcube Webmail</div>
+                  <div class="app-version">v1.6.9 &bull; Producción</div>
+                </div>
+              </div>
+              <div class="app-desc">Webmail con soporte IMAP/SMTP completo, diseño responsivo Elastic, plugins de compresión ZIP y filtros de correo.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">Instalado</span>
+                <a href="https://correo.sa.com.gt" target="_blank" class="btn btn-primary btn-sm">Abrir Webmail</a>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon">📊</div>
+                <div>
+                  <div class="app-name">Portal de Gestión SimplyGest</div>
+                  <div class="app-version">v2.5 &bull; Multi-Periodo</div>
+                </div>
+              </div>
+              <div class="app-desc">Panel de inteligencia empresarial que lee tablas nativas de SimplyGest, calcula ventas, beneficios, márgenes y ranking comercial.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">Instalado</span>
+                <a href="/gestion" target="_blank" class="btn btn-secondary btn-sm">Ver Portal</a>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon">🛒</div>
+                <div>
+                  <div class="app-name">Tienda Virtual E-Commerce</div>
+                  <div class="app-version">v1.4 &bull; Catálogo WhatsApp</div>
+                </div>
+              </div>
+              <div class="app-desc">Catálogo público con pedidos sincronizados por WhatsApp, precios en Quetzales y cálculo automático de total.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">Instalado</span>
+                <a href="/tienda" target="_blank" class="btn btn-secondary btn-sm">Ver Tienda</a>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon">🗄️</div>
+                <div>
+                  <div class="app-name">MariaDB Enterprise Engine</div>
+                  <div class="app-version">v10.6.19 &bull; Puerto 3306</div>
+                </div>
+              </div>
+              <div class="app-desc">Base de datos relacional para correos, catálogos y gestión de asociados con respaldos automáticos.</div>
+              <div class="app-footer">
+                <span class="badge badge-success">Operativo</span>
+                <span style="font-size: 12px; color: var(--text-muted);">Gestionado</span>
+              </div>
+            </div>
+
+            <div class="app-card">
+              <div class="app-card-top">
+                <div class="app-icon">🌐</div>
+                <div>
+                  <div class="app-name">WordPress para Asociados</div>
+                  <div class="app-version">v6.4 &bull; Disponible</div>
+                </div>
+              </div>
+              <div class="app-desc">Instalación en un click de sitio web corporativo o blog para empresas asociadas con MariaDB y PHP 8.2.</div>
+              <div class="app-footer">
+                <span class="badge badge-gold">Listo para Instalar</span>
+                <button class="btn btn-primary btn-sm" onclick="alert('Aprovisionador de WordPress preparado. Selecciona un subdominio asociado para iniciar la instalación.')">Instalar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: SERVICIOS -->
+    <div id="tab-services" class="tab-pane">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title"><span>⚙️</span> Monitor de Servicios y Puertos del Servidor</div>
+            <div class="card-subtitle">Estado en tiempo real de los procesos y servicios de red</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="loadPanelData()">🔄 Actualizar Estado</button>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Servicio</th>
+                <th>Motor / Software</th>
+                <th>Puertos de Red</th>
+                <th>Uso de Recursos</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: CREAR CORREO -->
+  <div class="modal-overlay" id="modalCreateMail">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Crear Nueva Cuenta de Correo</div>
+        <button class="modal-close" onclick="closeCreateMailModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Dominio Asignado</label>
+          <select class="form-control" id="newMailDomain">
+            <option value="sa.com.gt">@sa.com.gt (Dominio Matriz)</option>
+            <option value="cdpe.sa.com.gt">@cdpe.sa.com.gt (CDPE Institucional)</option>
+            <option value="donpollo.sa.com.gt">@donpollo.sa.com.gt (Don Pollo Franquicia)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre de Usuario (Buzón)</label>
+          <input type="text" class="form-control" id="newMailUser" placeholder="ej. juan.perez o ventas" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre y Apellido del Asociado</label>
+          <input type="text" class="form-control" id="newMailName" placeholder="ej. Juan Pérez" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña de Acceso</label>
+          <input type="password" class="form-control" id="newMailPassword" placeholder="Contraseña segura" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCreateMailModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="submitCreateMail()">Crear Buzón</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CAMBIAR CLAVE -->
+  <div class="modal-overlay" id="modalChangePass">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Cambiar Contraseña</div>
+        <button class="modal-close" onclick="closeChangePassModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="changePassAddress">
+        <div class="form-group">
+          <label class="form-label">Cuenta a Modificar</label>
+          <input type="text" class="form-control" id="changePassAddressDisplay" disabled>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nueva Contraseña</label>
+          <input type="password" class="form-control" id="changePassNew" placeholder="Ingresa la nueva contraseña" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeChangePassModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="submitChangePass()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  let activeTab = 'dashboard';
+  let cachedAccounts = [];
+
+  function switchTab(tabId) {
+    activeTab = tabId;
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+
+    const targetNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick')?.includes(tabId));
+    if (targetNav) targetNav.classList.add('active');
+
+    const pane = document.getElementById('tab-' + tabId);
+    if (pane) pane.classList.add('active');
+
+    // Update Titles
+    const titleMap = {
+      dashboard: ['Panel General de Servidor', 'Administración integral de correos, dominios y aplicaciones para asociados del CDPE'],
+      mail: ['Gestión de Correos & Webmail', 'Buzones corporativos, servidores IMAP/SMTP y acceso a Roundcube'],
+      domains: ['Sitios Web & Dominios', 'Subdominios para franquicias y asociados con proxy Caddy y SSL'],
+      apps: ['Catálogo de Aplicaciones', 'Instalación y administración de plataformas de software para asociados'],
+      services: ['Estado de Servicios del Servidor', 'Monitoreo de puertos y procesos en Windows Server']
+    };
+    if (titleMap[tabId]) {
+      document.getElementById('pageTitle').textContent = titleMap[tabId][0];
+      document.getElementById('pageSubtitle').textContent = titleMap[tabId][1];
+    }
+  }
+
+  async function loadPanelData() {
+    try {
+      // 1. Fetch Status
+      const statusRes = await fetch('/api/panel/status');
+      if (statusRes.ok) {
+        const data = await statusRes.json();
+        renderStatus(data);
+      }
+
+      // 2. Fetch Mail Accounts
+      const mailRes = await fetch('/api/panel/mail/accounts');
+      if (mailRes.ok) {
+        cachedAccounts = await mailRes.json();
+        renderAccounts(cachedAccounts);
+      }
+    } catch (e) {
+      console.warn('Error loading panel data:', e);
+    }
+  }
+
+  function renderStatus(data) {
+    if (!data) return;
+    const sys = data.system || {};
+    const srv = data.services || {};
+
+    if (sys.accounts !== undefined) document.getElementById('kpiAccounts').textContent = sys.accounts;
+    if (sys.domains !== undefined) document.getElementById('kpiDomains').textContent = sys.domains;
+
+    if (sys.ramTotalMb) {
+      const used = (sys.ramUsedMb / 1024).toFixed(1);
+      const total = (sys.ramTotalMb / 1024).toFixed(1);
+      const pct = Math.round((sys.ramUsedMb / sys.ramTotalMb) * 100);
+      document.getElementById('kpiRam').textContent = `${used} / ${total} GB`;
+      document.getElementById('barRam').style.width = pct + '%';
+      document.getElementById('lblRamPercent').textContent = `${pct}% en uso`;
+    }
+
+    // Render Services Table
+    const tbody = document.getElementById('servicesTableBody');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td><strong>Servidor Web Seguro</strong></td>
+          <td>Caddy Web Server v2.9</td>
+          <td><code>Puerto 80 (HTTP), 443 (HTTPS)</code></td>
+          <td>Memoria: ~45 MB</td>
+          <td><span class="badge ${srv.caddy ? 'badge-success' : 'badge-gold'}">${srv.caddy ? '● En Línea' : '● Verificando'}</span></td>
+        </tr>
+        <tr>
+          <td><strong>Servidor de Correo Autónomo</strong></td>
+          <td>hMailServer v5.7.0</td>
+          <td><code>Puerto 25 (SMTP), 143 (IMAP), 110 (POP3), 587</code></td>
+          <td>Memoria: ~25 MB</td>
+          <td><span class="badge ${srv.hmailserver ? 'badge-success' : 'badge-gold'}">${srv.hmailserver ? '● En Línea' : '● Verificando'}</span></td>
+        </tr>
+        <tr>
+          <td><strong>Webmail Corporativo</strong></td>
+          <td>Roundcube 1.6.9 + PHP 8.2 FastCGI</td>
+          <td><code>Puerto 8080 (Interno) &bull; correo.sa.com.gt</code></td>
+          <td>Memoria: ~35 MB</td>
+          <td><span class="badge ${srv.roundcube ? 'badge-success' : 'badge-gold'}">${srv.roundcube ? '● En Línea' : '● Verificando'}</span></td>
+        </tr>
+        <tr>
+          <td><strong>Base de Datos Relacional</strong></td>
+          <td>MariaDB Enterprise 10.6</td>
+          <td><code>Puerto 3306 (TCP)</code></td>
+          <td>Memoria: ~65 MB</td>
+          <td><span class="badge ${srv.mariadb ? 'badge-success' : 'badge-gold'}">${srv.mariadb ? '● En Línea' : '● Verificando'}</span></td>
+        </tr>
+        <tr>
+          <td><strong>Motor API SimplyGest</strong></td>
+          <td>PowerShell Core REST Engine</td>
+          <td><code>Puerto 56990 (Interno)</code></td>
+          <td>Memoria: ~70 MB</td>
+          <td><span class="badge ${srv.api ? 'badge-success' : 'badge-gold'}">${srv.api ? '● En Línea' : '● Verificando'}</span></td>
+        </tr>
+      `;
+    }
+  }
+
+  function renderAccounts(accounts) {
+    const bodies = [document.getElementById('mailTableBody'), document.getElementById('mailTableFull')];
+    bodies.forEach(tbody => {
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      accounts.forEach(acc => {
+        const tr = document.createElement('tr');
+        const roleBadge = acc.accountadminlevel == 2 
+          ? '<span class="badge badge-gold">Administrador</span>' 
+          : '<span class="badge badge-primary">Asociado</span>';
+        const fullName = `${acc.accountpersonfirstname || ''} ${acc.accountpersonlastname || ''}`.trim() || 'Asociado';
+        const lastLogon = acc.accountlastlogontime && acc.accountlastlogontime !== '0000-00-00 00:00:00' 
+          ? acc.accountlastlogontime 
+          : 'Sin accesos recientes';
+
+        tr.innerHTML = `
+          <td><strong>${acc.accountaddress}</strong></td>
+          <td>${fullName}</td>
+          <td><code>@${acc.domainname}</code></td>
+          <td>${roleBadge}</td>
+          <td style="font-size: 12px; color: var(--text-muted); font-family: monospace;">${lastLogon}</td>
+          <td><span class="badge badge-success">● Activa</span></td>
+          <td style="text-align: right;">
+            <a href="https://correo.sa.com.gt" target="_blank" class="btn btn-secondary btn-sm" title="Abrir en Webmail">✉️ Webmail</a>
+            <button class="btn btn-secondary btn-sm" onclick="openChangePassModal('${acc.accountaddress}')" title="Cambiar Clave">🔑</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  // Modals
+  function openCreateMailModal() {
+    document.getElementById('newMailUser').value = '';
+    document.getElementById('newMailName').value = '';
+    document.getElementById('newMailPassword').value = '';
+    document.getElementById('modalCreateMail').classList.add('active');
+  }
+  function closeCreateMailModal() {
+    document.getElementById('modalCreateMail').classList.remove('active');
+  }
+
+  async function submitCreateMail() {
+    const domain = document.getElementById('newMailDomain').value;
+    const user = document.getElementById('newMailUser').value.trim();
+    const name = document.getElementById('newMailName').value.trim();
+    const pass = document.getElementById('newMailPassword').value;
+
+    if (!user || !pass) {
+      alert('Por favor completa el nombre de usuario y la contraseña.');
+      return;
+    }
+
+    const email = user.includes('@') ? user : `${user}@${domain}`;
+    try {
+      const res = await fetch('/api/panel/mail/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'create',
+          address: email,
+          domain: domain,
+          name: name,
+          password: pass
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        alert('¡Cuenta creada con éxito! Ya puedes iniciar sesión en Roundcube Webmail con: ' + email);
+        closeCreateMailModal();
+        loadPanelData();
+      } else {
+        alert('Error al crear cuenta: ' + (data.error || 'Error desconocido'));
+      }
+    } catch (e) {
+      alert('Error de conexión al servidor.');
+    }
+  }
+
+  function openChangePassModal(address) {
+    document.getElementById('changePassAddress').value = address;
+    document.getElementById('changePassAddressDisplay').value = address;
+    document.getElementById('changePassNew').value = '';
+    document.getElementById('modalChangePass').classList.add('active');
+  }
+  function closeChangePassModal() {
+    document.getElementById('modalChangePass').classList.remove('active');
+  }
+
+  async function submitChangePass() {
+    const address = document.getElementById('changePassAddress').value;
+    const pass = document.getElementById('changePassNew').value;
+    if (!pass) {
+      alert('Por favor escribe la nueva contraseña.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/panel/mail/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'password',
+          address: address,
+          password: pass
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        alert('Contraseña actualizada con éxito.');
+        closeChangePassModal();
+      } else {
+        alert('Error: ' + (data.error || 'Error desconocido'));
+      }
+    } catch (e) {
+      alert('Error de conexión al servidor.');
+    }
+  }
+
+  // Initial load
+  loadPanelData();
+  setInterval(loadPanelData, 30000);
+</script>
+</body>
+</html>
