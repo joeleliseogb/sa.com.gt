@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DON POLLO &bull; Tienda Online & Pedidos en Línea</title>
+<style>
+  :root {
+    --primary: #b91c1c;
+    --primary-dark: #991b1b;
+    --primary-light: #fef2f2;
+    --accent: #f59e0b;
+    --accent-hover: #d97706;
+    --dark: #0f172a;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --success: #16a34a;
+    --admin-color: #4f46e5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body {
+    background-color: #f8fafc;
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top Notice Bar */
+  .top-notice {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 8px 16px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .top-notice a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .top-notice a:hover { text-decoration: underline; }
+
+  /* Header */
+  header {
+    background: #ffffff;
+    border-bottom: 2px solid #fee2e2;
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .brand-logo {
+    font-size: 34px;
+    background: #fef2f2;
+    border: 2px solid #fecaca;
+    padding: 6px 10px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand-title {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-sub {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .franchise-tag {
+    background: rgba(245, 158, 11, 0.15);
+    color: #b45309;
+    border: 1px solid #fcd34d;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+  }
+
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Admin Access Button */
+  .btn-admin {
+    background: linear-gradient(135deg, #4f46e5, #4338ca);
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-admin:hover {
+    background: linear-gradient(135deg, #4338ca, #3730a3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+  }
+
+  /* Cart Button */
+  .btn-cart {
+    background: var(--primary);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 14px rgba(185, 28, 28, 0.25);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cart:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+  .cart-count {
+    background: #ffffff;
+    color: var(--primary);
+    border-radius: 9999px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  /* Hero Banner */
+  .hero-banner {
+    background: linear-gradient(135deg, #991b1b 0%, #b91c1c 50%, #dc2626 100%);
+    color: #ffffff;
+    padding: 44px 24px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    right: -50px;
+    bottom: -50px;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+  }
+  .hero-sub {
+    font-size: 16px;
+    opacity: 0.92;
+    max-width: 620px;
+    margin: 0 auto 20px auto;
+  }
+  .hero-pills {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .hero-pill {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px 20px 60px 20px;
+  }
+
+  /* Category Filter Pills */
+  .category-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 8px 2px 20px 2px;
+    margin-bottom: 16px;
+    scrollbar-width: thin;
+  }
+  .cat-pill {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 10px 20px;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  }
+  .cat-pill:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateY(-1px);
+  }
+  .cat-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+  }
+
+  /* Products Grid */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 22px;
+  }
+
+  .product-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.08);
+    border-color: #fecaca;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+  .prod-icon {
+    font-size: 42px;
+    background: #fff1f2;
+    border: 1px solid #ffe4e6;
+    width: 68px;
+    height: 68px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .prod-badge {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-size: 10.5px;
+    font-weight: 800;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+  }
+
+  .prod-family {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .prod-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+    line-height: 1.25;
+  }
+  .prod-desc {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.45;
+    margin-bottom: 18px;
+    flex-grow: 1;
+  }
+
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+  }
+  .prod-price {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--primary-dark);
+  }
+  .prod-price-lbl {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    display: block;
+    font-weight: 600;
+  }
+
+  .btn-add {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-add:hover {
+    background: var(--accent-hover);
+    transform: scale(1.03);
+  }
+
+  /* Cart Drawer Modal */
+  .cart-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    display: none;
+    justify-content: flex-end;
+  }
+  .cart-drawer {
+    background: #ffffff;
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.25);
+    animation: slideIn 0.25s ease-out;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+
+  .cart-header {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cart-header h3 {
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .btn-close:hover { color: #ffffff; }
+
+  .cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .cart-item-info {
+    flex: 1;
+  }
+  .cart-item-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e293b;
+  }
+  .cart-item-price {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 700;
+  }
+  .cart-qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-qty {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-qty:hover { background: #e2e8f0; }
+
+  .cart-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+
+  .cart-footer {
+    border-top: 2px solid #f1f5f9;
+    padding: 20px 24px;
+    background: #f8fafc;
+  }
+  .cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .cart-total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 900;
+    color: #0f172a;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 12px;
+    margin-top: 10px;
+    margin-bottom: 18px;
+  }
+
+  .btn-whatsapp {
+    background: #25d366;
+    color: #ffffff;
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.35);
+    transition: all 0.2s;
+  }
+  .btn-whatsapp:hover {
+    background: #1ebc59;
+    transform: translateY(-2px);
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-left: 4px solid var(--accent);
+  }
+
+  /* Footer */
+  footer {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 40px 24px 20px 24px;
+    font-size: 13px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+  .footer-col h4 {
+    color: #f8fafc;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .footer-col p {
+    line-height: 1.6;
+    font-size: 12.5px;
+  }
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover {
+    color: #f87171;
+  }
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 0 auto;
+    border-top: 1px solid #1e293b;
+    padding-top: 20px;
+    text-align: center;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Notice -->
+<div class="top-notice">
+  <span>📍 Sucursal Central &bull; Pedidos a Domicilio y Para Llevar &bull; Tel: (502) 2333-0000</span>
+  <div>
+    <a href="/gestion" style="color:#fde047; margin-right:14px;">🔒 Portal de Gestión Empresarial</a>
+    <a href="https://sa.com.gt/">🌐 Directorio sa.com.gt</a>
+  </div>
+</div>
+
+<!-- Header -->
+<header>
+  <a href="/" class="brand">
+    <div class="brand-logo" id="brandIcon">🍗</div>
+    <div>
+      <div class="brand-title">
+        <span id="brandName">DON POLLO</span>
+        <span class="franchise-tag">Franquicia CDPE</span>
+      </div>
+      <div class="brand-sub" id="brandSub">¡El auténtico sabor crujiente de Guatemala! &bull; SimplyGest 17.5</div>
+    </div>
+  </a>
+
+  <div class="nav-controls">
+    <!-- Botón directo a Gestión Empresarial -->
+    <a href="/gestion" class="btn-admin" title="Ir al panel administrativo de SimplyGest">
+      📊 Gestión Empresarial
+    </a>
+
+    <!-- Carrito -->
+    <button class="btn-cart" onclick="toggleCart(true)">
+      <span>🛒 Carrito</span>
+      <span class="cart-count" id="cartBadge">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- Hero Banner -->
+<div class="hero-banner">
+  <div class="hero-badge">🔥 Menú Oficial en Línea &bull; Precios en Quetzales (Q)</div>
+  <h1 class="hero-title" id="heroTitle">DON POLLO &bull; ¡QUE SABOR!</h1>
+  <p class="hero-sub" id="heroSub">
+    Disfruta de nuestras famosas piezas crujientes, combos familiares, bebidas heladas y guarniciones preparadas en el momento.
+  </p>
+  <div class="hero-pills">
+    <div class="hero-pill">⚡ Entrega Rápida</div>
+    <div class="hero-pill">🍗 100% Calidad de Pollo Fresco</div>
+    <div class="hero-pill">🧾 Facturación Electrónica en Línea</div>
+    <div class="hero-pill">📱 Pedidos por WhatsApp</div>
+  </div>
+</div>
+
+<main>
+  <!-- Categorías -->
+  <div class="category-nav" id="categoryNav">
+    <button class="cat-pill active" onclick="filtrarCategoria('TODOS')">🍽️ Todos los Productos</button>
+    <button class="cat-pill" onclick="filtrarCategoria('COMBOS')">📦 Combos Especiales</button>
+    <button class="cat-pill" onclick="filtrarCategoria('PIEZAS')">🍗 Piezas & Guarniciones</button>
+    <button class="cat-pill" onclick="filtrarCategoria('GASEOSA')">🥤 Bebidas & Gaseosas</button>
+  </div>
+
+  <!-- Catálogo -->
+  <div class="section-header">
+    <div>
+      <div class="section-title">
+        <span>Menú de Productos</span>
+      </div>
+      <div class="section-subtitle" id="catSubtitle">Mostrando todos los artículos disponibles en stock</div>
+    </div>
+    <div style="font-size:12px; color:var(--text-muted);">
+      Sincronizado en tiempo real con <strong style="color:var(--primary);">SimplyGest TPV</strong>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">
+      Cargando catálogo oficial de SimplyGest...
+    </div>
+  </div>
+</main>
+
+<!-- Carrito Modal Drawer -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCartOnBg(event)">
+  <div class="cart-drawer" onclick="event.stopPropagation()">
+    <div class="cart-header">
+      <h3>🛒 Tu Pedido</h3>
+      <button class="btn-close" onclick="toggleCart(false)">&times;</button>
+    </div>
+
+    <div class="cart-items" id="cartItemsContainer">
+      <div class="cart-empty">
+        <div style="font-size:42px; margin-bottom:10px;">🍗</div>
+        <p>Tu carrito está vacío.</p>
+        <span style="font-size:12px; color:#94a3b8;">Elige tus combos favoritos y agrégalos al pedido.</span>
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-summary-row">
+        <span>Artículos en carrito:</span>
+        <strong id="cartSummaryCount">0</strong>
+      </div>
+      <div class="cart-summary-row">
+        <span>Envío a domicilio:</span>
+        <strong style="color:var(--success);">Gratis / Por confirmar</strong>
+      </div>
+      <div class="cart-total-row">
+        <span>Total a Pagar:</span>
+        <span id="cartTotalPrice">Q 0.00</span>
+      </div>
+
+      <button class="btn-whatsapp" onclick="enviarPedidoWhatsApp()">
+        <span>💬 Enviar Pedido por WhatsApp</span>
+      </button>
+
+      <div style="margin-top:14px; text-align:center;">
+        <a href="/gestion" style="font-size:11.5px; color:#64748b; text-decoration:none;">
+          🔒 ¿Eres administrador? <strong style="color:#4f46e5;">Ir a Gestión SimplyGest &rarr;</strong>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastMsg">Producto agregado al carrito</span>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4 id="footerBrand">DON POLLO - QUE SABOR</h4>
+      <p>Franquicia de comida rápida certificada por el Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE). Alta calidad, frescura y sabor inigualable.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Enlaces Rápidos</h4>
+      <ul class="footer-links">
+        <li><a href="/">Menú y Tienda Online</a></li>
+        <li><a href="/gestion">📊 Portal de Gestión Empresarial</a></li>
+        <li><a href="https://sa.com.gt/">🌐 Directorio Central sa.com.gt</a></li>
+        <li><a href="https://sa.com.gt/#hosting">☁️ Hosting Empresarial SimplyGest</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Tecnología & Plataforma</h4>
+      <p>Operado con SimplyGest 17.5 &bull; Motor DBISAM Multi-Empresa &bull; Alojado en infraestructura de alta disponibilidad bajo el dominio <strong>sa.com.gt</strong>.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DON POLLO &bull; Franquicias CDPE Guatemala</span>
+    <span>Subdominio dedicado: <strong>donpollo.sa.com.gt</strong></span>
+  </div>
+</footer>
+
+<script>
+  let catalogo = [];
+  let categoriaActual = 'TODOS';
+  let carrito = {};
+
+  async function cargarCatalogo() {
+    try {
+      // Determinar contexto de subdominio
+      const ctxRes = await fetch('/api/subdomain-context');
+      const ctx = await ctxRes.json();
+      
+      const empCodigo = ctx.codigo || 1;
+      const empNombre = ctx.empresa || 'DON POLLO';
+
+      document.getElementById('brandName').innerText = empNombre;
+      document.getElementById('heroTitle').innerText = `${empNombre} • ¡TIENDA EN LÍNEA!`;
+      document.title = `${empNombre} • Tienda Online & Pedidos`;
+      document.getElementById('footerBrand').innerText = empNombre;
+
+      const res = await fetch(`/api/catalogo?empresa=${empCodigo}`);
+      const data = await res.json();
+      catalogo = data.articulos || [];
+
+      // Renderizar categorías dinámicas
+      renderCategorias(data.familias || ['TODOS']);
+      renderProductos(catalogo);
+    } catch (e) {
+      console.error(e);
+      // Fallback
+      renderProductos([
+        { codigo: "0007", nombre: "COMBO CLASICO", precio: 35.0, precioFmt: "Q 35.00", familia: "COMBOS", descripcion: "2 Piezas de Pollo + Papas Fritas + Bebida Fría.", icono: "📦", badge: "Más Vendido" },
+        { codigo: "0008", nombre: "COMBO DUO", precio: 49.0, precioFmt: "Q 49.00", familia: "COMBOS", descripcion: "4 Piezas de Pollo + 2 Papas + 2 Bebidas.", icono: "📦", badge: "Recomendado" },
+        { codigo: "0009", nombre: "COMBO FAMILIAR", precio: 125.0, precioFmt: "Q 125.00", familia: "COMBOS", descripcion: "8 Piezas de Pollo + Papas Familiares + Bebida 1.5L.", icono: "📦", badge: "Familiar" },
+        { codigo: "0010", nombre: "COMBO PECHUGON", precio: 59.0, precioFmt: "Q 59.00", familia: "COMBOS", descripcion: "Porciones generosas de pechuga crujiente con guarnición.", icono: "📦", badge: "" },
+        { codigo: "0002", nombre: "PECHUGA CRUJIENTE", precio: 16.0, precioFmt: "Q 16.00", familia: "PIEZAS", descripcion: "Pechuga jugosa con empanizado crujiente artesanal.", icono: "🍗", badge: "100% Pechuga" },
+        { codigo: "0003", nombre: "PIERNA DORADA", precio: 8.0, precioFmt: "Q 8.00", familia: "PIEZAS", descripcion: "Pierna dorada y crocante recién frita.", icono: "🍗", badge: "" },
+        { codigo: "0005", nombre: "CUPS DE PAPAS", precio: 10.0, precioFmt: "Q 10.00", familia: "PIEZAS", descripcion: "Papas doradas, crujientes por fuera y suaves por dentro.", icono: "🍟", badge: "Favorito" },
+        { codigo: "0014", nombre: "COCA COLA LATA", precio: 6.0, precioFmt: "Q 6.00", familia: "GASEOSA", descripcion: "Bebida fría y refrescante 354ml.", icono: "🥤", badge: "" }
+      ]);
+    }
+  }
+
+  function renderCategorias(familias) {
+    const nav = document.getElementById('categoryNav');
+    nav.innerHTML = '';
+    familias.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = `cat-pill ${f === categoriaActual ? 'active' : ''}`;
+      
+      let icon = "🍽️";
+      if (f.includes('COMBO')) icon = "📦";
+      else if (f.includes('PIEZA')) icon = "🍗";
+      else if (f.includes('GASEOSA') || f.includes('BEBIDA')) icon = "🥤";
+      else if (f === 'TODOS') icon = "⭐";
+
+      btn.innerText = `${icon} ${f}`;
+      btn.onclick = () => filtrarCategoria(f);
+      nav.appendChild(btn);
+    });
+  }
+
+  function filtrarCategoria(cat) {
+    categoriaActual = cat;
+    document.querySelectorAll('.cat-pill').forEach(b => {
+      if (b.innerText.includes(cat)) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+
+    if (cat === 'TODOS') {
+      renderProductos(catalogo);
+      document.getElementById('catSubtitle').innerText = "Mostrando todos los artículos disponibles en stock";
+    } else {
+      const filtrados = catalogo.filter(p => p.familia.toUpperCase() === cat.toUpperCase());
+      renderProductos(filtrados);
+      document.getElementById('catSubtitle').innerText = `Mostrando ${filtrados.length} artículos en la categoría ${cat}`;
+    }
+  }
+
+  function renderProductos(list) {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = '';
+
+    if (list.length === 0) {
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:#94a3b8;">No hay productos disponibles en esta categoría.</div>';
+      return;
+    }
+
+    list.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+
+      const badgeHtml = p.badge ? `<span class="prod-badge">${p.badge}</span>` : '';
+
+      card.innerHTML = `
+        <div>
+          <div class="card-top">
+            <div class="prod-icon">${p.icono || '🍗'}</div>
+            ${badgeHtml}
+          </div>
+          <div class="prod-family">${p.familia || 'GENERAL'} &bull; CÓD: ${p.codigo}</div>
+          <div class="prod-name">${p.nombre}</div>
+          <div class="prod-desc">${p.descripcion || ''}</div>
+        </div>
+
+        <div class="card-bottom">
+          <div>
+            <span class="prod-price-lbl">Precio Unitario</span>
+            <div class="prod-price">${p.precioFmt || ('Q ' + p.precio.toFixed(2))}</div>
+          </div>
+          <button class="btn-add" onclick="agregarAlCarrito('${p.codigo}')">
+            <span>+ Agregar</span>
+          </button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function agregarAlCarrito(codigo) {
+    const prod = catalogo.find(p => p.codigo === codigo);
+    if (!prod) return;
+
+    if (carrito[codigo]) {
+      carrito[codigo].qty += 1;
+    } else {
+      carrito[codigo] = {
+        codigo: prod.codigo,
+        nombre: prod.nombre,
+        precio: prod.precio,
+        precioFmt: prod.precioFmt,
+        icono: prod.icono,
+        qty: 1
+      };
+    }
+
+    actualizarCarritoUI();
+    showToast(`¡${prod.nombre} agregado al pedido!`);
+  }
+
+  function cambiarCantidad(codigo, delta) {
+    if (!carrito[codigo]) return;
+    carrito[codigo].qty += delta;
+    if (carrito[codigo].qty <= 0) {
+      delete carrito[codigo];
+    }
+    actualizarCarritoUI();
+  }
+
+  function actualizarCarritoUI() {
+    const container = document.getElementById('cartItemsContainer');
+    const badge = document.getElementById('cartBadge');
+    const summaryCount = document.getElementById('cartSummaryCount');
+    const totalEl = document.getElementById('cartTotalPrice');
+
+    const keys = Object.keys(carrito);
+    let totalItems = 0;
+    let totalMonto = 0.0;
+
+    if (keys.length === 0) {
+      container.innerHTML = `
+        <div class="cart-empty">
+          <div style="font-size:42px; margin-bottom:10px;">🍗</div>
+          <p>Tu carrito está vacío.</p>
+          <span style="font-size:12px; color:#94a3b8;">Elige tus combos favoritos y agrégalos al pedido.</span>
+        </div>
+      `;
+      badge.innerText = '0';
+      summaryCount.innerText = '0 ítems';
+      totalEl.innerText = 'Q 0.00';
+      return;
+    }
+
+    container.innerHTML = '';
+    keys.forEach(k => {
+      const it = carrito[k];
+      totalItems += it.qty;
+      const sub = it.precio * it.qty;
+      totalMonto += sub;
+
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML = `
+        <div class="cart-item-info">
+          <div class="cart-item-name">${it.icono || '🍗'} ${it.nombre}</div>
+          <div class="cart-item-price">Q ${it.precio.toFixed(2)} c/u &bull; Subtotal: Q ${sub.toFixed(2)}</div>
+        </div>
+        <div class="cart-qty-ctrl">
+          <button class="btn-qty" onclick="cambiarCantidad('${it.codigo}', -1)">-</button>
+          <span style="font-weight:800; min-width:18px; text-align:center;">${it.qty}</span>
+          <button class="btn-qty" onclick="cambiarCantidad('${it.codigo}', 1)">+</button>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+
+    badge.innerText = totalItems;
+    summaryCount.innerText = `${totalItems} productos`;
+    totalEl.innerText = `Q ${totalMonto.toFixed(2)}`;
+  }
+
+  function toggleCart(show) {
+    const overlay = document.getElementById('cartOverlay');
+    overlay.style.display = show ? 'flex' : 'none';
+  }
+
+  function closeCartOnBg(e) {
+    if (e.target.id === 'cartOverlay') {
+      toggleCart(false);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').innerText = msg;
+    t.style.display = 'flex';
+    setTimeout(() => {
+      t.style.display = 'none';
+    }, 2800);
+  }
+
+  function enviarPedidoWhatsApp() {
+    const keys = Object.keys(carrito);
+    if (keys.length === 0) {
+      alert("Tu carrito está vacío. Agrega algún producto antes de enviar el pedido.");
+      return;
+    }
+
+    let texto = `*¡Hola Don Pollo! Quiero realizar un pedido desde la Tienda Online:*\n\n`;
+    let total = 0.0;
+    keys.forEach(k => {
+      const it = carrito[k];
+      const sub = it.precio * it.qty;
+      total += sub;
+      texto += `🍗 *${it.qty}x* ${it.nombre} - Q ${sub.toFixed(2)}\n`;
+    });
+    texto += `\n*TOTAL A PAGAR: Q ${total.toFixed(2)}*\n\n`;
+    texto += `_Solicitado a través de donpollo.sa.com.gt (SimplyGest 17.5)_`;
+
+    const url = `https://wa.me/50245550004?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+  }
+
+  window.addEventListener('DOMContentLoaded', cargarCatalogo);
+</script>
+</body>
+</html>

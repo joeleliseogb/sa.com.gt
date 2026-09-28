@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correo Cooperativo &bull; sa.com.gt</title>
+<style>
+  :root {
+    --g-bg: #f6f8fc;
+    --g-sidebar-bg: #ffffff;
+    --g-text: #202124;
+    --g-subtext: #5f6368;
+    --g-border: #e0e2e6;
+    --g-blue: #1a73e8;
+    --g-blue-hover: #1557b0;
+    --g-blue-light: #c2e7ff;
+    --g-blue-light-hover: #b3d7f3;
+    --coop-green: #0f9d58;
+    --coop-gold: #f29900;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Google Sans", "Helvetica Neue", Arial, sans-serif;
+    background: var(--g-bg);
+    color: var(--g-text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Top Navbar (Gmail / Workspace Style) */
+  header {
+    height: 64px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--g-border);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 24px;
+  }
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 240px;
+    text-decoration: none;
+    color: var(--g-text);
+  }
+  .brand-logo-icon {
+    font-size: 26px;
+  }
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .brand-title {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    color: var(--g-text);
+    line-height: 1.1;
+  }
+  .brand-title span { color: var(--g-blue); }
+  .brand-sub {
+    font-size: 11px;
+    color: var(--g-subtext);
+    font-weight: 500;
+  }
+
+  /* Search in Mail */
+  .mail-search-box {
+    flex: 1;
+    max-width: 680px;
+    height: 44px;
+    background: #edf2fc;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 12px;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .mail-search-box:focus-within {
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  }
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    color: var(--g-text);
+  }
+
+  /* Header Right */
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: #f1f3f4;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+    user-select: none;
+  }
+  .user-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 290px;
+    background: #ffffff;
+    border: 1px solid var(--g-border);
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: none;
+    padding: 8px 0;
+  }
+  .user-dropdown-menu.open { display: block; }
+  .user-menu-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--g-subtext);
+    padding: 6px 16px 8px 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  .user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .user-menu-item:hover { background: #f8fafd; }
+  .user-menu-item.active { background: #edf2fc; }
+  .item-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .item-name { font-size: 13px; font-weight: 600; color: var(--g-text); }
+  .item-email { font-size: 11.5px; color: var(--g-subtext); }
+  .nav-back-link {
+    color: var(--g-subtext);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .nav-back-link:hover { color: var(--g-blue); text-decoration: underline; }
+
+  /* Main Workspace Layout */
+  .app-workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* Left Sidebar */
+  aside {
+    width: 256px;
+    background: #ffffff;
+    border-right: 1px solid var(--g-border);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .btn-compose {
+    background: var(--g-blue-light);
+    color: #001d35;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: background 0.15s, box-shadow 0.15s;
+    width: fit-content;
+  }
+  .btn-compose:hover {
+    background: var(--g-blue-light-hover);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .folders-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .folder-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #444746;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .folder-item:hover { background: #f2f2f2; }
+  .folder-item.active {
+    background: #d3e3fd;
+    color: #041e49;
+    font-weight: 600;
+  }
+  .folder-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .folder-badge {
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--g-blue);
+  }
+
+  .sidebar-quota {
+    margin-top: auto;
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 11.5px;
+    color: var(--g-subtext);
+    line-height: 1.4;
+  }
+  .quota-bar-track {
+    width: 100%;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .quota-bar-fill {
+    width: 12%;
+    height: 100%;
+    background: var(--g-blue);
+  }
+
+  /* Center: Message List Column (420px) */
+  .mail-list-panel {
+    width: 440px;
+    background: #ffffff;
+    border-right: 1px solid var(--g-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .list-toolbar {
+    height: 48px;
+    border-bottom: 1px solid var(--g-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 13px;
+    color: var(--g-subtext);
+    background: #ffffff;
+  }
+  .mail-items-container {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .mail-item {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .mail-item:hover { background: #f8fafd; }
+  .mail-item.selected {
+    background: #edf2fc;
+    border-left: 3px solid var(--g-blue);
+  }
+  .mail-item.unread .mail-item-sender {
+    font-weight: 700;
+    color: #1f1f1f;
+  }
+  .mail-item.unread .mail-item-subject {
+    font-weight: 700;
+    color: #1f1f1f;
+  }
+  .mail-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .mail-item-sender {
+    font-size: 14px;
+    color: #444746;
+  }
+  .mail-item-time {
+    font-size: 11.5px;
+    color: var(--g-subtext);
+  }
+  .mail-item-subject {
+    font-size: 13.5px;
+    color: #444746;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mail-item-snippet {
+    font-size: 12.5px;
+    color: var(--g-subtext);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tag-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .tag-coop { background: #e6f4ea; color: #137333; }
+  .tag-cdpe { background: #e8f0fe; color: #1a73e8; }
+  .tag-system { background: #fef7e0; color: #b06000; }
+
+  /* Right: Message Detail Viewer */
+  .mail-viewer-panel {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .viewer-toolbar {
+    height: 48px;
+    border-bottom: 1px solid var(--g-border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 20px;
+  }
+  .tool-btn {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: #5f6368;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+  }
+  .tool-btn:hover { background: #f1f3f4; color: #202124; }
+  .viewer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 36px;
+  }
+  .viewer-subject {
+    font-size: 22px;
+    font-weight: 500;
+    color: #1f1f1f;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  .viewer-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f3f4;
+  }
+  .viewer-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #e8f0fe;
+    color: var(--g-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .viewer-author-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1f1f1f;
+  }
+  .viewer-author-email {
+    font-size: 12.5px;
+    color: var(--g-subtext);
+  }
+  .viewer-date {
+    margin-left: auto;
+    font-size: 12.5px;
+    color: var(--g-subtext);
+  }
+  .viewer-body {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: #3c4043;
+  }
+  .viewer-body p { margin-bottom: 14px; }
+  .viewer-highlight-box {
+    background: #f8fafc;
+    border-left: 4px solid var(--g-blue);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+  }
+
+  /* Compose Modal */
+  .compose-modal {
+    position: fixed;
+    bottom: 0;
+    right: 32px;
+    width: 540px;
+    background: #ffffff;
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.24);
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+    overflow: hidden;
+  }
+  .compose-modal.open { display: flex; }
+  .compose-header {
+    background: #f2f6fc;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .compose-close {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #5f6368;
+  }
+  .compose-field {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f3f4;
+    display: flex;
+    align-items: center;
+  }
+  .compose-field label {
+    width: 50px;
+    font-size: 13px;
+    color: var(--g-subtext);
+  }
+  .compose-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .compose-body {
+    flex: 1;
+    min-height: 220px;
+    padding: 16px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+  }
+  .compose-footer {
+    padding: 12px 16px;
+    background: #ffffff;
+    border-top: 1px solid #f1f3f4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn-send {
+    background: var(--g-blue);
+    color: #ffffff;
+    border: none;
+    padding: 9px 24px;
+    border-radius: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-send:hover { background: var(--g-blue-hover); }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    background: #323232;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 2000;
+  }
+  .toast.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Header (Gmail / Google Workspace Aesthetic) -->
+<header>
+  <a href="https://sa.com.gt" class="brand-group">
+    <div class="brand-logo-icon">✉️</div>
+    <div class="brand-text">
+      <div class="brand-title">sa<span>.com.gt</span> Correo</div>
+      <div class="brand-sub">Acción Cooperativa &bull; CDPE Guatemala</div>
+    </div>
+  </a>
+
+  <!-- Search Input -->
+  <div class="mail-search-box">
+    <span>🔍</span>
+    <input type="text" id="txtSearchMail" class="search-input" placeholder="Buscar en correos, circulares o asociados..." oninput="filtrarCorreos()" />
+  </div>
+
+  <!-- User Account & Shortcuts -->
+  <div class="header-right">
+    <a href="https://sa.com.gt" class="nav-back-link">&larr; Portal sa.com.gt</a>
+    <a href="/gestion" class="nav-back-link">📊 Gestión SimplyGest</a>
+
+    <div class="user-badge" id="userBadgeBtn" onclick="toggleUserDropdown(event)" title="Hacer clic para cambiar cuenta de asociado">
+      <div class="user-avatar" id="lblUserAvatar" style="background:#1a73e8; color:#fff; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:600; font-size:14px;">J</div>
+      <div>
+        <div style="line-height:1.2; font-weight:600;" id="lblUserName">Joel Gómez</div>
+        <div style="font-size:10.5px; color:var(--g-subtext);" id="lblUserRole">Asociado #1042 &bull; <span style="color:var(--g-blue);">Cambiar &#9660;</span></div>
+      </div>
+
+      <!-- Account Switcher Menu -->
+      <div class="user-dropdown-menu" id="userDropdownMenu">
+        <div class="user-menu-header">Cambiar cuenta de asociado:</div>
+        <div class="user-menu-item active" id="acc-0" onclick="cambiarCuenta(0)">
+          <div class="item-avatar" style="background:#1a73e8;">J</div>
+          <div class="item-info">
+            <div class="item-name">Joel Gómez (Asociado #1042)</div>
+            <div class="item-email">asociado@sa.com.gt</div>
+          </div>
+        </div>
+        <div class="user-menu-item" id="acc-1" onclick="cambiarCuenta(1)">
+          <div class="item-avatar" style="background:#e37400;">🍗</div>
+          <div class="item-info">
+            <div class="item-name">Don Pollo Administración</div>
+            <div class="item-email">donpollo@sa.com.gt</div>
+          </div>
+        </div>
+        <div class="user-menu-item" id="acc-2" onclick="cambiarCuenta(2)">
+          <div class="item-avatar" style="background:#1e3a8a;">🏢</div>
+          <div class="item-info">
+            <div class="item-name">Soporte Técnico CDPE</div>
+            <div class="item-email">soporte@cdpe.sa.com.gt</div>
+          </div>
+        </div>
+        <div class="user-menu-item" id="acc-3" onclick="cambiarCuenta(3)">
+          <div class="item-avatar" style="background:#0f9d58;">🏛️</div>
+          <div class="item-info">
+            <div class="item-name">Oficialía Acción Cooperativa</div>
+            <div class="item-email">cooperativa@sa.com.gt</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="app-workspace">
+  <!-- Left Navigation Folders -->
+  <aside>
+    <button class="btn-compose" onclick="abrirRedaccion()">
+      <span>✏️</span> Redactar
+    </button>
+
+    <ul class="folders-list">
+      <li class="folder-item active" id="f-inbox" onclick="seleccionarCarpeta('inbox')">
+        <span class="folder-label"><span>📥</span> Recibidos</span>
+        <span class="folder-badge" id="badgeInbox">3</span>
+      </li>
+      <li class="folder-item" id="f-coop" onclick="seleccionarCarpeta('coop')">
+        <span class="folder-label"><span>🏛️</span> Acción Cooperativa</span>
+        <span class="folder-badge" style="color:var(--coop-green);">1</span>
+      </li>
+      <li class="folder-item" id="f-cdpe" onclick="seleccionarCarpeta('cdpe')">
+        <span class="folder-label"><span>🏢</span> CDPE Guatemala</span>
+        <span class="folder-badge">1</span>
+      </li>
+      <li class="folder-item" id="f-simplygest" onclick="seleccionarCarpeta('simplygest')">
+        <span class="folder-label"><span>🧾</span> SimplyGest Cloud</span>
+        <span class="folder-badge">1</span>
+      </li>
+      <li class="folder-item" id="f-sent" onclick="seleccionarCarpeta('sent')">
+        <span class="folder-label"><span>📤</span> Enviados</span>
+        <span class="folder-badge" id="badgeSent">0</span>
+      </li>
+      <li class="folder-item" id="f-trash" onclick="seleccionarCarpeta('trash')">
+        <span class="folder-label"><span>🗑️</span> Papelera</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-quota">
+      <div><strong>Almacenamiento Cloud</strong></div>
+      <div>142 MB de 15 GB asignados</div>
+      <div class="quota-bar-track">
+        <div class="quota-bar-fill"></div>
+      </div>
+      <div style="margin-top:6px; font-size:10.5px;">Servidor Windows 2025 sa.com.gt</div>
+    </div>
+  </aside>
+
+  <!-- Message List Column -->
+  <div class="mail-list-panel">
+    <div class="list-toolbar">
+      <span id="lblFolderTitle">Bandeja de entrada</span>
+      <span id="lblMsgCount">3 mensajes</span>
+    </div>
+    <div class="mail-items-container" id="mailList"></div>
+  </div>
+
+  <!-- Message Reader Column -->
+  <div class="mail-viewer-panel" id="viewerPanel">
+    <div class="viewer-toolbar">
+      <button class="tool-btn" title="Responder" onclick="responderActual()">↩️</button>
+      <button class="tool-btn" title="Reenviar" onclick="abrirRedaccion()">↪️</button>
+      <button class="tool-btn" title="Imprimir" onclick="window.print()">🖨️</button>
+      <button class="tool-btn" title="Eliminar" onclick="eliminarActual()">🗑️</button>
+    </div>
+    <div class="viewer-content">
+      <div class="viewer-subject" id="viewSubject">Selecciona un mensaje para leerlo</div>
+      <div class="viewer-meta" id="viewMeta" style="display:none;">
+        <div class="viewer-avatar" id="viewAvatar">A</div>
+        <div>
+          <div class="viewer-author-name" id="viewAuthor">Autor</div>
+          <div class="viewer-author-email" id="viewEmail">correo@sa.com.gt</div>
+        </div>
+        <div class="viewer-date" id="viewDate">Hoy</div>
+      </div>
+      <div class="viewer-body" id="viewBody">
+        <p style="color:var(--g-subtext); text-align:center; margin-top:80px;">
+          Haz clic en cualquier correo de la lista izquierda para visualizar su contenido completo.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Compose Modal -->
+<div class="compose-modal" id="composeModal">
+  <div class="compose-header">
+    <span>Mensaje nuevo</span>
+    <button class="compose-close" onclick="cerrarRedaccion()">&times;</button>
+  </div>
+  <div class="compose-field">
+    <label for="compTo">Para:</label>
+    <input type="email" id="compTo" class="compose-input" placeholder="destinatario@sa.com.gt" value="cooperativa@sa.com.gt" />
+  </div>
+  <div class="compose-field">
+    <label for="compSubject">Asunto:</label>
+    <input type="text" id="compSubject" class="compose-input" placeholder="Asunto del mensaje..." />
+  </div>
+  <textarea id="compBody" class="compose-body" placeholder="Escribe tu mensaje aquí..."></textarea>
+  <div class="compose-footer">
+    <button class="btn-send" onclick="enviarMensaje()">Enviar mensaje</button>
+    <span style="font-size:12px; color:var(--g-subtext);">Cifrado TLS sa.com.gt</span>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Mensaje enviado con éxito</div>
+
+<script>
+  let carpetaActual = 'inbox';
+  let correoActualId = null;
+
+  // Initial Mailbox Dataset
+  let correos = [
+    {
+      id: 1,
+      carpeta: 'inbox',
+      categoria: 'coop',
+      tagClass: 'tag-coop',
+      tagText: 'Acción Cooperativa',
+      de: 'Acción Cooperativa R.L.',
+      email: 'cooperativa@sa.com.gt',
+      avatar: '🏛️',
+      asunto: '¡Bienvenido a Acción Cooperativa! Información clave para asociados',
+      fecha: '08:30 AM',
+      unread: true,
+      cuerpo: `
+        <p>Estimado(a) Asociado(a) <strong>Joel Gómez</strong>,</p>
+        <p>Nos complace darte la más cordial bienvenida a <strong>Acción Cooperativa</strong> en nuestra plataforma integrada <strong>sa.com.gt</strong>. Tu cuenta de correo y perfil de asociado han sido activados con éxito.</p>
+        <div class="viewer-highlight-box">
+          <strong>Beneficios inmediatos para tu emprendimiento y negocio:</strong>
+          <ul style="margin-top:8px; padding-left:18px;">
+            <li><strong>Línea de Financiamiento PYME:</strong> Crédito especial para equipamiento de TPV, computadoras e impresoras fiscales con SimplyGest 17.5.</li>
+            <li><strong>Fondo de Ahorro y Aportaciones:</strong> Rentabilidad cooperativa y respaldo financiero mutuo.</li>
+            <li><strong>Compras Comunitarias de Insumos:</strong> Descuentos exclusivos por volumen en materias primas para franquicias (Don Pollo, etc.).</li>
+            <li><strong>Asesoría Legal y Formalización:</strong> Asistencia técnica continua brindada por el CDPE.</li>
+          </ul>
+        </div>
+        <p>Para solicitar desembolsos o consultar tu estado de aportaciones, puedes responder a este correo o escribir a <code>creditos@sa.com.gt</code>.</p>
+        <p>Atentamente,<br><strong>Consejo de Administración &bull; Acción Cooperativa</strong></p>
+      `
+    },
+    {
+      id: 2,
+      carpeta: 'inbox',
+      categoria: 'cdpe',
+      tagClass: 'tag-cdpe',
+      tagText: 'CDPE Guatemala',
+      de: 'CDPE Guatemala',
+      email: 'soporte@cdpe.sa.com.gt',
+      avatar: '🏢',
+      asunto: 'Activación de tu subdominio empresarial y tienda e-commerce en la nube',
+      fecha: 'Ayer',
+      unread: true,
+      cuerpo: `
+        <p>Estimado Asociado,</p>
+        <p>El <strong>Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE)</strong> te informa que la infraestructura de tu subdominio <strong>.sa.com.gt</strong> ha sido configurada satisfactoriamente con certificado de seguridad SSL oficial de Let's Encrypt.</p>
+        <div class="viewer-highlight-box">
+          <strong>Servicios activos en tu subdominio:</strong>
+          <ul style="margin-top:8px; padding-left:18px;">
+            <li><strong>Tienda Online:</strong> Catálogo con sincronización de precios y pedidos directos a WhatsApp.</li>
+            <li><strong>Portal de Gestión:</strong> Control multi-ejercicio fiscal (2025, 2026, 2027) con motor DBISAM.</li>
+            <li><strong>Cuentas de Correo Corporativas:</strong> Comunicación oficial para tus colaboradores bajo el dominio <code>sa.com.gt</code>.</li>
+          </ul>
+        </div>
+        <p>Cualquier consulta técnica puedes canalizarla a través de este buzón institucional.</p>
+        <p>Cordialmente,<br><strong>Equipo Técnico CDPE</strong></p>
+      `
+    },
+    {
+      id: 3,
+      carpeta: 'inbox',
+      categoria: 'simplygest',
+      tagClass: 'tag-system',
+      tagText: 'SimplyGest Cloud',
+      de: 'SimplyGest 17.5 Cloud',
+      email: 'sistema@sa.com.gt',
+      avatar: '🧾',
+      asunto: 'Sincronización de Base de Datos y Catálogo Comercial Don Pollo',
+      fecha: '26 Sep',
+      unread: false,
+      cuerpo: `
+        <p>Notificación automática del servidor SimplyGest Cloud:</p>
+        <p>Se ha completado con éxito la indexación de artículos y precios del catálogo Don Pollo en el motor de búsqueda universal <strong>sa.com.gt</strong>.</p>
+        <div class="viewer-highlight-box">
+          <strong>Resumen de catálogo sincronizado:</strong>
+          <p>Combos familiares, piezas individuales, papas y bebidas frías se encuentran activos con disponibilidad de entrega inmediata.</p>
+        </div>
+        <p>Los datos han sido validados directamente en las tablas nativas DBISAM de la Empresa 1 (Ejercicio 2026).</p>
+      `
+    }
+  ];
+
+  function renderListaCorreos() {
+    const listEl = document.getElementById('mailList');
+    listEl.innerHTML = '';
+
+    const filtroTexto = document.getElementById('txtSearchMail').value.toLowerCase().trim();
+
+    const filtrados = correos.filter(c => {
+      // Filtro de carpeta
+      if (carpetaActual === 'inbox' && c.carpeta !== 'inbox') return false;
+      if (carpetaActual === 'coop' && c.categoria !== 'coop') return false;
+      if (carpetaActual === 'cdpe' && c.categoria !== 'cdpe') return false;
+      if (carpetaActual === 'simplygest' && c.categoria !== 'simplygest') return false;
+      if (carpetaActual === 'sent' && c.carpeta !== 'sent') return false;
+      if (carpetaActual === 'trash' && c.carpeta !== 'trash') return false;
+
+      // Filtro de búsqueda
+      if (filtroTexto) {
+        return c.asunto.toLowerCase().includes(filtroTexto) ||
+               c.de.toLowerCase().includes(filtroTexto) ||
+               c.email.toLowerCase().includes(filtroTexto);
+      }
+      return true;
+    });
+
+    document.getElementById('lblMsgCount').innerText = `${filtrados.length} mensaje(s)`;
+
+    if (filtrados.length === 0) {
+      listEl.innerHTML = '<div style="padding:40px 20px; text-align:center; color:var(--g-subtext); font-size:13.5px;">No hay mensajes en esta bandeja</div>';
+      return;
+    }
+
+    filtrados.forEach(c => {
+      const item = document.createElement('div');
+      item.className = `mail-item ${c.unread ? 'unread' : ''} ${c.id === correoActualId ? 'selected' : ''}`;
+      item.onclick = () => verCorreo(c.id);
+
+      item.innerHTML = `
+        <div class="mail-item-header">
+          <span class="mail-item-sender">${c.de}</span>
+          <span class="mail-item-time">${c.fecha}</span>
+        </div>
+        <div class="mail-item-subject">
+          <span class="tag-pill ${c.tagClass}">${c.tagText}</span>
+          ${c.asunto}
+        </div>
+        <div class="mail-item-snippet">Hacer clic para ver el contenido completo de esta circular...</div>
+      `;
+      listEl.appendChild(item);
+    });
+
+    // Auto-select first if none selected
+    if (!correoActualId && filtrados.length > 0) {
+      verCorreo(filtrados[0].id);
+    }
+  }
+
+  function verCorreo(id) {
+    correoActualId = id;
+    const c = correos.find(item => item.id === id);
+    if (!c) return;
+
+    c.unread = false;
+    actualizarBadges();
+
+    document.getElementById('viewSubject').innerText = c.asunto;
+    document.getElementById('viewAuthor').innerText = c.de;
+    document.getElementById('viewEmail').innerText = `<${c.email}>`;
+    document.getElementById('viewAvatar').innerText = c.avatar || '✉️';
+    document.getElementById('viewDate').innerText = c.fecha;
+    document.getElementById('viewMeta').style.display = 'flex';
+    document.getElementById('viewBody').innerHTML = c.cuerpo;
+
+    renderListaCorreos();
+  }
+
+  function seleccionarCarpeta(carpeta) {
+    carpetaActual = carpeta;
+    document.querySelectorAll('.folder-item').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('f-' + carpeta);
+    if (target) target.classList.add('active');
+
+    const titulos = {
+      inbox: 'Bandeja de entrada',
+      coop: 'Acción Cooperativa • Circulares',
+      cdpe: 'CDPE Guatemala • Comunicados',
+      simplygest: 'SimplyGest Cloud • Notificaciones',
+      sent: 'Mensajes enviados',
+      trash: 'Papelera'
+    };
+    document.getElementById('lblFolderTitle').innerText = titulos[carpeta] || 'Mensajes';
+    renderListaCorreos();
+  }
+
+  function filtrarCorreos() {
+    renderListaCorreos();
+  }
+
+  function abrirRedaccion(destinatario = '', asuntoPre = '') {
+    if (destinatario) document.getElementById('compTo').value = destinatario;
+    if (asuntoPre) document.getElementById('compSubject').value = asuntoPre;
+    document.getElementById('composeModal').classList.add('open');
+    document.getElementById('compBody').focus();
+  }
+
+  function cerrarRedaccion() {
+    document.getElementById('composeModal').classList.remove('open');
+  }
+
+  const cuentas = [
+    { nombre: 'Joel Gómez', rol: 'Asociado #1042', email: 'asociado@sa.com.gt', avatar: 'J', color: '#1a73e8' },
+    { nombre: 'Don Pollo Admón.', rol: 'Franquicia #1', email: 'donpollo@sa.com.gt', avatar: '🍗', color: '#e37400' },
+    { nombre: 'Soporte CDPE', rol: 'Centro Empresarial', email: 'soporte@cdpe.sa.com.gt', avatar: '🏢', color: '#1e3a8a' },
+    { nombre: 'Acción Cooperativa', rol: 'Oficialía Mayor', email: 'cooperativa@sa.com.gt', avatar: '🏛️', color: '#0f9d58' }
+  ];
+  let cuentaActivaIdx = 0;
+
+  function toggleUserDropdown(e) {
+    e.stopPropagation();
+    const m = document.getElementById('userDropdownMenu');
+    if (m) m.classList.toggle('open');
+  }
+
+  document.addEventListener('click', () => {
+    const m = document.getElementById('userDropdownMenu');
+    if (m) m.classList.remove('open');
+  });
+
+  function cambiarCuenta(idx) {
+    cuentaActivaIdx = idx;
+    const c = cuentas[idx];
+    document.getElementById('lblUserName').innerText = c.nombre;
+    document.getElementById('lblUserRole').innerHTML = `${c.rol} &bull; <span style="color:var(--g-blue);">Cambiar &#9660;</span>`;
+    const av = document.getElementById('lblUserAvatar');
+    av.innerText = c.avatar;
+    av.style.background = c.color;
+
+    document.querySelectorAll('.user-menu-item').forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+    });
+
+    const m = document.getElementById('userDropdownMenu');
+    if (m) m.classList.remove('open');
+
+    cargarCorreos();
+  }
+
+  function guardarCorreos() {
+    try {
+      localStorage.setItem('sg_correos_' + cuentaActivaIdx, JSON.stringify(correos));
+    } catch (e) {}
+  }
+
+  function cargarCorreos() {
+    try {
+      const saved = localStorage.getItem('sg_correos_' + cuentaActivaIdx);
+      if (saved) {
+        correos = JSON.parse(saved);
+      }
+    } catch (e) {}
+    actualizarBadges();
+    renderListaCorreos();
+  }
+
+  function enviarMensaje() {
+    const to = document.getElementById('compTo').value.trim();
+    const subj = document.getElementById('compSubject').value.trim() || 'Sin asunto';
+    const body = document.getElementById('compBody').value.trim();
+
+    if (!to) {
+      alert('Por favor especifica un destinatario.');
+      return;
+    }
+
+    const remitente = cuentas[cuentaActivaIdx];
+    const nuevo = {
+      id: Date.now(),
+      carpeta: 'sent',
+      categoria: 'general',
+      tagClass: 'tag-cdpe',
+      tagText: 'Enviado',
+      de: `${remitente.nombre} (${remitente.rol})`,
+      email: remitente.email,
+      avatar: remitente.avatar,
+      asunto: subj,
+      fecha: 'Ahora',
+      unread: false,
+      cuerpo: `<p><strong>Para:</strong> ${to}</p><p>${body.replace(/\n/g, '<br>')}</p>`
+    };
+
+    correos.unshift(nuevo);
+    guardarCorreos();
+    actualizarBadges();
+    cerrarRedaccion();
+
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.innerText = 'Mensaje enviado con éxito por ' + remitente.email;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+
+    // Reset fields
+    document.getElementById('compSubject').value = '';
+    document.getElementById('compBody').value = '';
+
+    if (carpetaActual === 'sent') {
+      renderListaCorreos();
+    }
+
+    // Auto-responder simulation for cooperative & CDPE
+    const lowerTo = to.toLowerCase();
+    if (lowerTo.includes('coop') || lowerTo.includes('cdpe') || lowerTo.includes('credito') || lowerTo.includes('soporte')) {
+      const isCoop = lowerTo.includes('coop') || lowerTo.includes('credito');
+      setTimeout(() => {
+        const resp = {
+          id: Date.now() + 1,
+          carpeta: 'inbox',
+          categoria: isCoop ? 'coop' : 'cdpe',
+          tagClass: isCoop ? 'tag-coop' : 'tag-cdpe',
+          tagText: isCoop ? 'Acción Cooperativa' : 'CDPE Guatemala',
+          de: isCoop ? 'Acción Cooperativa R.L.' : 'CDPE Guatemala',
+          email: to,
+          avatar: isCoop ? '🏛️' : '🏢',
+          asunto: 'Re: ' + subj,
+          fecha: 'Ahora',
+          unread: true,
+          cuerpo: `
+            <p>Estimado(a) <strong>${remitente.nombre}</strong>,</p>
+            <p>Confirmamos la recepción de su comunicación respecto a: <strong>"${subj}"</strong>.</p>
+            <div class="viewer-highlight-box">
+              <strong>Estado del trámite: Radicado bajo expediente de atención inmediata.</strong>
+              <p style="margin-top:6px;">Un oficial de crédito o asesor técnico del CDPE revisará su requerimiento en un plazo máximo de 24 horas hábiles. Para consultas o seguimiento urgente, puede escribir directamente a WhatsApp al <strong>+502 4555-0004</strong>.</p>
+            </div>
+            <p>Atentamente,<br><strong>Mesa de Atención al Asociado &bull; sa.com.gt</strong></p>
+          `
+        };
+        correos.unshift(resp);
+        guardarCorreos();
+        actualizarBadges();
+        renderListaCorreos();
+
+        const toastIn = document.getElementById('toast');
+        toastIn.innerText = 'Nuevo mensaje recibido de ' + resp.de;
+        toastIn.classList.add('show');
+        setTimeout(() => toastIn.classList.remove('show'), 4000);
+      }, 3500);
+    }
+  }
+
+  function responderActual() {
+    const c = correos.find(item => item.id === correoActualId);
+    if (c) {
+      abrirRedaccion(c.email, 'Re: ' + c.asunto);
+    }
+  }
+
+  function eliminarActual() {
+    const c = correos.find(item => item.id === correoActualId);
+    if (c) {
+      c.carpeta = 'trash';
+      guardarCorreos();
+      actualizarBadges();
+      renderListaCorreos();
+    }
+  }
+
+  function actualizarBadges() {
+    const unreadInbox = correos.filter(c => c.carpeta === 'inbox' && c.unread).length;
+    document.getElementById('badgeInbox').innerText = unreadInbox || '';
+    const sentCount = correos.filter(c => c.carpeta === 'sent').length;
+    document.getElementById('badgeSent').innerText = sentCount || '';
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    cargarCorreos();
+  });
+</script>
+</body>
+</html>

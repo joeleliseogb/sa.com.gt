@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimplyGest - Resumen Ejecutivo</title>
+<style>
+  :root {
+    --primary: #991b1b;
+    --primary-hover: #7f1d1d;
+    --primary-light: #fee2e2;
+    --accent: #dc2626;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { background-color: var(--bg-main); color: var(--text-main); font-size: 13px; line-height: 1.5; padding-bottom: 60px; }
+
+  /* Navbar / Control Bar */
+  .control-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+    border-bottom: 2px solid var(--accent);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    padding: 10px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-logo {
+    font-size: 24px;
+    line-height: 1;
+  }
+  .nav-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.3px;
+  }
+  .nav-subtitle {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .nav-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .filter-group label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .form-control {
+    padding: 6px 10px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus {
+    border-color: var(--accent);
+  }
+  select.form-control {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .quick-dates {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    margin-top: 14px;
+  }
+  .btn-quick {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-quick:hover {
+    background: #e2e8f0;
+    color: var(--text-main);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: var(--primary);
+  }
+  .btn-secondary {
+    background: #ffffff;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+  }
+  .btn-secondary:hover {
+    background: var(--primary-light);
+  }
+
+  /* Main Container */
+  .container {
+    max-width: 1240px;
+    margin: 20px auto 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Header Box */
+  .report-header {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 6px solid var(--primary);
+  }
+  .report-company-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .report-meta {
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .report-meta strong {
+    color: var(--text-main);
+  }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .badge-red { background: var(--primary-light); color: var(--primary); }
+  .badge-green { background: var(--success-light); color: var(--success); }
+  .badge-blue { background: var(--info-light); color: var(--info); }
+  .badge-amber { background: var(--warning-light); color: var(--warning); }
+
+  /* KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    border-left: 5px solid #cbd5e1;
+    position: relative;
+  }
+  .kpi-card.red { border-left-color: var(--accent); }
+  .kpi-card.blue { border-left-color: var(--info); }
+  .kpi-card.amber { border-left-color: var(--warning); }
+  .kpi-card.green { border-left-color: var(--success); }
+  .kpi-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .kpi-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 5px;
+  }
+
+  /* Content Cards */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title span {
+    color: var(--primary);
+  }
+  .card-body {
+    padding: 18px;
+  }
+
+  /* Two Column Layout */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+  }
+  th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    text-align: left;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+  }
+  th.text-right, td.text-right { text-align: right; }
+  th.text-center, td.text-center { text-align: center; }
+  tr:nth-child(even) { background-color: #f8fafc; }
+  tr:hover { background-color: #f1f5f9; }
+  tr.highlight-row { background-color: #fef2f2; font-weight: 700; }
+  .net-pos { color: var(--success); font-weight: 700; }
+  .net-neg { color: var(--accent); font-weight: 700; }
+
+  /* Progress Bar in Tables */
+  .bar-container {
+    width: 100%;
+    background-color: #e2e8f0;
+    border-radius: 9999px;
+    height: 7px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .bar-fill {
+    height: 100%;
+    background-color: var(--accent);
+    border-radius: 9999px;
+  }
+
+  /* Benchmark Cards */
+  .benchmark-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .benchmark-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .benchmark-metric:last-child { border-bottom: none; }
+  .metric-label { font-size: 11px; color: #475569; }
+  .metric-target { font-size: 10px; color: var(--text-muted); display: block; }
+  .metric-val { font-size: 14px; font-weight: 800; color: var(--info); }
+
+  /* Loading Overlay */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.75);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 1001;
+    font-weight: 600;
+    animation: fadeIn 0.3s;
+  }
+  /* Modal Acceso Móvil */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-card {
+    background: #ffffff;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+  }
+  .modal-close:hover { color: var(--text-main); }
+  .modal-body {
+    padding: 20px;
+  }
+  .btn-copy {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-copy:hover {
+    background: var(--primary-light);
+  }
+  .btn-mobile {
+    background: #0f172a;
+    color: #ffffff;
+  }
+  .btn-mobile:hover {
+    background: #1e293b;
+  }
+
+  /* Responsive Media Queries */
+  @media (max-width: 768px) {
+    .control-navbar {
+      padding: 10px 14px;
+    }
+    .nav-filters {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .filter-group {
+      width: 100%;
+    }
+    .quick-dates {
+      margin-top: 4px;
+      justify-content: flex-start;
+    }
+    .nav-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .btn-mobile {
+      grid-column: span 2;
+      justify-content: center;
+    }
+    .kpi-grid {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .report-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .report-meta {
+      text-align: left;
+    }
+    body {
+      padding-bottom: 80px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div style="font-weight: 700; color: var(--primary);" id="loadingText">Cargando datos de SimplyGest...</div>
+</div>
+
+<div class="toast" id="toastMsg"></div>
+
+<!-- Modal Acceso Móvil -->
+<div id="modalMovil" class="modal-backdrop" onclick="cerrarModalMovil(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:22px;">📱</span>
+        <div>
+          <h3 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Conectar Dispositivo Móvil</h3>
+          <p style="font-size:11px; color:var(--text-muted); margin:0;">Accede al Resumen Ejecutivo desde cualquier teléfono o tablet</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="cerrarModalMovil()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center; padding:6px 0 10px 0;">
+        <div id="qrCodeContainer" style="display:inline-block; padding:10px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <img id="qrCodeImg" src="" alt="Código QR Móvil" style="width:180px; height:180px; display:block;" />
+        </div>
+        <div style="font-size:11px; color:#64748b; margin-top:8px;">
+          📷 <strong>Apunta la cámara de tu smartphone</strong> al código QR para entrar al instante.
+        </div>
+      </div>
+
+      <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:10px; font-weight:700; color:#16a34a; text-transform:uppercase;">🔒 Enlace Seguro HTTPS (Móvil / 4G / Wi-Fi)</span>
+            <button class="btn-copy" onclick="copiarTexto('txtTunnelUrl')">Copiar</button>
+          </div>
+          <input type="text" id="txtTunnelUrl" readonly style="width:100%; font-size:11px; font-family:monospace; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 8px;" />
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="font-size:10px; font-weight:700; color:#2563eb; text-transform:uppercase;">🌐 Enlace Directo IP (Puerto 80)</span>
+            <button class="btn-copy" onclick="copiarTexto('txtDirectUrl')">Copiar</button>
+          </div>
+          <input type="text" id="txtDirectUrl" readonly style="width:100%; font-size:11px; font-family:monospace; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 8px;" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; font-size:11px; color:#1e40af; line-height:1.4;">
+        <strong>💡 Instalar como App en tu teléfono:</strong><br/>
+        En Safari o Chrome de tu móvil, toca en <em>"Compartir"</em> o <em>"Menú ⋮"</em> y selecciona <strong>"Añadir a pantalla de inicio"</strong>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Login Corporativo SimplyGest -->
+<div id="modalLogin" class="modal-backdrop" style="display:flex;">
+  <div class="modal-card" style="max-width: 440px; border-top: 5px solid var(--primary);">
+    <div class="modal-header" style="background:#fef2f2;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:26px;">🍗</span>
+        <div>
+          <h3 style="font-size:16px; font-weight:800; color:var(--primary); margin:0;" id="loginTitle">SimplyGest &bull; Acceso Web</h3>
+          <p style="font-size:11px; color:var(--text-muted); margin:0;" id="loginSubdomainTag">Conexión Segura Multi-Empresa</p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body" style="padding:22px 20px;">
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;">
+        <span style="font-size:11px; color:#64748b;">Subdominio / Host:</span>
+        <span id="loginHostDisplay" style="font-size:11px; font-weight:800; color:var(--primary); font-family:monospace;">sa.com.gt</span>
+      </div>
+
+      <div id="loginAlert" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:10px 12px; border-radius:6px; font-size:11.5px; margin-bottom:14px; font-weight:600;"></div>
+
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="filter-group" id="loginGroupEmpresa">
+          <label for="loginEmpresaSelect" style="font-weight:700;">Empresa de SimplyGest</label>
+          <select id="loginEmpresaSelect" class="form-control" onchange="onLoginEmpresaChange()" style="font-weight:700; height:36px;">
+            <option value="1">Cargando empresas...</option>
+          </select>
+        </div>
+
+        <div id="loginDedicatedBadge" style="display:none; background:#fee2e2; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; margin-bottom:2px;">
+          <div style="font-size:10px; font-weight:800; color:#991b1b; text-transform:uppercase; letter-spacing:0.5px;">🏢 Empresa Dedicada</div>
+          <div style="font-size:15px; font-weight:800; color:#7f1d1d;" id="loginDedicatedEmpresaNombre">DON POLLO</div>
+          <div style="font-size:11px; color:#b91c1c; margin-top:2px;" id="loginDedicatedPeriodoTag">Ejercicio Fiscal en curso: 2026</div>
+        </div>
+
+        <div class="filter-group">
+          <label for="loginUserSelect" style="font-weight:700;">Usuario Registrado en SimplyGest (perso)</label>
+          <select id="loginUserSelect" class="form-control" style="font-weight:600; height:36px;">
+            <option value="">Seleccione su usuario...</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="loginPassword" style="font-weight:700;">Contraseña de Acceso</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" style="height:36px; font-size:13px;" onkeypress="if(event.key === 'Enter') submitLogin()">
+          <span style="font-size:10px; color:#94a3b8; margin-top:2px;">Usuarios sin contraseña pueden dejar este campo en blanco.</span>
+        </div>
+
+        <button class="btn btn-primary" id="btnLoginSubmit" onclick="submitLogin()" style="width:100%; height:38px; justify-content:center; font-size:13px; margin-top:6px;">
+          🔐 Iniciar Sesión en SimplyGest
+        </button>
+      </div>
+
+      <div style="margin-top:16px; text-align:center; font-size:10.5px; color:#94a3b8; border-top:1px solid #f1f5f9; padding-top:10px;">
+        Reglas de negocio y niveles de acceso gobernados por SimplyGest 17.5.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Top Control Navbar -->
+<header class="control-navbar">
+  <div class="nav-brand">
+    <div class="nav-logo" id="navBrandLogo">🍗</div>
+    <div>
+      <div class="nav-title" id="navBrandTitle">SimplyGest &bull; Resumen Ejecutivo</div>
+      <div class="nav-subtitle" id="navBrandSubtitle">Módulo de Analítica y Estadísticas Multi-Empresa</div>
+    </div>
+  </div>
+
+  <div class="nav-filters">
+    <div class="filter-group" id="filterGroupEmpresa">
+      <label for="empresaSelect">Empresa / Sucursal</label>
+      <select id="empresaSelect" class="form-control" onchange="onEmpresaChange()">
+        <option value="1">Cargando empresas...</option>
+      </select>
+    </div>
+
+    <div class="filter-group" id="filterGroupPeriodo">
+      <label for="periodoSelect" id="lblPeriodoSelect">Período Fiscal</label>
+      <select id="periodoSelect" class="form-control" onchange="onPeriodoChange()" style="font-weight:700; color:var(--primary); min-width:160px;">
+        <option value="2026">2026 (En curso)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sectorSelect">Sector / Benchmark</label>
+      <select id="sectorSelect" class="form-control" onchange="cargarReporte()">
+        <option value="qsr">🍗 Comida Rápida (QSR) - Pollo Frito</option>
+        <option value="restaurant">🍽️ Restaurante Casual / Cafetería</option>
+        <option value="retail">🛒 Comercio Minorista / Tienda Retail</option>
+        <option value="services">💼 Servicios y General</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="fechaDesde">Fecha Desde</label>
+      <input type="date" id="fechaDesde" class="form-control">
+    </div>
+
+    <div class="filter-group">
+      <label for="fechaHasta">Fecha Hasta</label>
+      <input type="date" id="fechaHasta" class="form-control">
+    </div>
+
+    <div class="quick-dates">
+      <button class="btn-quick" onclick="setQuickDate('all')">Todo</button>
+      <button class="btn-quick" onclick="setQuickDate('7d')">Últimos 7d</button>
+      <button class="btn-quick" onclick="setQuickDate('month')">Mes</button>
+    </div>
+  </div>
+
+  <div class="nav-actions">
+    <div id="userSessionBadge" style="display:none; align-items:center; gap:8px; background:#f8fafc; border:1px solid #e2e8f0; padding:4px 10px; border-radius:6px;">
+      <span style="font-size:11px; color:#334155;">👤 <strong id="loggedUserName">-</strong> <span id="loggedUserRole" class="badge badge-red" style="margin-left:4px;">-</span></span>
+      <button class="btn-quick" onclick="logout()" style="color:#dc2626; border-color:#fca5a5; font-size:10px; padding:2px 6px;">Cerrar Sesión</button>
+    </div>
+    <button class="btn btn-primary" id="btnGenerar" onclick="cargarReporte()">
+      🔄 Generar Resumen
+    </button>
+    <button class="btn btn-secondary" id="btnExportar" onclick="exportarPdf()">
+      📄 Exportar a PDF
+    </button>
+    <button class="btn btn-mobile" id="btnMobile" onclick="abrirModalMovil()">
+      📱 Acceso Móvil
+    </button>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Report Company Header -->
+  <div class="report-header">
+    <div>
+      <div class="report-company-name" id="dispEmpresaNombre">Cargando Empresa...</div>
+      <div style="font-size: 12px; color: var(--text-muted);" id="dispEmpresaInfo">-</div>
+    </div>
+    <div class="report-meta">
+      <div><strong>Período Analizado:</strong> <span id="dispPeriodo">-</span></div>
+      <div><strong>Sector Benchmark:</strong> <span id="dispSectorBadge" class="badge badge-red">QSR Pollo Frito</span></div>
+      <div style="margin-top: 4px; font-size: 10px;">Moneda: <strong>Quetzales (Q)</strong></div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card red">
+      <div class="kpi-title">Ventas Totales Brutas</div>
+      <div class="kpi-value" id="kpiVentas">Q 0.00</div>
+      <div class="kpi-sub" id="kpiTickets">0 facturas emitidas</div>
+    </div>
+
+    <div class="kpi-card blue">
+      <div class="kpi-title">Ticket Promedio</div>
+      <div class="kpi-value" id="kpiTicketProm">Q 0.00</div>
+      <div class="kpi-sub" id="kpiTicketRango">Min: Q 0 | Max: Q 0</div>
+    </div>
+
+    <div class="kpi-card amber">
+      <div class="kpi-title">Gastos + Compras</div>
+      <div class="kpi-value" id="kpiEgresos">Q 0.00</div>
+      <div class="kpi-sub" id="kpiEgresosSub">Gastos: Q 0 | Compras: Q 0</div>
+    </div>
+
+    <div class="kpi-card green">
+      <div class="kpi-title">Saldo Neto en Caja</div>
+      <div class="kpi-value" id="kpiSaldoNeto">Q 0.00</div>
+      <div class="kpi-sub" id="kpiMargen">Margen Operativo de Caja: 0%</div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 1: Vendedores -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span>1.</span> Desempeño y Promedio de Venta por Vendedor / Cajero
+      </div>
+      <span class="badge badge-blue">Rendimiento por Operador</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Vendedor / Operador</th>
+            <th class="text-right">Tickets Atendidos</th>
+            <th class="text-right">Total Facturado (Q)</th>
+            <th class="text-right">Ticket Promedio</th>
+            <th class="text-right">% Participación</th>
+            <th style="width: 25%;">Distribución de Ventas</th>
+          </tr>
+        </thead>
+        <tbody id="tblVendedores">
+          <tr><td colspan="6" class="text-center">Cargando vendedores...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 2: Resumen Diario -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span>2.</span> Resumen Diario Consolidado (Ventas, Gastos y Compras)
+      </div>
+      <span class="badge badge-green">Flujo Operativo de Caja</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th class="text-center">Tickets</th>
+            <th class="text-right">Ventas Totales</th>
+            <th class="text-right">Ticket Promedio</th>
+            <th class="text-right">Gastos de Caja</th>
+            <th class="text-right">Compras</th>
+            <th class="text-right">Saldo Neto Diario</th>
+          </tr>
+        </thead>
+        <tbody id="tblDiario">
+          <tr><td colspan="7" class="text-center">Cargando histórico diario...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 3: Top Productos -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span>3.1</span> Ranking Global de Productos</div>
+        <span class="badge badge-amber">Más Vendidos</span>
+      </div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Artículo</th>
+              <th class="text-right">Unidades</th>
+              <th class="text-right">Total (Q)</th>
+              <th class="text-right">Precio Prom.</th>
+            </tr>
+          </thead>
+          <tbody id="tblTopGlobal">
+            <tr><td colspan="4" class="text-center">Cargando productos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><span>3.2</span> Productos Líderes por Día</div>
+        <span class="badge badge-red">Top 3 Diario</span>
+      </div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Top 1</th>
+              <th>Top 2</th>
+              <th>Top 3</th>
+            </tr>
+          </thead>
+          <tbody id="tblTopPorDia">
+            <tr><td colspan="4" class="text-center">Cargando desglose diario...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓN 4: Benchmark y Comparativa de la Industria -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span>4.</span> Benchmark de la Industria vs. Desempeño Real
+      </div>
+      <span class="badge badge-blue" id="benchBadgeSector">Sector QSR</span>
+    </div>
+    <div class="card-body">
+      <div class="grid-2">
+        <div class="benchmark-box">
+          <div style="font-weight: 800; margin-bottom: 10px; color: var(--primary);" id="benchNombreSector">
+            Estándar del Mercado
+          </div>
+          
+          <div class="benchmark-metric">
+            <div>
+              <div class="metric-label">Ticket Promedio</div>
+              <span class="metric-target" id="benchRefTicket">Estándar: Q 32.00 - Q 48.00</span>
+            </div>
+            <div class="metric-val" id="benchRealTicket">Q 0.00</div>
+          </div>
+
+          <div class="benchmark-metric">
+            <div>
+              <div class="metric-label">Margen Operativo en Caja</div>
+              <span class="metric-target" id="benchRefMargen">Estándar: 40% - 50%</span>
+            </div>
+            <div class="metric-val" style="color: var(--success);" id="benchRealMargen">0.0%</div>
+          </div>
+
+          <div class="benchmark-metric">
+            <div>
+              <div class="metric-label">Costo de Insumos / Mercadería</div>
+              <span class="metric-target" id="benchRefFoodCost">Estándar: 30% - 35%</span>
+            </div>
+            <div class="metric-val" style="color: var(--warning);" id="benchRealFoodCost">~33%</div>
+          </div>
+        </div>
+
+        <div class="benchmark-box" style="background: #ffffff;">
+          <div style="font-weight: 800; margin-bottom: 10px; color: var(--primary);">
+            Diagnóstico Estratégico Ejecutivo
+          </div>
+          <div style="margin-bottom: 8px;">
+            <strong>Diagnóstico de Ticket:</strong> <span id="diagTicketText">-</span>
+          </div>
+          <div style="margin-bottom: 8px;">
+            <strong>Diagnóstico de Margen:</strong> <span id="diagMargenText">-</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5;" id="diagConsejo">
+            Para maximizar los resultados comerciales, enfoque al equipo de ventas en la paquetización de bebidas y guarniciones en cada pedido.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  let cachedData = null;
+  let empresasList = [];
+  let serverInfo = null;
+  let authToken = localStorage.getItem('sg_token') || '';
+  let currentUser = null;
+  let subdomainInfo = null;
+
+  async function cargarServerInfo() {
+    try {
+      const res = await fetch('/api/server-info');
+      serverInfo = await res.json();
+    } catch (e) {
+      console.warn("No se pudo cargar server-info:", e);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toastMsg');
+    t.innerText = msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 4000);
+  }
+
+  function showLoading(show, text = 'Cargando datos de SimplyGest...') {
+    const el = document.getElementById('loadingOverlay');
+    document.getElementById('loadingText').innerText = text;
+    el.style.display = show ? 'flex' : 'none';
+  }
+
+  async function checkAuth() {
+    try {
+      const res = await fetch('/api/auth/me', {
+        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+      });
+      const data = await res.json();
+      if (data.authenticated && data.user) {
+        currentUser = data.user;
+        mostrarSesionActiva(currentUser);
+        return true;
+      }
+    } catch (e) {
+      console.warn("Error verificando sesión:", e);
+    }
+    return false;
+  }
+
+  function mostrarSesionActiva(user) {
+    document.getElementById('modalLogin').style.display = 'none';
+    const badge = document.getElementById('userSessionBadge');
+    document.getElementById('loggedUserName').innerText = user.nombre;
+    document.getElementById('loggedUserRole').innerText = user.tipo;
+    badge.style.display = 'flex';
+
+    if (user.tipo !== 'Administrador') {
+      document.getElementById('empresaSelect').value = user.empresa;
+      document.getElementById('empresaSelect').disabled = true;
+    } else {
+      document.getElementById('empresaSelect').disabled = false;
+    }
+  }
+
+  async function cargarSubdomainContext() {
+    try {
+      const res = await fetch('/api/subdomain-context');
+      subdomainInfo = await res.json();
+      document.getElementById('loginHostDisplay').innerText = window.location.host;
+      if (subdomainInfo.isDedicated) {
+        document.getElementById('loginTitle').innerText = `${subdomainInfo.empresa} • Acceso Web`;
+        document.getElementById('loginSubdomainTag').innerText = `Subdominio dedicado: ${subdomainInfo.slug}.sa.com.gt`;
+      }
+    } catch (e) {
+      console.warn("Error al cargar subdomain-context:", e);
+    }
+  }
+
+  async function cargarUsuariosEmpresa(empresaId) {
+    const sel = document.getElementById('loginUserSelect');
+    sel.innerHTML = '<option value="">Cargando usuarios de SimplyGest...</option>';
+    try {
+      const res = await fetch(`/api/auth/users?empresa=${empresaId}`);
+      const users = await res.json();
+      sel.innerHTML = '<option value="">-- Seleccione su usuario --</option>';
+      users.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.codigo;
+        const permTxt = (!u.estadisticas && !u.resumen && u.tipo !== 'Administrador') ? ' (Sin acceso a reportes)' : '';
+        opt.innerText = `${u.nombre} - ${u.tipo}${permTxt}`;
+        sel.appendChild(opt);
+      });
+    } catch (e) {
+      sel.innerHTML = '<option value="">Error al cargar usuarios</option>';
+    }
+  }
+
+  async function onLoginEmpresaChange() {
+    const emp = document.getElementById('loginEmpresaSelect').value;
+    await cargarUsuariosEmpresa(emp);
+  }
+
+  async function submitLogin() {
+    const emp = document.getElementById('loginEmpresaSelect').value;
+    const userId = document.getElementById('loginUserSelect').value;
+    const pass = document.getElementById('loginPassword').value;
+    const alertBox = document.getElementById('loginAlert');
+
+    alertBox.style.display = 'none';
+
+    if (!userId) {
+      alertBox.innerText = 'Por favor seleccione un usuario registrado en SimplyGest.';
+      alertBox.style.display = 'block';
+      return;
+    }
+
+    showLoading(true, 'Autenticando contra SimplyGest 17.5...');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ empresa: emp, userId: userId, password: pass })
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        authToken = data.token;
+        localStorage.setItem('sg_token', authToken);
+        currentUser = data.user;
+        mostrarSesionActiva(currentUser);
+        showToast(`¡Bienvenido, ${currentUser.nombre}!`);
+        
+        const empSelect = document.getElementById('empresaSelect');
+        empSelect.value = emp;
+        
+        await cargarReporte();
+      } else {
+        alertBox.innerText = data.error || 'Credenciales no válidas.';
+        alertBox.style.display = 'block';
+      }
+    } catch (e) {
+      alertBox.innerText = 'Error al comunicarse con el servidor SimplyGest.';
+      alertBox.style.display = 'block';
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function logout() {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+      });
+    } catch (e) {}
+    authToken = '';
+    currentUser = null;
+    localStorage.removeItem('sg_token');
+    document.getElementById('userSessionBadge').style.display = 'none';
+    document.getElementById('modalLogin').style.display = 'flex';
+    document.getElementById('loginPassword').value = '';
+    showToast('Sesión cerrada correctamente.');
+  }
+
+  let fiscalPeriods = [];
+  let currentFiscalYear = '2026';
+
+  async function cargarPeriodosEmpresa(empresaId) {
+    const sel = document.getElementById('periodoSelect');
+    sel.innerHTML = '<option value="">Cargando períodos...</option>';
+    try {
+      const res = await fetch(`/api/periodos?empresa=${empresaId}`);
+      const data = await res.json();
+      fiscalPeriods = data.periodos || [];
+      currentFiscalYear = data.periodoEnCurso || '2026';
+
+      sel.innerHTML = '';
+      fiscalPeriods.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.year;
+        opt.innerText = p.label;
+        if (p.enCurso || p.year === currentFiscalYear) {
+          opt.selected = true;
+        }
+        sel.appendChild(opt);
+      });
+
+      aplicarRangoPeriodo(currentFiscalYear);
+    } catch (e) {
+      console.warn("Error cargando periodos:", e);
+      sel.innerHTML = `<option value="2026" selected>Ejercicio 2026 (En curso)</option>`;
+    }
+  }
+
+  function aplicarRangoPeriodo(yearValue) {
+    const hastaInput = document.getElementById('fechaHasta');
+    const desdeInput = document.getElementById('fechaDesde');
+
+    if (yearValue === 'ALL' || !yearValue) {
+      desdeInput.value = '';
+      hastaInput.value = '';
+    } else {
+      const targetP = fiscalPeriods.find(p => p.year === yearValue);
+      if (targetP && targetP.desde && targetP.hasta) {
+        desdeInput.value = targetP.desde;
+        const now = new Date();
+        if (yearValue === now.getFullYear().toString()) {
+          hastaInput.value = now.toISOString().split('T')[0];
+        } else {
+          hastaInput.value = targetP.hasta;
+        }
+      } else {
+        desdeInput.value = `${yearValue}-01-01`;
+        hastaInput.value = `${yearValue}-12-31`;
+      }
+    }
+  }
+
+  function onPeriodoChange() {
+    const selYear = document.getElementById('periodoSelect').value;
+    const targetP = fiscalPeriods.find(p => p.year === selYear);
+    if (targetP && targetP.empresaCodigo) {
+      const empSel = document.getElementById('empresaSelect');
+      // Asegurarse de que la opción exista o añadirla si no está visible
+      let optExists = Array.from(empSel.options).some(o => o.value == targetP.empresaCodigo);
+      if (!optExists) {
+        const o = document.createElement('option');
+        o.value = targetP.empresaCodigo;
+        o.innerText = `Empresa ${targetP.empresaCodigo}`;
+        empSel.appendChild(o);
+      }
+      empSel.value = targetP.empresaCodigo;
+    }
+    aplicarRangoPeriodo(selYear);
+    cargarReporte();
+  }
+
+  async function onEmpresaChange() {
+    const emp = document.getElementById('empresaSelect').value;
+    await cargarPeriodosEmpresa(emp);
+    await cargarUsuariosEmpresa(emp);
+    cargarReporte();
+  }
+
+  async function init() {
+    showLoading(true, 'Iniciando conexión con SimplyGest...');
+    cargarServerInfo();
+    await cargarSubdomainContext();
+    try {
+      const res = await fetch('/api/empresas');
+      empresasList = await res.json();
+
+      let targetEmp = 1;
+      if (subdomainInfo && subdomainInfo.codigo) {
+        targetEmp = subdomainInfo.codigo;
+      }
+
+      // Configuración de la UI según sea Subdominio Dedicado o Portal Central
+      const isDed = subdomainInfo && subdomainInfo.isDedicated;
+      const groupEmpresa = document.getElementById('filterGroupEmpresa');
+      const loginGroupEmp = document.getElementById('loginGroupEmpresa');
+      const loginDedBadge = document.getElementById('loginDedicatedBadge');
+
+      if (isDed) {
+        // MODO AISLADO DEDICADO POR SUBDOMINIO:
+        // El subdominio SOLO muestra la empresa en particular con todos sus períodos fiscales
+        groupEmpresa.style.display = 'none';
+        loginGroupEmp.style.display = 'none';
+        loginDedBadge.style.display = 'block';
+
+        const empName = subdomainInfo.empresa || 'DON POLLO';
+        document.getElementById('navBrandTitle').innerText = `${empName} • Resumen Ejecutivo`;
+        document.getElementById('navBrandSubtitle').innerText = `${window.location.host} • Subdominio Exclusivo`;
+        document.getElementById('loginDedicatedEmpresaNombre').innerText = empName;
+        document.getElementById('loginDedicatedPeriodoTag').innerText = `Ejercicio Fiscal en curso: ${subdomainInfo.periodoEnCurso || '2026'}`;
+        document.title = `${empName} - Resumen Ejecutivo SimplyGest`;
+      } else {
+        // MODO PORTAL CENTRAL:
+        groupEmpresa.style.display = 'flex';
+        loginGroupEmp.style.display = 'flex';
+        loginDedBadge.style.display = 'none';
+      }
+
+      const sel = document.getElementById('empresaSelect');
+      const selLogin = document.getElementById('loginEmpresaSelect');
+      sel.innerHTML = '';
+      selLogin.innerHTML = '';
+
+      empresasList.forEach(e => {
+        const opt1 = document.createElement('option');
+        opt1.value = e.codigo;
+        opt1.innerText = `${e.codigo} - ${e.empresa} (${e.year})`;
+        if (e.codigo === targetEmp) opt1.selected = true;
+        sel.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = e.codigo;
+        opt2.innerText = `${e.codigo} - ${e.empresa} (${e.year})`;
+        if (e.codigo === targetEmp) opt2.selected = true;
+        selLogin.appendChild(opt2);
+      });
+
+      // Cargar períodos fiscales de la empresa activa y seleccionar período en curso
+      await cargarPeriodosEmpresa(targetEmp);
+
+      // Cargar usuarios para el login
+      await cargarUsuariosEmpresa(targetEmp);
+
+      const hasAuth = await checkAuth();
+      if (hasAuth) {
+        await cargarReporte();
+      } else {
+        document.getElementById('modalLogin').style.display = 'flex';
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error de conexión con el servidor SimplyGest.');
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  function setQuickDate(type) {
+    if (!cachedData) return;
+    const now = new Date();
+    const hastaInput = document.getElementById('fechaHasta');
+    const desdeInput = document.getElementById('fechaDesde');
+
+    if (type === 'all') {
+      desdeInput.value = '';
+      hastaInput.value = '';
+    } else if (type === '7d') {
+      const d7 = new Date();
+      d7.setDate(now.getDate() - 7);
+      desdeInput.value = d7.toISOString().split('T')[0];
+      hastaInput.value = now.toISOString().split('T')[0];
+    } else if (type === 'month') {
+      const first = new Date(now.getFullYear(), now.getMonth(), 1);
+      desdeInput.value = first.toISOString().split('T')[0];
+      hastaInput.value = now.toISOString().split('T')[0];
+    }
+    cargarReporte();
+  }
+
+  async function cargarReporte() {
+    if (!currentUser) {
+      document.getElementById('modalLogin').style.display = 'flex';
+      return;
+    }
+
+    const emp = document.getElementById('empresaSelect').value;
+    const sec = document.getElementById('sectorSelect').value;
+    const desde = document.getElementById('fechaDesde').value;
+    const hasta = document.getElementById('fechaHasta').value;
+
+    showLoading(true, 'Consultando base de datos SimplyGest...');
+    try {
+      const query = `/api/reporte?empresa=${emp}&desde=${desde}&hasta=${hasta}&sector=${sec}`;
+      const res = await fetch(query, {
+        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+      });
+
+      if (res.status === 401) {
+        logout();
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.error) {
+        alert(data.error);
+        return;
+      }
+
+      cachedData = data;
+      renderReporte(data);
+    } catch (err) {
+      console.error(err);
+      showToast('Error al obtener reporte.');
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  function formatMoney(num) {
+    return 'Q ' + Number(num || 0).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function renderReporte(d) {
+    // Header
+    document.getElementById('dispEmpresaNombre').innerText = d.empresa.nombre;
+    document.getElementById('dispEmpresaInfo').innerText = `${d.empresa.direccion || ''} ${d.empresa.poblacion || ''} • Código Empresa: ${d.empresa.codigo}`;
+    document.getElementById('dispPeriodo').innerText = `${d.filtros.fechaDesde || 'Inicio'} al ${d.filtros.fechaHasta || 'Hoy'}`;
+    document.getElementById('dispSectorBadge').innerText = d.benchmark.nombreSector;
+
+    // Date inputs default if empty
+    if (!document.getElementById('fechaDesde').value && d.filtros.fechaDesde) {
+      document.getElementById('fechaDesde').value = d.filtros.fechaDesde;
+    }
+    if (!document.getElementById('fechaHasta').value && d.filtros.fechaHasta) {
+      document.getElementById('fechaHasta').value = d.filtros.fechaHasta;
+    }
+
+    // KPIs
+    document.getElementById('kpiVentas').innerText = formatMoney(d.kpis.ventasTotales);
+    document.getElementById('kpiTickets').innerText = `${d.kpis.totalTickets} tickets / ${d.kpis.totalItems} ítems`;
+
+    document.getElementById('kpiTicketProm').innerText = formatMoney(d.kpis.ticketPromedio);
+    document.getElementById('kpiTicketRango').innerText = `Min: Q ${d.kpis.ticketMinimo} | Max: Q ${d.kpis.ticketMaximo}`;
+
+    const totalEgresos = d.kpis.totalGastos + d.kpis.totalCompras;
+    document.getElementById('kpiEgresos').innerText = formatMoney(totalEgresos);
+    document.getElementById('kpiEgresosSub').innerText = `Gastos: Q ${d.kpis.totalGastos} | Compras: Q ${d.kpis.totalCompras}`;
+
+    document.getElementById('kpiSaldoNeto').innerText = formatMoney(d.kpis.saldoNeto);
+    document.getElementById('kpiMargen').innerText = `Margen Operativo de Caja: ${d.kpis.margenCajaPct}%`;
+
+    // 1. Vendedores
+    const tbVend = document.getElementById('tblVendedores');
+    tbVend.innerHTML = '';
+    if (d.vendedores && d.vendedores.length > 0) {
+      d.vendedores.forEach(v => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${v.vendedor}</strong></td>
+          <td class="text-right"><strong>${v.tickets}</strong></td>
+          <td class="text-right">${formatMoney(v.totalVentas)}</td>
+          <td class="text-right" style="color:var(--info); font-weight:700;">${formatMoney(v.ticketPromedio)}</td>
+          <td class="text-right"><strong>${v.porcentaje}%</strong></td>
+          <td>
+            <div class="bar-container">
+              <div class="bar-fill" style="width: ${v.porcentaje}%;"></div>
+            </div>
+          </td>
+        `;
+        tbVend.appendChild(tr);
+      });
+    } else {
+      tbVend.innerHTML = '<tr><td colspan="6" class="text-center">No hay registros de ventas en el período.</td></tr>';
+    }
+
+    // 2. Diario
+    const tbDia = document.getElementById('tblDiario');
+    tbDia.innerHTML = '';
+    if (d.resumenDiario && d.resumenDiario.length > 0) {
+      d.resumenDiario.forEach(dia => {
+        const tr = document.createElement('tr');
+        const isPos = dia.saldoNeto >= 0;
+        const colorClass = isPos ? 'net-pos' : 'net-neg';
+        const prefix = isPos ? '+Q ' : '-Q ';
+        tr.innerHTML = `
+          <td><strong>${dia.fecha}</strong></td>
+          <td class="text-center">${dia.tickets}</td>
+          <td class="text-right">${formatMoney(dia.ventasTotales)}</td>
+          <td class="text-right">${formatMoney(dia.promedioTicket)}</td>
+          <td class="text-right" style="color:var(--accent);">Q ${dia.gastosCaja.toFixed(2)}</td>
+          <td class="text-right" style="color:var(--accent);">Q ${dia.compras.toFixed(2)}</td>
+          <td class="text-right ${colorClass}">${prefix}${Math.abs(dia.saldoNeto).toFixed(2)}</td>
+        `;
+        tbDia.appendChild(tr);
+      });
+    } else {
+      tbDia.innerHTML = '<tr><td colspan="7" class="text-center">Sin actividad en este rango.</td></tr>';
+    }
+
+    // 3. Top Global
+    const tbTop = document.getElementById('tblTopGlobal');
+    tbTop.innerHTML = '';
+    if (d.topProductos && d.topProductos.length > 0) {
+      d.topProductos.slice(0, 8).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${p.producto}</strong></td>
+          <td class="text-right">${p.unidades}</td>
+          <td class="text-right"><strong>${formatMoney(p.totalFacturado)}</strong></td>
+          <td class="text-right">${formatMoney(p.precioPromedio)}</td>
+        `;
+        tbTop.appendChild(tr);
+      });
+    }
+
+    // 3. Top por Día
+    const tbTopDia = document.getElementById('tblTopPorDia');
+    tbTopDia.innerHTML = '';
+    if (d.topProductosPorDia && d.topProductosPorDia.length > 0) {
+      d.topProductosPorDia.forEach(pd => {
+        const tr = document.createElement('tr');
+        const t1 = pd.items[0] ? `${pd.items[0].producto} (${pd.items[0].unidades})` : '-';
+        const t2 = pd.items[1] ? `${pd.items[1].producto} (${pd.items[1].unidades})` : '-';
+        const t3 = pd.items[2] ? `${pd.items[2].producto} (${pd.items[2].unidades})` : '-';
+        tr.innerHTML = `
+          <td><strong>${pd.fecha}</strong></td>
+          <td>${t1}</td>
+          <td>${t2}</td>
+          <td>${t3}</td>
+        `;
+        tbTopDia.appendChild(tr);
+      });
+    }
+
+    // 4. Benchmark
+    document.getElementById('benchBadgeSector').innerText = d.benchmark.nombreSector;
+    document.getElementById('benchNombreSector').innerText = `${d.benchmark.nombreSector} (Ref: ${d.benchmark.referencias})`;
+    document.getElementById('benchRefTicket').innerText = `Estándar: ${d.benchmark.ticketEstandar}`;
+    document.getElementById('benchRealTicket').innerText = formatMoney(d.kpis.ticketPromedio);
+
+    document.getElementById('benchRefMargen').innerText = `Estándar: ${d.benchmark.margenCajaEstandar}`;
+    document.getElementById('benchRealMargen').innerText = `${d.kpis.margenCajaPct}%`;
+
+    document.getElementById('benchRefFoodCost').innerText = `Estándar: ${d.benchmark.foodCostEstandar}`;
+
+    document.getElementById('diagTicketText').innerText = d.benchmark.ticketDiagnostico;
+    document.getElementById('diagMargenText').innerText = d.benchmark.margenDiagnostico;
+  }
+
+  async function exportarPdf() {
+    if (!currentUser) {
+      document.getElementById('modalLogin').style.display = 'flex';
+      return;
+    }
+
+    const emp = document.getElementById('empresaSelect').value;
+    const sec = document.getElementById('sectorSelect').value;
+    const desde = document.getElementById('fechaDesde').value;
+    const hasta = document.getElementById('fechaHasta').value;
+
+    showLoading(true, 'Generando archivo PDF con Microsoft Edge...');
+    try {
+      const res = await fetch(`/api/export-pdf?empresa=${emp}&desde=${desde}&hasta=${hasta}&sector=${sec}`, {
+        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        showToast('¡PDF generado con éxito y abierto en pantalla!');
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Error al generar el PDF.');
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  function abrirModalMovil() {
+    const modal = document.getElementById('modalMovil');
+    const qrImg = document.getElementById('qrCodeImg');
+    const txtTunnel = document.getElementById('txtTunnelUrl');
+    const txtDirect = document.getElementById('txtDirectUrl');
+
+    const targetUrl = (serverInfo && serverInfo.tunnelUrl) ? serverInfo.tunnelUrl : ((serverInfo && serverInfo.directUrl) ? serverInfo.directUrl : window.location.href);
+    const directUrl = (serverInfo && serverInfo.directUrl) ? serverInfo.directUrl : 'http://169.58.70.76/';
+
+    txtTunnel.value = targetUrl;
+    txtDirect.value = directUrl;
+
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(targetUrl)}`;
+
+    modal.style.display = 'flex';
+  }
+
+  function cerrarModalMovil(e) {
+    document.getElementById('modalMovil').style.display = 'none';
+  }
+
+  function copiarTexto(elementId) {
+    const el = document.getElementById(elementId);
+    el.select();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(el.value).then(() => {
+        showToast('¡Enlace copiado al portapapeles!');
+      }).catch(() => {
+        document.execCommand('copy');
+        showToast('¡Enlace copiado!');
+      });
+    } else {
+      document.execCommand('copy');
+      showToast('¡Enlace copiado!');
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

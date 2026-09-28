@@ -1,0 +1,21 @@
+{
+    auto_https disable_redirects
+}
+
+http://sa.com.gt, http://www.sa.com.gt, http://donpollo.sa.com.gt, http://cdpe.sa.com.gt, http://correo.sa.com.gt, http://webmail.sa.com.gt, :80 {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:56990 {
+        header_up Host localhost:56990
+        header_up X-Forwarded-Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+}
+
+https://sa.com.gt, https://www.sa.com.gt, https://donpollo.sa.com.gt, https://cdpe.sa.com.gt, https://correo.sa.com.gt, https://webmail.sa.com.gt {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:56990 {
+        header_up Host localhost:56990
+        header_up X-Forwarded-Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+}

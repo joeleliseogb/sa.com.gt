@@ -1,0 +1,11 @@
+# Binarios y ejecutables externos
+bin/
+*.exe
+*.zip
+*.dll
+
+# Logs y temporales
+*.log
+*.pdf
+temp_render.html
+tunnel_info.json

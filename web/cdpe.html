@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CDPE &bull; Centro de Desarrollo de Pequeñas y Medianas Empresas</title>
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #3b82f6;
+    --accent: #d97706;
+    --bg-page: #f8fafc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --card-bg: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  
+  body {
+    background: var(--bg-page);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.25);
+  }
+  .brand-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+  }
+  .brand-subtitle {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .nav-btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+  }
+  .btn-outline:hover {
+    background: #f1f5f9;
+  }
+  .btn-primary {
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(30, 58, 138, 0.2);
+  }
+  .btn-primary:hover {
+    background: #172554;
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+  .hero-card {
+    background: var(--card-bg);
+    max-width: 720px;
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    padding: 48px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    text-align: center;
+  }
+  .badge-tag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: #eff6ff;
+    color: var(--primary-light);
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.25;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  p.lead {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .status-notice {
+    background: #fefce8;
+    border: 1px solid #fef08a;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+  }
+  .status-icon {
+    font-size: 26px;
+  }
+  .status-text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #854d0e;
+    margin-bottom: 2px;
+  }
+  .status-text p {
+    font-size: 13px;
+    color: #a16207;
+    line-height: 1.4;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cta-main {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+  }
+  .cta-main:hover {
+    background: #172554;
+    transform: translateY(-1px);
+  }
+  .cta-secondary {
+    background: #f1f5f9;
+    color: var(--text-main);
+    border: 1px solid var(--border);
+  }
+  .cta-secondary:hover {
+    background: #e2e8f0;
+  }
+
+  footer {
+    background: #ffffff;
+    border-top: 1px solid var(--border);
+    padding: 24px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="/" class="brand">
+    <div class="brand-logo">C</div>
+    <div>
+      <div class="brand-title">CDPE</div>
+      <div class="brand-subtitle">Red Empresarial SimplyGest</div>
+    </div>
+  </a>
+  <div class="nav-actions">
+    <a href="https://sa.com.gt" class="nav-btn btn-outline">&larr; Buscador sa.com.gt</a>
+    <a href="/gestion" class="nav-btn btn-primary">Portal de Gestión &rarr;</a>
+  </div>
+</header>
+
+<main>
+  <div class="hero-card">
+    <div class="badge-tag">🏢 cdpe.sa.com.gt</div>
+    <h1>Centro de Desarrollo de Pequeñas y Medianas Empresas</h1>
+    <p class="lead">
+      Impulsando el desarrollo productivo, la competitividad, formalización y transformación digital de las PYMES en Guatemala bajo la red tecnológica sa.com.gt.
+    </p>
+
+    <div class="status-notice">
+      <div class="status-icon">🚀</div>
+      <div class="status-text">
+        <h4>Portal Institucional en Implementación</h4>
+        <p>El portal web oficial de CDPE se encuentra en desarrollo. El sistema administrativo y los motores SimplyGest 17.5 ya están activos en este subdominio.</p>
+      </div>
+    </div>
+
+    <div class="cta-group">
+      <a href="/gestion" class="cta-btn cta-main">
+        <span>📊 Ingresar a Gestión CDPE</span>
+      </a>
+      <a href="https://sa.com.gt" class="cta-btn cta-secondary">
+        <span>🔍 Explorar Red sa.com.gt</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Guatemala &bull; Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE) &bull; sa.com.gt
+</footer>
+
+</body>
+</html>
