@@ -1260,6 +1260,10 @@
   .agent-send-btn:hover {
     background: #1557b0;
   }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -1581,11 +1585,11 @@
         <div class="agent-header-icon">🤖</div>
         <div class="agent-header-info">
           <h3>Agente CDPE &bull; Asesor Comercial &amp; Manuales de Gestión</h3>
-          <p>Centro de Desarrollo de Pequeñas y Medianas Empresas &bull; Red sa.com.gt</p>
+          <p>Centro de Desarrollo de PYMES &bull; Conectado a Internet &bull; Catálogo de 13,396 Productos</p>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span class="agent-status-tag">🟢 En línea 24/7</span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="agent-status-tag" style="background:#e8f0fe;color:#1a73e8;border:1px solid #c2e7ff;">🌐 Web Live &amp; CDPE</span>
         <button class="agent-header-close" onclick="cerrarAgenteCdpe()">&times;</button>
       </div>
     </div>
@@ -1599,6 +1603,7 @@
       <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los requisitos y pasos para afiliar una franquicia a la Red CDPE?')">🏢 Manual 4: Franquicias &amp; Subdominios</div>
       <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">🏛️ Créditos Acción Cooperativa</div>
       <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los productos, combos y precios de Don Pollo?')">🍗 Productos Don Pollo</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">🛍️ Freidoras en Tienda CDPE</div>
     </div>
 
     <!-- Conversation Messages Area -->
@@ -1606,20 +1611,21 @@
       <div class="agent-msg bot">
         <div class="agent-msg-avatar">🤖</div>
         <div class="agent-bubble">
-          <p><strong>¡Hola! Soy tu Agente Especializado del CDPE (Centro de Desarrollo de Pequeñas y Medianas Empresas).</strong></p>
-          <p style="margin-top:6px;">Estoy aquí para asesorarte en la gestión operativa de tu negocio, los productos de la red <strong>sa.com.gt</strong> y la aplicación práctica de nuestros <strong>Manuales de Gestión Comercial</strong>:</p>
+          <p><strong>¡Hola! Soy tu Agente Especializado del CDPE con Acceso a Internet y Catálogo Oficial.</strong></p>
+          <p style="margin-top:6px;">Tengo permisos completos para consultar fuentes externas, la web en vivo y el catálogo oficial de <strong>13,396 productos y equipos</strong> de la tienda CDPE (<a href="https://cdpe.accion.app/tienda.html" target="_blank" style="color:#1a73e8;font-weight:600;">cdpe.accion.app/tienda.html</a>), además de nuestros <strong>Manuales de Gestión Comercial</strong>:</p>
           <div style="margin:10px 0; background:#ffffff; border-radius:10px; padding:12px; border:1px solid #dadce0;">
-            <p style="margin-bottom:6px;"><strong>📖 Compendio de Manuales CDPE disponibles:</strong></p>
+            <p style="margin-bottom:6px;"><strong>📖 Cobertura Técnica y Comercial:</strong></p>
             <ul style="padding-left:18px; line-height:1.6; font-size:12.5px; color:#3c4043;">
               <li><strong>Manual 1:</strong> Técnicas de Venta Sugestiva (Upselling), Ingeniería de Menús y Combos QSR.</li>
               <li><strong>Manual 2:</strong> Control de Inventarios, Mermas y Rotación PEPS (FIFO) con SimplyGest 17.5.</li>
               <li><strong>Manual 3:</strong> Arqueo de Caja, Cierres de Turno a Ciegas y Facturación Electrónica SAT (FEL).</li>
               <li><strong>Manual 4:</strong> Expansión de Franquicias, Estandarización de Calidad y Subdominios <code>sa.com.gt</code>.</li>
-              <li><strong>Acción Cooperativa R.L.:</strong> Microcréditos para TPV táctiles, impresoras fiscales y compras al por mayor.</li>
+              <li><strong>Tienda CDPE (13,396 Ítems):</strong> Maquinaria industrial, hornos, freidoras, vitrinas, empaques ecológicos y TPV.</li>
+              <li><strong>🌐 Búsqueda Web Externa:</strong> Respuestas en tiempo real con datos de internet y normativas.</li>
             </ul>
           </div>
           <p>¿En qué puedo orientarte hoy? Haz clic en cualquiera de los temas arriba o escribe tu duda abajo.</p>
-          <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20sobre%20los%20manuales%20de%20gesti%C3%B3n%20comercial" target="_blank" class="agent-wa-link">
+          <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20con%20un%20consultor%20humano" target="_blank" class="agent-wa-link">
             💬 Chatear con un Asesor Humano (+502 4555-0004) &rarr;
           </a>
         </div>
@@ -1642,6 +1648,7 @@
   let activeSuggestions = [];
 
   // --- SUGERENCIAS SOLO MIENTRAS ESCRIBE (TYPING-ONLY AUTOCOMPLETE) ---
+  let acDebounceTimer = null;
   const SUGGESTION_DATABASE = [
     { text: "manual de gestion comercial cdpe", badge: "Manual 1", icon: "📘", action: () => executeSearch("manual 1 ventas") },
     { text: "manual de inventarios simplygest", badge: "Manual 2", icon: "📦", action: () => executeSearch("manual 2 inventarios") },
@@ -1653,7 +1660,12 @@
     { text: "accion cooperativa creditos tpv", badge: "Cooperativa", icon: "🏛️", action: () => executeSearch("cooperativa") },
     { text: "kit punto de venta simplygest 17.5", badge: "Tienda CDPE", icon: "💻", action: () => executeSearch("simplygest") },
     { text: "compendio 4 manuales comerciales", badge: "Tienda CDPE", icon: "📚", action: () => executeSearch("manuales cdpe") },
-    { text: "membresia empresarial cdpe", badge: "Servicios", icon: "🏅", action: () => executeSearch("membresia cdpe") }
+    { text: "membresia empresarial cdpe", badge: "Servicios", icon: "🏅", action: () => executeSearch("membresia cdpe") },
+    { text: "freidoras industriales a presion para pollo", badge: "Tienda CDPE", icon: "🔥", action: () => executeSearch("freidora pollo") },
+    { text: "hornos de conveccion y brasa", badge: "Tienda CDPE", icon: "🔥", action: () => executeSearch("horno") },
+    { text: "vitrinas y refrigeradores comerciales", badge: "Tienda CDPE", icon: "❄️", action: () => executeSearch("vitrina") },
+    { text: "empaques y vasos biodegradables", badge: "Tienda CDPE", icon: "🥡", action: () => executeSearch("empaque") },
+    { text: "mesas y sillas para restaurantes", badge: "Tienda CDPE", icon: "🪑", action: () => executeSearch("silla mesa") }
   ];
 
   function onHomeInput() {
@@ -1664,21 +1676,48 @@
     // REGLA FUNDAMENTAL: NUNCA mostrar lista al hacer clic o con el buscador vacío
     if (!q) {
       hideSuggestions();
+      if (acDebounceTimer) clearTimeout(acDebounceTimer);
       return;
     }
 
-    // Filtrar sugerencias coincidentes mientras se escribe
+    // Filtrar sugerencias base coincidentes mientras se escribe
     const matches = SUGGESTION_DATABASE.filter(item => 
       item.text.toLowerCase().includes(q)
     ).slice(0, 5);
 
-    // Agregar la consulta literal como primera opción si no es idéntica
     const fullList = [
       { text: raw.trim(), badge: "Buscar", icon: "🔍", action: () => executeSearch(raw.trim()) },
       ...matches
     ];
 
     renderSuggestions(fullList, q);
+
+    // Consulta dinámica a la API para añadir productos reales de la tienda CDPE (13,396 ítems)
+    if (acDebounceTimer) clearTimeout(acDebounceTimer);
+    if (q.length >= 2) {
+      acDebounceTimer = setTimeout(async () => {
+        const curQ = document.getElementById('homeInput').value.trim().toLowerCase();
+        if (!curQ) return;
+        try {
+          const res = await fetch(`/api/buscar?q=${encodeURIComponent(curQ)}`);
+          const data = await res.json();
+          if (data && data.tiendaCdpe && data.tiendaCdpe.length > 0) {
+            const prodMatches = data.tiendaCdpe.slice(0, 4).map(p => ({
+              text: p.nombre,
+              badge: p.precioFmt || "Tienda CDPE",
+              icon: p.icono || "🛍️",
+              action: () => executeSearch(p.nombre)
+            }));
+            const updatedList = [
+              { text: curQ, badge: "Buscar", icon: "🔍", action: () => executeSearch(curQ) },
+              ...matches,
+              ...prodMatches
+            ];
+            renderSuggestions(updatedList, curQ);
+          }
+        } catch (e) {}
+      }, 250);
+    }
   }
 
   function renderSuggestions(items, query) {
@@ -2010,21 +2049,34 @@
     }
 
     // ==========================================
-    // NIVEL 3: TIENDA OFICIAL DEL CDPE
+    // NIVEL 3: TIENDA OFICIAL DEL CDPE (13,396 PRODUCTOS)
     // ==========================================
     if (tiendaCdpe.length > 0 && (activeTab === 'all' || activeTab === 'storeCdpe')) {
       cdpeStoreSection.style.display = 'block';
       tiendaCdpe.forEach(item => {
         const card = document.createElement('div');
         card.className = 'cdpe-store-card';
+        const prov = item.proveedor || 'CDPE Oficial';
+        const linkUrl = item.linkUrl || `https://cdpe.accion.app/tienda.html?search=${encodeURIComponent(item.nombre || '')}`;
+        const waMsg = item.waText || `Hola CDPE, deseo información y cotización de: ${item.nombre} (SKU: ${item.sku || ''})`;
+        const waUrl = `https://wa.me/50245550004?text=${encodeURIComponent(waMsg)}`;
+
         card.innerHTML = `
-          <div class="cdpe-store-card-icon">${item.icono}</div>
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div class="cdpe-store-card-icon">${item.icono || '🛍️'}</div>
+            <span style="font-size:10.5px; font-weight:600; background:#e8f0fe; color:#1a73e8; padding:2px 8px; border-radius:10px;">${prov}</span>
+          </div>
           <div class="cdpe-store-card-name">${item.nombre}</div>
-          <div class="cdpe-store-card-price">${item.precioFmt}</div>
-          <div class="cdpe-store-card-desc">${item.descripcion}</div>
-          <a href="https://wa.me/50245550004?text=${encodeURIComponent(item.waText || 'Hola CDPE, deseo información de: ' + item.nombre)}" target="_blank" class="cdpe-store-card-btn">
-            💬 Ordenar / Consultar (+502 4555-0004) &rarr;
-          </a>
+          <div class="cdpe-store-card-price">${item.precioFmt || ('Q ' + item.precio)}</div>
+          <div class="cdpe-store-card-desc">${item.descripcion || ''}</div>
+          <div style="display:flex; gap:8px; margin-top:auto; padding-top:10px;">
+            <a href="${linkUrl}" target="_blank" class="g-btn-blue" style="flex:1; font-size:11.5px; padding:6px 8px; text-align:center; justify-content:center; text-decoration:none;">
+              🛒 Ver en Tienda
+            </a>
+            <a href="${waUrl}" target="_blank" class="g-btn-wa" style="flex:1; font-size:11.5px; padding:6px 8px; text-align:center; justify-content:center; text-decoration:none;">
+              💬 Cotizar WA
+            </a>
+          </div>
         `;
         cdpeStoreGrid.appendChild(card);
       });
@@ -2174,7 +2226,7 @@
     enviarPreguntaAgente();
   }
 
-  function enviarPreguntaAgente() {
+  async function enviarPreguntaAgente() {
     const inp = document.getElementById('agentInput');
     const q = inp.value.trim();
     if (!q) return;
@@ -2182,10 +2234,26 @@
     agregarMensajeAgente('user', q);
     inp.value = '';
 
-    // Typing indicator
-    const typingId = agregarMensajeAgente('bot', '<span style="color:#70757a;"><i>El Asesor CDPE está consultando los manuales de gestión...</i></span>');
+    // Typing indicator with animated spinner
+    const typingId = agregarMensajeAgente('bot', `
+      <div style="display:flex;align-items:center;gap:9px;color:#5f6368;font-size:13px;">
+        <span style="display:inline-block;width:14px;height:14px;border:2px solid #dadce0;border-top-color:#1a73e8;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+        <span>El Asesor CDPE está consultando manuales, catálogo (13,396 productos) y fuentes web en tiempo real...</span>
+      </div>
+    `);
 
-    setTimeout(() => {
+    try {
+      const resp = await fetch('/api/agente-cdpe?q=' + encodeURIComponent(q));
+      if (!resp.ok) throw new Error('Error al consultar agente');
+      const data = await resp.json();
+      const bubbleEl = document.getElementById(typingId);
+      if (bubbleEl) {
+        bubbleEl.innerHTML = data.respuestaHtml || generarRespuestaAgente(q);
+        const msgContainer = document.getElementById('agentMessages');
+        if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
+      }
+    } catch (err) {
+      console.warn('Fallback a asesor local:', err);
       const respHtml = generarRespuestaAgente(q);
       const bubbleEl = document.getElementById(typingId);
       if (bubbleEl) {
@@ -2193,7 +2261,7 @@
         const msgContainer = document.getElementById('agentMessages');
         if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
       }
-    }, 400);
+    }
   }
 
   function agregarMensajeAgente(remitente, htmlContent) {

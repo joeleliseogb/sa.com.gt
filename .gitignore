@@ -13,3 +13,4 @@ web/roundcube/logs/*
 web/roundcube/temp/*
 temp_render.html
 tunnel_info.json
+scratch/

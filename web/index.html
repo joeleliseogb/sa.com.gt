@@ -3,1460 +3,2468 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SimplyGest - Resumen Ejecutivo</title>
+<title>sa.com.gt</title>
 <style>
   :root {
-    --primary: #991b1b;
-    --primary-hover: #7f1d1d;
-    --primary-light: #fee2e2;
-    --accent: #dc2626;
-    --success: #16a34a;
-    --success-light: #dcfce7;
-    --warning: #d97706;
-    --warning-light: #fef3c7;
-    --info: #2563eb;
-    --info-light: #dbeafe;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --border: #e2e8f0;
-    --bg-main: #f8fafc;
-    --card-bg: #ffffff;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  body { background-color: var(--bg-main); color: var(--text-main); font-size: 13px; line-height: 1.5; padding-bottom: 60px; }
-
-  /* Navbar / Control Bar */
-  .control-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: #ffffff;
-    border-bottom: 2px solid var(--accent);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-    padding: 10px 24px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .nav-logo {
-    font-size: 24px;
-    line-height: 1;
-  }
-  .nav-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--primary);
-    letter-spacing: -0.3px;
-  }
-  .nav-subtitle {
-    font-size: 11px;
-    color: var(--text-muted);
+    --g-bg: #ffffff;
+    --g-text: #202124;
+    --g-subtext: #70757a;
+    --g-border: #dfe1e5;
+    --g-btn-bg: #f8f9fa;
+    --g-btn-border: #f8f9fa;
+    --g-btn-text: #3c4043;
+    --g-btn-hover-border: #dadce0;
+    --g-blue: #1a73e8;
+    --g-blue-hover: #174ea6;
+    --g-link: #1a0dab;
+    --g-snippet: #4d5156;
+    --g-footer-bg: #f2f2f2;
+    --g-footer-border: #dadce0;
+    --g-serp-border: #ebebeb;
   }
 
-  .nav-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html, body {
+    height: 100%;
+    background-color: var(--g-bg);
+    color: var(--g-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Google Sans", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
-  .filter-group {
+
+  body {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-  }
-  .filter-group label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .form-control {
-    padding: 6px 10px;
-    font-size: 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: #ffffff;
-    color: var(--text-main);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-control:focus {
-    border-color: var(--accent);
-  }
-  select.form-control {
-    cursor: pointer;
-    font-weight: 600;
+    min-height: 100vh;
   }
 
-  .quick-dates {
+  /* ========================================================
+     HOME VIEW (Initial Centered View)
+     ======================================================== */
+  .home-view {
     display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    margin-top: 14px;
-  }
-  .btn-quick {
-    background: #f1f5f9;
-    border: 1px solid var(--border);
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-quick:hover {
-    background: #e2e8f0;
-    color: var(--text-main);
+    flex-direction: column;
+    min-height: 100vh;
   }
 
-  .nav-actions {
+  .home-header {
+    height: 60px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 14px;
+    justify-content: flex-end;
+    gap: 16px;
+    font-size: 13.5px;
+    position: relative;
+    z-index: 100;
   }
-  .btn {
+  .header-link {
+    color: var(--g-text);
+    text-decoration: none;
+    padding: 8px 6px;
+    font-size: 13px;
+    opacity: 0.85;
+  }
+  .header-link:hover {
+    text-decoration: underline;
+    opacity: 1;
+  }
+  .waffle-btn {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    outline: none;
+  }
+  .waffle-btn:hover { background: #f1f3f4; }
+  .sign-in-btn {
+    background: var(--g-blue);
+    color: #ffffff;
+    border: none;
+    padding: 9px 23px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .sign-in-btn:hover { background: var(--g-blue-hover); }
+
+  /* Waffle Menu Dropdown */
+  .waffle-menu {
+    position: absolute;
+    top: 60px;
+    right: 24px;
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    width: 320px;
+    padding: 16px;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    z-index: 200;
+  }
+  .waffle-menu.open { display: grid; }
+  .waffle-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--g-text);
+    transition: background 0.15s;
+    text-align: center;
+  }
+  .waffle-item:hover { background: #f8f9fa; }
+  .waffle-icon { font-size: 24px; margin-bottom: 6px; }
+  .waffle-name { font-size: 11.5px; font-weight: 500; color: #3c4043; }
+
+  /* Home Center Stage */
+  .home-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px 90px 20px;
+  }
+  .home-logo {
+    font-size: 80px;
+    font-weight: 500;
+    letter-spacing: -2.5px;
+    display: inline-flex;
+    align-items: baseline;
+    line-height: 1;
+    margin-bottom: 28px;
+    user-select: none;
+    cursor: pointer;
+  }
+  .logo-sa { color: #202124; font-weight: 700; }
+  .logo-dot { color: var(--g-blue); font-weight: 700; }
+  .logo-tld { color: var(--g-blue); font-weight: 500; }
+
+  /* Home Search Box */
+  .home-search-box {
+    width: 100%;
+    max-width: 584px;
+    height: 46px;
+    background: #ffffff;
+    border: 1px solid var(--g-border);
+    border-radius: 24px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 28px;
+  }
+  .home-search-box:hover, .home-search-box:focus-within {
+    box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    border-color: rgba(223,225,229,0);
+  }
+  .search-lens-svg {
+    display: flex;
+    align-items: center;
+    color: #9aa0a6;
+    margin-right: 12px;
+  }
+  .home-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--g-text);
+    background: transparent;
+    font-family: inherit;
+  }
+  .home-clear-btn {
+    background: transparent;
+    border: none;
+    color: #70757a;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+    display: none;
+  }
+  .home-badge-suffix {
+    font-size: 13px;
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--g-blue);
+    background: #f1f3f4;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+    user-select: none;
+  }
+
+  .home-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .g-btn {
+    background-color: var(--g-btn-bg);
+    border: 1px solid var(--g-btn-border);
+    border-radius: 4px;
+    color: var(--g-btn-text);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 0 16px;
+    height: 36px;
+    line-height: 34px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s;
+  }
+  .g-btn:hover {
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    border-color: var(--g-btn-hover-border);
+    color: var(--g-text);
+  }
+  .g-btn:focus { border-color: var(--g-blue); outline: none; }
+
+  /* ========================================================
+     SERP VIEW (Google Results Page Authentic Layout)
+     ======================================================== */
+  .serp-view {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #ffffff;
+  }
+
+  /* Sticky SERP Header */
+  .serp-header {
+    border-bottom: 1px solid var(--g-serp-border);
+    padding: 20px 24px 0 24px;
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    z-index: 100;
+  }
+  .serp-header-top {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 16px;
+  }
+  .serp-mini-logo {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -1px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+    text-decoration: none;
+  }
+
+  /* SERP Search Box */
+  .serp-search-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 692px;
+    height: 44px;
+    background: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 24px;
+    box-shadow: 0 2px 5px 1px rgba(64,60,67,.16);
+    padding: 0 14px 0 18px;
+  }
+  .serp-search-box:hover, .serp-search-box:focus-within {
+    box-shadow: 0 2px 8px 1px rgba(64,60,67,.24);
+  }
+  .serp-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: var(--g-text);
+    background: transparent;
+    font-family: inherit;
+  }
+  .serp-clear-btn {
+    background: transparent;
+    border: none;
+    color: #70757a;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+    display: none;
+  }
+  .serp-divider {
+    width: 1px;
+    height: 24px;
+    background: #dfe1e5;
+    margin: 0 10px;
+  }
+  .serp-lens-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: var(--g-blue);
+    padding: 4px;
+  }
+
+  .serp-header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Google Navigation Tabs */
+  .serp-tabs {
+    display: flex;
+    gap: 24px;
+    padding-left: 148px;
+    font-size: 13px;
+  }
+  .serp-tab {
+    padding: 10px 4px 12px 4px;
+    color: #5f6368;
+    text-decoration: none;
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 7px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    font-weight: 500;
   }
-  .btn-primary {
-    background: var(--accent);
-    color: #ffffff;
-  }
-  .btn-primary:hover {
-    background: var(--primary);
-  }
-  .btn-secondary {
-    background: #ffffff;
-    color: var(--primary);
-    border: 1px solid var(--primary);
-  }
-  .btn-secondary:hover {
-    background: var(--primary-light);
+  .serp-tab:hover { color: var(--g-blue); }
+  .serp-tab.active {
+    color: var(--g-blue);
+    border-bottom: 3px solid var(--g-blue);
   }
 
-  /* Main Container */
-  .container {
-    max-width: 1240px;
-    margin: 20px auto 0 auto;
-    padding: 0 20px;
+  /* Google Results Stage (2-Column Layout) */
+  .serp-body {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    padding: 16px 24px 60px 172px;
+    gap: 60px;
   }
 
-  /* Header Box */
-  .report-header {
+  /* Left Main Column (652px) */
+  .serp-main-col {
+    width: 100%;
+    max-width: 652px;
+  }
+  .serp-count-line {
+    font-size: 14px;
+    color: var(--g-subtext);
+    margin-bottom: 22px;
+  }
+
+  /* Google Shopping Carousel / Grid */
+  .shopping-section {
+    border: 1px solid var(--g-border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 28px;
     background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
+  }
+  .shopping-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 6px solid var(--primary);
+    margin-bottom: 14px;
   }
-  .report-company-name {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--primary);
+  .shopping-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3c4043;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  .report-meta {
-    text-align: right;
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-  .report-meta strong {
-    color: var(--text-main);
-  }
-
-  /* Badge */
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 9999px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .badge-red { background: var(--primary-light); color: var(--primary); }
-  .badge-green { background: var(--success-light); color: var(--success); }
-  .badge-blue { background: var(--info-light); color: var(--info); }
-  .badge-amber { background: var(--warning-light); color: var(--warning); }
-
-  /* KPI Grid */
-  .kpi-grid {
+  .shopping-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
   }
-  .kpi-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    border-left: 5px solid #cbd5e1;
-    position: relative;
+  .shop-card {
+    border: 1px solid #e8eaed;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s, border-color 0.15s;
+    background: #ffffff;
+    text-decoration: none;
+    color: inherit;
   }
-  .kpi-card.red { border-left-color: var(--accent); }
-  .kpi-card.blue { border-left-color: var(--info); }
-  .kpi-card.amber { border-left-color: var(--warning); }
-  .kpi-card.green { border-left-color: var(--success); }
-  .kpi-title {
-    font-size: 11px;
+  .shop-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: #dadce0;
+  }
+  .shop-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .shop-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--g-link);
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+  .shop-price {
+    font-size: 14px;
     font-weight: 700;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    letter-spacing: 0.5px;
+    color: #188038;
+    margin-bottom: 2px;
   }
-  .kpi-value {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--text-main);
-    line-height: 1.1;
-  }
-  .kpi-sub {
+  .shop-store {
     font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 5px;
+    color: var(--g-subtext);
+  }
+  .shop-cta {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--g-blue);
+    font-weight: 600;
   }
 
-  /* Content Cards */
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    margin-bottom: 24px;
+  /* Organic Result Item */
+  .organic-item {
+    margin-bottom: 32px;
+  }
+  .organic-source {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #202124;
+    margin-bottom: 4px;
+  }
+  .organic-fav {
+    width: 22px;
+    height: 22px;
+    background: #f1f3f4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .organic-name { font-size: 14px; font-weight: 500; }
+  .organic-url { font-size: 12px; color: var(--g-snippet); }
+  .organic-title {
+    font-size: 20px;
+    line-height: 1.3;
+    color: var(--g-link);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 4px;
+    font-weight: 400;
+  }
+  .organic-title:hover { text-decoration: underline; }
+  .organic-snippet {
+    font-size: 14px;
+    line-height: 1.58;
+    color: var(--g-snippet);
+    margin-bottom: 12px;
+  }
+
+  /* Google Sitelinks */
+  .google-sitelinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    padding-left: 16px;
+    margin-top: 8px;
+    border-left: 2px solid #e8eaed;
+  }
+  .sitelink a {
+    font-size: 14px;
+    color: var(--g-link);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .sitelink a:hover { text-decoration: underline; }
+  .sitelink-desc {
+    font-size: 12px;
+    color: var(--g-subtext);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Google Accordion (People Also Ask) */
+  .paa-section {
+    border: 1px solid var(--g-border);
+    border-radius: 8px;
+    margin: 28px 0;
     overflow: hidden;
   }
-  .card-header {
+  .paa-heading {
+    padding: 14px 18px;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--g-text);
+    border-bottom: 1px solid var(--g-border);
+  }
+  .paa-item {
+    border-bottom: 1px solid #e8eaed;
+  }
+  .paa-item:last-child { border-bottom: none; }
+  .paa-q {
     padding: 12px 18px;
-    border-bottom: 1px solid var(--border);
-    background: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--g-text);
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    user-select: none;
   }
-  .card-title {
+  .paa-q:hover { background: #f8f9fa; }
+  .paa-a {
+    padding: 0 18px 14px 18px;
+    font-size: 13.5px;
+    color: var(--g-snippet);
+    line-height: 1.5;
+    display: none;
+  }
+  .paa-item.open .paa-a { display: block; }
+  .paa-item.open .paa-arrow { transform: rotate(180deg); }
+  .paa-arrow { transition: transform 0.2s; font-size: 12px; color: #70757a; }
+
+  /* Available Domain Answer Box */
+  .domain-card {
+    border: 1px solid var(--g-border);
+    border-radius: 8px;
+    padding: 24px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 28px;
+  }
+  .domain-avail-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e6f4ea;
+    color: #137333;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+  }
+  .domain-h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--g-text);
+    margin-bottom: 6px;
+  }
+  .domain-sub {
     font-size: 14px;
-    font-weight: 800;
-    color: var(--text-main);
+    color: var(--g-snippet);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .domain-plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .domain-plan {
+    border: 1px solid var(--g-border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    background: #ffffff;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .domain-plan:hover { border-color: #bdc1c6; }
+  .domain-plan.selected { border: 2px solid var(--g-blue); background: #f8fbff; }
+  .domain-plan-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .domain-plan-price { font-size: 17px; font-weight: 800; color: var(--g-text); margin-bottom: 4px; }
+  .domain-plan-price span { font-size: 11px; font-weight: 400; color: var(--g-subtext); }
+  .domain-plan-desc { font-size: 11px; color: var(--g-subtext); line-height: 1.35; }
+  .btn-wa-hire {
+    background: #25d366;
+    color: #ffffff;
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+  .btn-wa-hire:hover { background: #1ebc59; }
+
+  /* Right Column: Google Knowledge Panel */
+  .serp-side-col {
+    width: 368px;
+    flex-shrink: 0;
+  }
+  .knowledge-panel {
+    border: 1px solid var(--g-border);
+    border-radius: 8px;
+    padding: 24px;
+    background: #ffffff;
+  }
+  .kp-title {
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--g-text);
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .kp-subtitle {
+    font-size: 13.5px;
+    color: var(--g-subtext);
+    margin-bottom: 18px;
+  }
+  .kp-actions {
+    display: flex;
+    gap: 16px;
+    border-bottom: 1px solid #e8eaed;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+  }
+  .kp-action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--g-blue);
+    font-size: 11.5px;
+    font-weight: 500;
+    gap: 6px;
+  }
+  .kp-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #dadce0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: background 0.15s;
+  }
+  .kp-action-btn:hover .kp-circle { background: #f1f3f4; }
+  .kp-details-list {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #3c4043;
+  }
+  .kp-details-list strong { color: var(--g-text); }
+  .kp-row { margin-bottom: 8px; }
+
+  /* Footer Google Style */
+  footer {
+    background: var(--g-footer-bg);
+    color: var(--g-subtext);
+    font-size: 14px;
+    margin-top: auto;
+  }
+  .footer-location {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--g-footer-border);
+    color: #70757a;
+    font-size: 15px;
+  }
+  .footer-links-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 16px;
+    flex-wrap: wrap;
+  }
+  .footer-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .footer-group a, .footer-discreet {
+    color: #70757a;
+    padding: 14px 12px;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 400;
+  }
+  .footer-group a:hover {
+    text-decoration: underline;
+    color: var(--g-text);
+  }
+  .footer-discreet {
+    color: #80868b;
+    font-size: 12px;
+    letter-spacing: 0.15px;
+  }  /* Search Container & Typing-Only Autocomplete Dropdown */
+  .home-search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 584px;
+    margin-bottom: 28px;
+  }
+  .home-search-wrapper .home-search-box {
+    margin-bottom: 0;
+  }
+  .home-search-box.has-dropdown {
+    border-radius: 24px 24px 0 0 !important;
+    box-shadow: 0 4px 6px rgba(32,33,36,0.28) !important;
+    border-bottom: 1px solid #dfe1e5 !important;
+  }
+  .google-ac-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-radius: 0 0 24px 24px;
+    box-shadow: 0 4px 6px rgba(32,33,36,0.28);
+    z-index: 1000;
+    overflow: hidden;
+    padding: 6px 0 10px 0;
+    display: none;
+    border-top: none;
+  }
+  .ac-item {
+    display: flex;
+    align-items: center;
+    padding: 9px 18px;
+    cursor: pointer;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--g-text);
+    transition: background 0.1s;
+    user-select: none;
+  }
+  .ac-item:hover, .ac-item.highlighted {
+    background: #f1f3f4;
+  }
+  .ac-icon {
+    font-size: 15px;
+    color: #9aa0a6;
+    min-width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ac-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .ac-title {
+    font-weight: 400;
+    color: #202124;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ac-title strong {
+    font-weight: 700;
+    color: #1a73e8;
+  }
+  .ac-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #e8f0fe;
+    color: #1a73e8;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+
+  /* Nivel 1: CDPE Featured Snippet Box */
+  .cdpe-featured-box {
+    border: 1px solid #dadce0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafd 100%);
+    box-shadow: 0 1px 4px rgba(32,33,36,0.08);
+  }
+  .cdpe-badge-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #1a73e8;
+    background: #e8f0fe;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    letter-spacing: 0.2px;
+  }
+  .cdpe-featured-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a0dab;
+    line-height: 1.35;
+    margin-bottom: 10px;
+  }
+  .cdpe-featured-desc {
+    font-size: 14.5px;
+    color: #3c4043;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .cdpe-featured-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .g-btn-blue {
+    background: #1a73e8;
+    color: #ffffff;
+    border: none;
+    border-radius: 18px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .g-btn-blue:hover { background: #174ea6; }
+  .g-btn-wa {
+    background: #e6f4ea;
+    color: #137333;
+    border: 1px solid #ceead6;
+    border-radius: 18px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s;
+  }
+  .g-btn-wa:hover { background: #ceead6; }
+
+  /* Nivel 3: Tienda CDPE Section */
+  .cdpe-store-section {
+    border: 1px solid var(--g-border);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 28px;
+    background: #ffffff;
+  }
+  .cdpe-store-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #202124;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .card-title span {
-    color: var(--primary);
-  }
-  .card-body {
-    padding: 18px;
-  }
-
-  /* Two Column Layout */
-  .grid-2 {
+  .cdpe-store-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  @media (max-width: 900px) {
-    .grid-2 { grid-template-columns: 1fr; }
-  }
-
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11.5px;
-  }
-  th {
-    background: #f1f5f9;
-    color: #334155;
-    font-weight: 700;
-    text-align: left;
-    padding: 9px 12px;
-    border: 1px solid var(--border);
-  }
-  td {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    color: var(--text-main);
-  }
-  th.text-right, td.text-right { text-align: right; }
-  th.text-center, td.text-center { text-align: center; }
-  tr:nth-child(even) { background-color: #f8fafc; }
-  tr:hover { background-color: #f1f5f9; }
-  tr.highlight-row { background-color: #fef2f2; font-weight: 700; }
-  .net-pos { color: var(--success); font-weight: 700; }
-  .net-neg { color: var(--accent); font-weight: 700; }
-
-  /* Progress Bar in Tables */
-  .bar-container {
-    width: 100%;
-    background-color: #e2e8f0;
-    border-radius: 9999px;
-    height: 7px;
-    overflow: hidden;
-    margin-top: 4px;
-  }
-  .bar-fill {
-    height: 100%;
-    background-color: var(--accent);
-    border-radius: 9999px;
-  }
-
-  /* Benchmark Cards */
-  .benchmark-box {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-  }
-  .benchmark-metric {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 8px 0;
-    border-bottom: 1px dashed var(--border);
-  }
-  .benchmark-metric:last-child { border-bottom: none; }
-  .metric-label { font-size: 11px; color: #475569; }
-  .metric-target { font-size: 10px; color: var(--text-muted); display: block; }
-  .metric-val { font-size: 14px; font-weight: 800; color: var(--info); }
-
-  /* Loading Overlay */
-  .loading-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,0.75);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
   }
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #e2e8f0;
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-  /* Toast Notification */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 12px 20px;
+  .cdpe-store-card {
+    border: 1px solid #e8eaed;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    display: none;
-    z-index: 1001;
-    font-weight: 600;
-    animation: fadeIn 0.3s;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    transition: box-shadow 0.15s, border-color 0.15s;
   }
-  /* Modal Acceso Móvil */
-  .modal-backdrop {
-    display: none;
+  .cdpe-store-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: #1a73e8;
+  }
+  .cdpe-store-card-icon {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .cdpe-store-card-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1a0dab;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .cdpe-store-card-price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #188038;
+    margin-bottom: 6px;
+  }
+  .cdpe-store-card-desc {
+    font-size: 12px;
+    color: var(--g-subtext);
+    line-height: 1.45;
+    flex: 1;
+    margin-bottom: 12px;
+  }
+  .cdpe-store-card-btn {
+    align-self: flex-start;
+    font-size: 12px;
+    color: #1a73e8;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cdpe-store-card-btn:hover { text-decoration: underline; }
+
+  /* Nivel 5: Web Global Results Section */
+  .web-global-section {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    border-top: 1px solid #ebebeb;
+    padding-top: 20px;
+  }
+  .web-global-header {
+    font-size: 15px;
+    font-weight: 600;
+    color: #3c4043;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .web-global-item {
+    margin-bottom: 24px;
+  }
+  .web-global-source {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #202124;
+    margin-bottom: 4px;
+  }
+  .web-global-url {
+    font-size: 12px;
+    color: var(--g-snippet);
+  }
+  .web-global-title {
+    font-size: 19px;
+    color: var(--g-link);
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 1.3;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+  .web-global-title:hover { text-decoration: underline; }
+  .web-global-snippet {
+    font-size: 14px;
+    color: var(--g-snippet);
+    line-height: 1.55;
+  }
+
+  /* SERP Header Agent Button */
+  .agent-serp-btn {
+    background: #f8fafd;
+    border: 1px solid #dadce0;
+    border-radius: 18px;
+    color: #1a73e8;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .agent-serp-btn:hover {
+    background: #e8f0fe;
+    border-color: #1a73e8;
+  }
+
+  /* CDPE Intelligent Agent Modal */
+  .agent-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15, 23, 42, 0.65);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(32, 33, 36, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 2000;
+    z-index: 9999;
+    display: none;
     align-items: center;
     justify-content: center;
     padding: 16px;
   }
-  .modal-card {
-    background: #ffffff;
-    border-radius: 14px;
-    width: 100%;
-    max-width: 440px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-  .modal-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
+  .agent-overlay.open {
     display: flex;
+  }
+  .agent-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 820px;
+    height: 86vh;
+    max-height: 740px;
+    border-radius: 18px;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes modalPop {
+    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .agent-header {
+    padding: 16px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #e8eaed;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 14px;
+  }
+  .agent-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .agent-header-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1a73e8, #1557b0);
+    color: #ffffff;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(26, 115, 232, 0.25);
+  }
+  .agent-header-info h3 {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #202124;
+    line-height: 1.2;
+  }
+  .agent-header-info p {
+    font-size: 12px;
+    color: #5f6368;
+  }
+  .agent-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #137333;
+    background: #e6f4ea;
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+  .agent-header-close {
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    color: #70757a;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    border-radius: 50%;
+  }
+  .agent-header-close:hover { background: #f1f3f4; color: #202124; }
+  .agent-chips {
+    padding: 10px 18px;
+    background: #f8fafd;
+    border-bottom: 1px solid #eef2f6;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    white-space: nowrap;
+  }
+  .agent-chip {
+    padding: 6px 13px;
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 16px;
+    font-size: 12.5px;
+    color: #3c4043;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+  }
+  .agent-chip:hover {
+    border-color: #1a73e8;
+    color: #1a73e8;
+    background: #f4f8fe;
+  }
+  .agent-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #fdfdfe;
+  }
+  .agent-msg {
+    display: flex;
+    gap: 12px;
+    max-width: 90%;
+  }
+  .agent-msg.bot {
+    align-self: flex-start;
+  }
+  .agent-msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+  .agent-msg-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .agent-msg.bot .agent-msg-avatar {
+    background: #e8f0fe;
+    color: #1a73e8;
+  }
+  .agent-msg.user .agent-msg-avatar {
+    background: #1a73e8;
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+  .agent-bubble {
+    padding: 13px 17px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #202124;
+  }
+  .agent-msg.bot .agent-bubble {
+    background: #f8f9fa;
+    border-top-left-radius: 2px;
+    border: 1px solid #e8eaed;
+  }
+  .agent-msg.user .agent-bubble {
+    background: #1a73e8;
+    color: #ffffff;
+    border-top-right-radius: 2px;
+  }
+  .agent-bubble p { margin-bottom: 8px; }
+  .agent-bubble p:last-child { margin-bottom: 0; }
+  .agent-bubble code {
+    background: #eef2f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12.5px;
+  }
+  .agent-msg.user .agent-bubble code {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+  .agent-wa-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: #25d366;
+    color: #ffffff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: background 0.15s;
+  }
+  .agent-wa-link:hover {
+    background: #1ea952;
+  }
+  .agent-input-bar {
+    padding: 14px 18px;
+    background: #ffffff;
+    border-top: 1px solid #e8eaed;
+    display: flex;
+    gap: 10px;
     align-items: center;
   }
-  .modal-close {
-    background: none;
-    border: none;
-    font-size: 22px;
-    line-height: 1;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 4px;
+  .agent-input {
+    flex: 1;
+    height: 44px;
+    border: 1px solid #dadce0;
+    border-radius: 24px;
+    padding: 0 18px;
+    font-size: 14.5px;
+    outline: none;
+    transition: border-color 0.15s;
+    font-family: inherit;
   }
-  .modal-close:hover { color: var(--text-main); }
-  .modal-body {
-    padding: 20px;
+  .agent-input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 2px rgba(26,115,232,0.18);
   }
-  .btn-copy {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 3px 8px;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--primary);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-copy:hover {
-    background: var(--primary-light);
-  }
-  .btn-mobile {
-    background: #0f172a;
+  .agent-send-btn {
+    height: 44px;
+    padding: 0 22px;
+    background: #1a73e8;
     color: #ffffff;
+    border: none;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
   }
-  .btn-mobile:hover {
-    background: #1e293b;
+  .agent-send-btn:hover {
+    background: #1557b0;
   }
-
-  /* Responsive Media Queries */
-  @media (max-width: 768px) {
-    .control-navbar {
-      padding: 10px 14px;
-    }
-    .nav-filters {
-      width: 100%;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
-    }
-    .filter-group {
-      width: 100%;
-    }
-    .quick-dates {
-      margin-top: 4px;
-      justify-content: flex-start;
-    }
-    .nav-actions {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .btn-mobile {
-      grid-column: span 2;
-      justify-content: center;
-    }
-    .kpi-grid {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    .report-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .report-meta {
-      text-align: left;
-    }
-    body {
-      padding-bottom: 80px;
-    }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
 </head>
 <body>
 
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="spinner"></div>
-  <div style="font-weight: 700; color: var(--primary);" id="loadingText">Cargando datos de SimplyGest...</div>
+<!-- ========================================================
+     1. HOME VIEW (Google Clean Minimalist Canvas)
+     ======================================================== -->
+<div class="home-view" id="homeView">
+  <header class="home-header">
+    <a href="https://correo.sa.com.gt" class="header-link">📧 Correo</a>
+    <a href="/panel" class="header-link" style="color:var(--g-blue);font-weight:600;">⚙️ CloudPanel</a>
+    <a href="/gestion" class="header-link">Gestión</a>
+    <a href="https://cdpe.sa.com.gt" class="header-link">CDPE</a>
+    <button class="waffle-btn" onclick="toggleWaffle(event)" title="Aplicaciones SimplyGest">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="#5f6368">
+        <path d="M6 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 14c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 20c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+      </svg>
+    </button>
+    <a href="/gestion" class="sign-in-btn">Iniciar sesión</a>
+
+    <div class="waffle-menu" id="waffleMenuHome">
+      <a href="https://correo.sa.com.gt" class="waffle-item">
+        <span class="waffle-icon">📧</span>
+        <span class="waffle-name">Correo / Webmail</span>
+      </a>
+      <a href="/panel" class="waffle-item">
+        <span class="waffle-icon">⚙️</span>
+        <span class="waffle-name">CloudPanel Servidor</span>
+      </a>
+      <a href="/gestion" class="waffle-item">
+        <span class="waffle-icon">📊</span>
+        <span class="waffle-name">Resumen Ejecutivo</span>
+      </a>
+      <a href="/gestion" class="waffle-item">
+        <span class="waffle-icon">🛒</span>
+        <span class="waffle-name">TPV &amp; Tienda</span>
+      </a>
+      <a href="https://cdpe.sa.com.gt" class="waffle-item">
+        <span class="waffle-icon">🏢</span>
+        <span class="waffle-name">Red CDPE</span>
+      </a>
+      <a href="https://correo.sa.com.gt" class="waffle-item">
+        <span class="waffle-icon">🏛️</span>
+        <span class="waffle-name">Acción Cooperativa</span>
+      </a>
+      <a href="javascript:void(0)" onclick="switchTab('hosting')" class="waffle-item">
+        <span class="waffle-icon">🌐</span>
+        <span class="waffle-name">Hosting PYME</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="home-center">
+    <div class="home-logo" onclick="document.getElementById('homeInput').focus()">
+      <span class="logo-sa">sa</span><span class="logo-dot">.</span><span class="logo-tld">com.gt</span>
+    </div>
+
+    <div class="home-search-wrapper" id="homeSearchWrapper">
+      <div class="home-search-box" id="homeSearchBox">
+        <div class="search-lens-svg">
+          <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#9aa0a6">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
+        </div>
+        <input type="text" id="homeInput" class="home-input" autocomplete="off" oninput="onHomeInput()" onkeydown="onHomeKeyDown(event)" autofocus placeholder="" />
+        <button class="home-clear-btn" id="homeClear" onclick="clearHomeInput()">&times;</button>
+        <div class="home-badge-suffix">.sa.com.gt</div>
+      </div>
+
+      <!-- Autocomplete Dropdown - Se muestra ÚNICAMENTE mientras se teclea -->
+      <div class="google-ac-dropdown" id="homeAcDropdown">
+        <div id="acItemsList"></div>
+      </div>
+    </div>
+
+    <div class="home-buttons">
+      <button class="g-btn" onclick="doSearchFromHome()">Buscar con sa.com.gt</button>
+      <button class="g-btn" onclick="doLuckyFromHome()" title="Consultar manuales de gestión comercial y asesoría CDPE">Me siento con suerte</button>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-links-row">
+      <div class="footer-group">
+        <a href="https://correo.sa.com.gt">📧 Correo Asociados</a>
+        <a href="https://cdpe.sa.com.gt">🏢 Red CDPE</a>
+        <a href="/gestion">SimplyGest Cloud</a>
+      </div>
+      <div class="footer-group">
+        <span class="footer-discreet">Guatemala &bull; Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE)</span>
+        <a href="/gestion">Privacidad</a>
+        <a href="/gestion">Condiciones</a>
+      </div>
+    </div>
+  </footer>
 </div>
 
-<div class="toast" id="toastMsg"></div>
+<!-- ========================================================
+     2. SERP VIEW (Google Results Page Authentic Layout)
+     ======================================================== -->
+<div class="serp-view" id="serpView">
+  <!-- Sticky Top Google Header -->
+  <header class="serp-header">
+    <div class="serp-header-top">
+      <a href="/" class="serp-mini-logo" onclick="event.preventDefault(); returnToHome();">
+        <span class="logo-sa">sa</span><span class="logo-dot">.</span><span class="logo-tld">com.gt</span>
+      </a>
 
-<!-- Modal Acceso Móvil -->
-<div id="modalMovil" class="modal-backdrop" onclick="cerrarModalMovil(event)">
-  <div class="modal-card" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span style="font-size:22px;">📱</span>
-        <div>
-          <h3 style="font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Conectar Dispositivo Móvil</h3>
-          <p style="font-size:11px; color:var(--text-muted); margin:0;">Accede al Resumen Ejecutivo desde cualquier teléfono o tablet</p>
-        </div>
-      </div>
-      <button class="modal-close" onclick="cerrarModalMovil()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div style="text-align:center; padding:6px 0 10px 0;">
-        <div id="qrCodeContainer" style="display:inline-block; padding:10px; background:#fff; border:1px solid #e2e8f0; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-          <img id="qrCodeImg" src="" alt="Código QR Móvil" style="width:180px; height:180px; display:block;" />
-        </div>
-        <div style="font-size:11px; color:#64748b; margin-top:8px;">
-          📷 <strong>Apunta la cámara de tu smartphone</strong> al código QR para entrar al instante.
-        </div>
-      </div>
-
-      <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span style="font-size:10px; font-weight:700; color:#16a34a; text-transform:uppercase;">🔒 Enlace Seguro HTTPS (Móvil / 4G / Wi-Fi)</span>
-            <button class="btn-copy" onclick="copiarTexto('txtTunnelUrl')">Copiar</button>
-          </div>
-          <input type="text" id="txtTunnelUrl" readonly style="width:100%; font-size:11px; font-family:monospace; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 8px;" />
-        </div>
-
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <span style="font-size:10px; font-weight:700; color:#2563eb; text-transform:uppercase;">🌐 Enlace Directo IP (Puerto 80)</span>
-            <button class="btn-copy" onclick="copiarTexto('txtDirectUrl')">Copiar</button>
-          </div>
-          <input type="text" id="txtDirectUrl" readonly style="width:100%; font-size:11px; font-family:monospace; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:6px 8px;" />
-        </div>
-      </div>
-
-      <div style="margin-top:12px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; font-size:11px; color:#1e40af; line-height:1.4;">
-        <strong>💡 Instalar como App en tu teléfono:</strong><br/>
-        En Safari o Chrome de tu móvil, toca en <em>"Compartir"</em> o <em>"Menú ⋮"</em> y selecciona <strong>"Añadir a pantalla de inicio"</strong>.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Login Corporativo SimplyGest -->
-<div id="modalLogin" class="modal-backdrop" style="display:flex;">
-  <div class="modal-card" style="max-width: 440px; border-top: 5px solid var(--primary);">
-    <div class="modal-header" style="background:#fef2f2;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span style="font-size:26px;">🍗</span>
-        <div>
-          <h3 style="font-size:16px; font-weight:800; color:var(--primary); margin:0;" id="loginTitle">SimplyGest &bull; Acceso Web</h3>
-          <p style="font-size:11px; color:var(--text-muted); margin:0;" id="loginSubdomainTag">Conexión Segura Multi-Empresa</p>
-        </div>
-      </div>
-    </div>
-    <div class="modal-body" style="padding:22px 20px;">
-      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 12px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;">
-        <span style="font-size:11px; color:#64748b;">Subdominio / Host:</span>
-        <span id="loginHostDisplay" style="font-size:11px; font-weight:800; color:var(--primary); font-family:monospace;">sa.com.gt</span>
-      </div>
-
-      <div id="loginAlert" style="display:none; background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:10px 12px; border-radius:6px; font-size:11.5px; margin-bottom:14px; font-weight:600;"></div>
-
-      <div style="display:flex; flex-direction:column; gap:12px;">
-        <div class="filter-group" id="loginGroupEmpresa">
-          <label for="loginEmpresaSelect" style="font-weight:700;">Empresa de SimplyGest</label>
-          <select id="loginEmpresaSelect" class="form-control" onchange="onLoginEmpresaChange()" style="font-weight:700; height:36px;">
-            <option value="1">Cargando empresas...</option>
-          </select>
-        </div>
-
-        <div id="loginDedicatedBadge" style="display:none; background:#fee2e2; border:1px solid #fecaca; padding:10px 14px; border-radius:8px; margin-bottom:2px;">
-          <div style="font-size:10px; font-weight:800; color:#991b1b; text-transform:uppercase; letter-spacing:0.5px;">🏢 Empresa Dedicada</div>
-          <div style="font-size:15px; font-weight:800; color:#7f1d1d;" id="loginDedicatedEmpresaNombre">DON POLLO</div>
-          <div style="font-size:11px; color:#b91c1c; margin-top:2px;" id="loginDedicatedPeriodoTag">Ejercicio Fiscal en curso: 2026</div>
-        </div>
-
-        <div class="filter-group">
-          <label for="loginUserSelect" style="font-weight:700;">Usuario Registrado en SimplyGest (perso)</label>
-          <select id="loginUserSelect" class="form-control" style="font-weight:600; height:36px;">
-            <option value="">Seleccione su usuario...</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label for="loginPassword" style="font-weight:700;">Contraseña de Acceso</label>
-          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" style="height:36px; font-size:13px;" onkeypress="if(event.key === 'Enter') submitLogin()">
-          <span style="font-size:10px; color:#94a3b8; margin-top:2px;">Usuarios sin contraseña pueden dejar este campo en blanco.</span>
-        </div>
-
-        <button class="btn btn-primary" id="btnLoginSubmit" onclick="submitLogin()" style="width:100%; height:38px; justify-content:center; font-size:13px; margin-top:6px;">
-          🔐 Iniciar Sesión en SimplyGest
+      <div class="serp-search-box">
+        <input type="text" id="serpInput" class="serp-input" autocomplete="off" oninput="onSerpInput()" onkeydown="onSerpKeyDown(event)" />
+        <button class="serp-clear-btn" id="serpClear" onclick="clearSerpInput()">&times;</button>
+        <div class="serp-divider"></div>
+        <button class="serp-lens-btn" onclick="doSearchFromSerp()" title="Buscar">
+          <svg focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+          </svg>
         </button>
       </div>
 
-      <div style="margin-top:16px; text-align:center; font-size:10.5px; color:#94a3b8; border-top:1px solid #f1f5f9; padding-top:10px;">
-        Reglas de negocio y niveles de acceso gobernados por SimplyGest 17.5.
+      <div class="serp-header-right">
+        <button class="agent-serp-btn" onclick="abrirAgenteCdpe()" title="Consultar manuales de gestión comercial con el Agente CDPE">
+          <span>🤖 Asesor CDPE</span>
+        </button>
+        <a href="https://correo.sa.com.gt" class="header-link">📧 Correo</a>
+        <button class="waffle-btn" onclick="toggleWaffle(event)" title="Aplicaciones">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="#5f6368">
+            <path d="M6 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 14c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM6 20c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+          </svg>
+        </button>
+        <a href="/gestion" class="sign-in-btn">Iniciar sesión</a>
       </div>
+    </div>
+
+    <!-- Navigation Tabs Google Style: 5 Niveles -->
+    <div class="serp-tabs">
+      <div class="serp-tab active" id="tabAll" onclick="switchTab('all')">
+        <span>🔍</span> Todo
+      </div>
+      <div class="serp-tab" id="tabCdpe" onclick="switchTab('cdpe')">
+        <span>📘</span> CDPE &amp; Manuales
+      </div>
+      <div class="serp-tab" id="tabCompanies" onclick="switchTab('companies')">
+        <span>🏢</span> Red SimplyGest
+      </div>
+      <div class="serp-tab" id="tabStoreCdpe" onclick="switchTab('storeCdpe')">
+        <span>🛍️</span> Tienda CDPE
+      </div>
+      <div class="serp-tab" id="tabHosting" onclick="switchTab('hosting')">
+        <span>☁️</span> Hosting sa.com.gt
+      </div>
+      <div class="serp-tab" id="tabWeb" onclick="switchTab('web')">
+        <span>🌐</span> Web Global
+      </div>
+    </div>
+  </header>
+
+  <!-- SERP Body: 2 Columns like Google -->
+  <div class="serp-body">
+    <!-- Left Column: Organic Results, CDPE, Products & Web (652px) -->
+    <div class="serp-main-col">
+      <div class="serp-count-line" id="serpStats">Cerca de 1 resultado (0.04 segundos)</div>
+
+      <!-- Nivel 1: Featured Answer / Destacado CDPE (Manuales & Asesoría) -->
+      <div id="cdpeFeaturedSection" style="display:none;"></div>
+
+      <!-- Nivel 2: Google Shopping Strip (Productos Don Pollo / Empresas de la Red) -->
+      <div class="shopping-section" id="shoppingSection" style="display:none;">
+        <div class="shopping-header">
+          <div class="shopping-title">🛍️ Productos de la Red SimplyGest</div>
+          <span style="font-size:12px; color:var(--g-subtext);" id="shoppingCount">0 productos</span>
+        </div>
+        <div class="shopping-grid" id="shoppingGrid"></div>
+      </div>
+
+      <!-- Nivel 2: Organic Companies / Subdomains Results -->
+      <div id="organicList"></div>
+
+      <!-- Nivel 3: Productos de la Tienda Oficial del CDPE -->
+      <div class="cdpe-store-section" id="cdpeStoreSection" style="display:none;">
+        <div class="cdpe-store-title">
+          <span>🏛️</span> Tienda Oficial del CDPE (Manuales &amp; Equipamiento)
+        </div>
+        <div class="cdpe-store-grid" id="cdpeStoreGrid"></div>
+      </div>
+
+      <!-- Nivel 4: Domain Registration Knowledge Card (When domain is free) -->
+      <div class="domain-card" id="domainCard" style="display:none;">
+        <div class="domain-avail-badge">✓ DISPONIBLE EN LA RED sa.com.gt</div>
+        <div class="domain-h1">El subdominio <span id="lblDomainFree" style="color:var(--g-blue); font-weight:700;">miempresa.sa.com.gt</span> está libre</div>
+        <div class="domain-sub">Este nombre no ha sido registrado. Puedes activarlo con tu servidor SimplyGest 17.5 en la nube, catálogo e-commerce y acceso administrativo multi-ejercicio.</div>
+
+        <div class="domain-plans">
+          <div class="domain-plan" id="p1" onclick="selectPlan('Emprendedor (Q 299/mes)', 1)">
+            <div class="domain-plan-name">Emprendedor</div>
+            <div class="domain-plan-price">Q 299 <span>/ mes</span></div>
+            <div class="domain-plan-desc">1 Empresa SimplyGest, Tienda E-Commerce, Pedidos WhatsApp.</div>
+          </div>
+
+          <div class="domain-plan selected" id="p2" onclick="selectPlan('Franquicia QSR Pro (Q 599/mes)', 2)">
+            <div class="domain-plan-name">Franquicia QSR</div>
+            <div class="domain-plan-price">Q 599 <span>/ mes</span></div>
+            <div class="domain-plan-desc">Multiejercicio fiscal, Portal de Gestión, TPV remoto 24/7.</div>
+          </div>
+
+          <div class="domain-plan" id="p3" onclick="selectPlan('Enterprise (Q 999/mes)', 3)">
+            <div class="domain-plan-name">Enterprise</div>
+            <div class="domain-plan-price">Q 999 <span>/ mes</span></div>
+            <div class="domain-plan-desc">Servidor Cloud dedicado, multi-sucursal, soporte 24/7.</div>
+          </div>
+        </div>
+
+        <button class="btn-wa-hire" onclick="enviarContratacionWA()">
+          <span>💬 Solicitar Activación de <span id="lblBtnDomainWA">miempresa.sa.com.gt</span> por WhatsApp &rarr;</span>
+        </button>
+      </div>
+
+      <!-- Nivel 5: Resultados de la Web Global (Todo Internet) -->
+      <div class="web-global-section" id="webGlobalSection" style="display:none;">
+        <div class="web-global-header">
+          <span>🌐</span> Resultados de la Web Global (Internet)
+        </div>
+        <div id="webGlobalList"></div>
+      </div>
+
+
+
+      <!-- Google Accordion: People Also Ask (Preguntas Relacionadas) -->
+      <div class="paa-section" id="paaSection">
+        <div class="paa-heading">Preguntas relacionadas</div>
+
+        <div class="paa-item" onclick="togglePaa(this)">
+          <div class="paa-q">
+            <span>¿Cómo pedir productos en línea en las tiendas afiliadas?</span>
+            <span class="paa-arrow">&#9660;</span>
+          </div>
+          <div class="paa-a">
+            Ingresa a la tienda de la empresa (ej. <strong>donpollo.sa.com.gt</strong>), agrega tus productos o combos al carrito interactivo y haz clic en "Confirmar Pedido". Tu pedido se enviará al WhatsApp del establecimiento con sincronización inmediata.
+          </div>
+        </div>
+
+        <div class="paa-item" onclick="togglePaa(this)">
+          <div class="paa-q">
+            <span>¿Cómo funciona el motor de base de datos SimplyGest en la nube?</span>
+            <span class="paa-arrow">&#9660;</span>
+          </div>
+          <div class="paa-a">
+            Cada subdominio conecta directamente al motor nativo DBISAM 4 de SimplyGest 17.5. El sistema aísla los datos por empresa y permite consultar periodos fiscales activos e históricos en tiempo real sin instalaciones locales.
+          </div>
+        </div>
+
+        <div class="paa-item" onclick="togglePaa(this)">
+          <div class="paa-q">
+            <span>¿Qué es la red CDPE en sa.com.gt?</span>
+            <span class="paa-arrow">&#9660;</span>
+          </div>
+          <div class="paa-a">
+            Es la plataforma del Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE) para brindar infraestructura digital, alojamiento web, gestión administrativa y venta en línea a empresas en Guatemala.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Google Knowledge Panel (368px) -->
+    <div class="serp-side-col" id="serpSideCol">
+      <div class="knowledge-panel" id="knowledgePanel">
+        <div class="kp-title" id="kpTitle">Don Pollo</div>
+        <div class="kp-subtitle" id="kpSubtitle">Cadena de comida rápida en Guatemala • Franquicia SimplyGest</div>
+
+        <div class="kp-actions">
+          <a href="#" id="kpLinkStore" class="kp-action-btn" target="_blank">
+            <div class="kp-circle">🌐</div>
+            <span>Sitio web</span>
+          </a>
+          <a href="#" id="kpLinkShop" class="kp-action-btn" target="_blank">
+            <div class="kp-circle">🛒</div>
+            <span>Tienda online</span>
+          </a>
+          <a href="#" id="kpLinkAdmin" class="kp-action-btn" target="_blank">
+            <div class="kp-circle">📊</div>
+            <span>Gestión</span>
+          </a>
+        </div>
+
+        <div class="kp-details-list">
+          <div class="kp-row"><strong>Subdominio oficial:</strong> <span id="kpDomain" style="color:var(--g-blue);">donpollo.sa.com.gt</span></div>
+          <div class="kp-row"><strong>Sistema ERP:</strong> SimplyGest 17.5 Cloud (DBISAM 4)</div>
+          <div class="kp-row"><strong>Periodo Fiscal:</strong> <span id="kpFiscal">Ejercicio 2026 (En curso)</span></div>
+          <div class="kp-row"><strong>Estado:</strong> <span style="color:#137333; font-weight:600;">Abierto</span> &bull; 08:00 a 20:00</div>
+          <div class="kp-row"><strong>Ubicación:</strong> Guatemala</div>
+          <div class="kp-row"><strong>Certificación:</strong> Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-links-row">
+      <div class="footer-group">
+        <a href="https://correo.sa.com.gt">📧 Correo Asociados</a>
+        <a href="https://cdpe.sa.com.gt">🏢 Red CDPE</a>
+        <a href="/gestion">SimplyGest Cloud</a>
+      </div>
+      <div class="footer-group">
+        <span class="footer-discreet">Guatemala &bull; Centro de Desarrollo de Pequeñas y Medianas Empresas (CDPE)</span>
+        <a href="/gestion">Privacidad</a>
+        <a href="/gestion">Condiciones</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ========================================================
+     3. AGENTE CDPE ASESOR MODAL (Commercial Management Agent)
+     ======================================================== -->
+<div class="agent-overlay" id="agentModal" onclick="cerrarAgenteCdpeOnBackdrop(event)">
+  <div class="agent-card">
+    <div class="agent-header">
+      <div class="agent-header-brand">
+        <div class="agent-header-icon">🤖</div>
+        <div class="agent-header-info">
+          <h3>Agente CDPE &bull; Asesor Comercial &amp; Manuales de Gestión</h3>
+          <p>Centro de Desarrollo de PYMES &bull; Conectado a Internet &bull; Catálogo de 13,396 Productos</p>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="agent-status-tag" style="background:#e8f0fe;color:#1a73e8;border:1px solid #c2e7ff;">🌐 Web Live &amp; CDPE</span>
+        <button class="agent-header-close" onclick="cerrarAgenteCdpe()">&times;</button>
+      </div>
+    </div>
+
+    <!-- Quick Manual Topics Chips -->
+    <div class="agent-chips">
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué manuales de gestión comercial ofrece el CDPE?')">📚 Todos los Manuales</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo aplicar el manual de ventas y diseño de combos para maximizar ingresos?')">📘 Manual 1: Ventas &amp; Combos</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo controlar inventarios y mermas con el método PEPS en SimplyGest 17.5?')">📦 Manual 2: Inventarios &amp; Mermas</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo realizar el arqueo de caja, cuadre de turnos y facturación SAT FEL?')">💰 Manual 3: Arqueo &amp; Facturación SAT</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los requisitos y pasos para afiliar una franquicia a la Red CDPE?')">🏢 Manual 4: Franquicias &amp; Subdominios</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">🏛️ Créditos Acción Cooperativa</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los productos, combos y precios de Don Pollo?')">🍗 Productos Don Pollo</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">🛍️ Freidoras en Tienda CDPE</div>
+    </div>
+
+    <!-- Conversation Messages Area -->
+    <div class="agent-messages" id="agentMessages">
+      <div class="agent-msg bot">
+        <div class="agent-msg-avatar">🤖</div>
+        <div class="agent-bubble">
+          <p><strong>¡Hola! Soy tu Agente Especializado del CDPE con Acceso a Internet y Catálogo Oficial.</strong></p>
+          <p style="margin-top:6px;">Tengo permisos completos para consultar fuentes externas, la web en vivo y el catálogo oficial de <strong>13,396 productos y equipos</strong> de la tienda CDPE (<a href="https://cdpe.accion.app/tienda.html" target="_blank" style="color:#1a73e8;font-weight:600;">cdpe.accion.app/tienda.html</a>), además de nuestros <strong>Manuales de Gestión Comercial</strong>:</p>
+          <div style="margin:10px 0; background:#ffffff; border-radius:10px; padding:12px; border:1px solid #dadce0;">
+            <p style="margin-bottom:6px;"><strong>📖 Cobertura Técnica y Comercial:</strong></p>
+            <ul style="padding-left:18px; line-height:1.6; font-size:12.5px; color:#3c4043;">
+              <li><strong>Manual 1:</strong> Técnicas de Venta Sugestiva (Upselling), Ingeniería de Menús y Combos QSR.</li>
+              <li><strong>Manual 2:</strong> Control de Inventarios, Mermas y Rotación PEPS (FIFO) con SimplyGest 17.5.</li>
+              <li><strong>Manual 3:</strong> Arqueo de Caja, Cierres de Turno a Ciegas y Facturación Electrónica SAT (FEL).</li>
+              <li><strong>Manual 4:</strong> Expansión de Franquicias, Estandarización de Calidad y Subdominios <code>sa.com.gt</code>.</li>
+              <li><strong>Tienda CDPE (13,396 Ítems):</strong> Maquinaria industrial, hornos, freidoras, vitrinas, empaques ecológicos y TPV.</li>
+              <li><strong>🌐 Búsqueda Web Externa:</strong> Respuestas en tiempo real con datos de internet y normativas.</li>
+            </ul>
+          </div>
+          <p>¿En qué puedo orientarte hoy? Haz clic en cualquiera de los temas arriba o escribe tu duda abajo.</p>
+          <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20con%20un%20consultor%20humano" target="_blank" class="agent-wa-link">
+            💬 Chatear con un Asesor Humano (+502 4555-0004) &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="agent-input-bar">
+      <input type="text" id="agentInput" class="agent-input" placeholder="Pregunta sobre ventas, inventario SimplyGest, combos, arqueo..." onkeydown="onAgentKeyDown(event)" />
+      <button class="agent-send-btn" onclick="enviarPreguntaAgente()">Consultar</button>
     </div>
   </div>
 </div>
 
-<!-- Top Control Navbar -->
-<header class="control-navbar">
-  <div class="nav-brand">
-    <div class="nav-logo" id="navBrandLogo">🍗</div>
-    <div>
-      <div class="nav-title" id="navBrandTitle">SimplyGest &bull; Resumen Ejecutivo</div>
-      <div class="nav-subtitle" id="navBrandSubtitle">Módulo de Analítica y Estadísticas Multi-Empresa</div>
-    </div>
-  </div>
-
-  <div class="nav-filters">
-    <div class="filter-group" id="filterGroupEmpresa">
-      <label for="empresaSelect">Empresa / Sucursal</label>
-      <select id="empresaSelect" class="form-control" onchange="onEmpresaChange()">
-        <option value="1">Cargando empresas...</option>
-      </select>
-    </div>
-
-    <div class="filter-group" id="filterGroupPeriodo">
-      <label for="periodoSelect" id="lblPeriodoSelect">Período Fiscal</label>
-      <select id="periodoSelect" class="form-control" onchange="onPeriodoChange()" style="font-weight:700; color:var(--primary); min-width:160px;">
-        <option value="2026">2026 (En curso)</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label for="sectorSelect">Sector / Benchmark</label>
-      <select id="sectorSelect" class="form-control" onchange="cargarReporte()">
-        <option value="qsr">🍗 Comida Rápida (QSR) - Pollo Frito</option>
-        <option value="restaurant">🍽️ Restaurante Casual / Cafetería</option>
-        <option value="retail">🛒 Comercio Minorista / Tienda Retail</option>
-        <option value="services">💼 Servicios y General</option>
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <label for="fechaDesde">Fecha Desde</label>
-      <input type="date" id="fechaDesde" class="form-control">
-    </div>
-
-    <div class="filter-group">
-      <label for="fechaHasta">Fecha Hasta</label>
-      <input type="date" id="fechaHasta" class="form-control">
-    </div>
-
-    <div class="quick-dates">
-      <button class="btn-quick" onclick="setQuickDate('all')">Todo</button>
-      <button class="btn-quick" onclick="setQuickDate('7d')">Últimos 7d</button>
-      <button class="btn-quick" onclick="setQuickDate('month')">Mes</button>
-    </div>
-  </div>
-
-  <div class="nav-actions">
-    <div id="userSessionBadge" style="display:none; align-items:center; gap:8px; background:#f8fafc; border:1px solid #e2e8f0; padding:4px 10px; border-radius:6px;">
-      <span style="font-size:11px; color:#334155;">👤 <strong id="loggedUserName">-</strong> <span id="loggedUserRole" class="badge badge-red" style="margin-left:4px;">-</span></span>
-      <button class="btn-quick" onclick="logout()" style="color:#dc2626; border-color:#fca5a5; font-size:10px; padding:2px 6px;">Cerrar Sesión</button>
-    </div>
-    <button class="btn btn-primary" id="btnGenerar" onclick="cargarReporte()">
-      🔄 Generar Resumen
-    </button>
-    <button class="btn btn-secondary" id="btnExportar" onclick="exportarPdf()">
-      📄 Exportar a PDF
-    </button>
-    <button class="btn btn-mobile" id="btnMobile" onclick="abrirModalMovil()">
-      📱 Acceso Móvil
-    </button>
-  </div>
-</header>
-
-<main class="container">
-  <!-- Report Company Header -->
-  <div class="report-header">
-    <div>
-      <div class="report-company-name" id="dispEmpresaNombre">Cargando Empresa...</div>
-      <div style="font-size: 12px; color: var(--text-muted);" id="dispEmpresaInfo">-</div>
-    </div>
-    <div class="report-meta">
-      <div><strong>Período Analizado:</strong> <span id="dispPeriodo">-</span></div>
-      <div><strong>Sector Benchmark:</strong> <span id="dispSectorBadge" class="badge badge-red">QSR Pollo Frito</span></div>
-      <div style="margin-top: 4px; font-size: 10px;">Moneda: <strong>Quetzales (Q)</strong></div>
-    </div>
-  </div>
-
-  <!-- KPI Cards -->
-  <div class="kpi-grid">
-    <div class="kpi-card red">
-      <div class="kpi-title">Ventas Totales Brutas</div>
-      <div class="kpi-value" id="kpiVentas">Q 0.00</div>
-      <div class="kpi-sub" id="kpiTickets">0 facturas emitidas</div>
-    </div>
-
-    <div class="kpi-card blue">
-      <div class="kpi-title">Ticket Promedio</div>
-      <div class="kpi-value" id="kpiTicketProm">Q 0.00</div>
-      <div class="kpi-sub" id="kpiTicketRango">Min: Q 0 | Max: Q 0</div>
-    </div>
-
-    <div class="kpi-card amber">
-      <div class="kpi-title">Gastos + Compras</div>
-      <div class="kpi-value" id="kpiEgresos">Q 0.00</div>
-      <div class="kpi-sub" id="kpiEgresosSub">Gastos: Q 0 | Compras: Q 0</div>
-    </div>
-
-    <div class="kpi-card green">
-      <div class="kpi-title">Saldo Neto en Caja</div>
-      <div class="kpi-value" id="kpiSaldoNeto">Q 0.00</div>
-      <div class="kpi-sub" id="kpiMargen">Margen Operativo de Caja: 0%</div>
-    </div>
-  </div>
-
-  <!-- SECCIÓN 1: Vendedores -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <span>1.</span> Desempeño y Promedio de Venta por Vendedor / Cajero
-      </div>
-      <span class="badge badge-blue">Rendimiento por Operador</span>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead>
-          <tr>
-            <th>Vendedor / Operador</th>
-            <th class="text-right">Tickets Atendidos</th>
-            <th class="text-right">Total Facturado (Q)</th>
-            <th class="text-right">Ticket Promedio</th>
-            <th class="text-right">% Participación</th>
-            <th style="width: 25%;">Distribución de Ventas</th>
-          </tr>
-        </thead>
-        <tbody id="tblVendedores">
-          <tr><td colspan="6" class="text-center">Cargando vendedores...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SECCIÓN 2: Resumen Diario -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <span>2.</span> Resumen Diario Consolidado (Ventas, Gastos y Compras)
-      </div>
-      <span class="badge badge-green">Flujo Operativo de Caja</span>
-    </div>
-    <div class="card-body">
-      <table>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th class="text-center">Tickets</th>
-            <th class="text-right">Ventas Totales</th>
-            <th class="text-right">Ticket Promedio</th>
-            <th class="text-right">Gastos de Caja</th>
-            <th class="text-right">Compras</th>
-            <th class="text-right">Saldo Neto Diario</th>
-          </tr>
-        </thead>
-        <tbody id="tblDiario">
-          <tr><td colspan="7" class="text-center">Cargando histórico diario...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- SECCIÓN 3: Top Productos -->
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span>3.1</span> Ranking Global de Productos</div>
-        <span class="badge badge-amber">Más Vendidos</span>
-      </div>
-      <div class="card-body">
-        <table>
-          <thead>
-            <tr>
-              <th>Artículo</th>
-              <th class="text-right">Unidades</th>
-              <th class="text-right">Total (Q)</th>
-              <th class="text-right">Precio Prom.</th>
-            </tr>
-          </thead>
-          <tbody id="tblTopGlobal">
-            <tr><td colspan="4" class="text-center">Cargando productos...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title"><span>3.2</span> Productos Líderes por Día</div>
-        <span class="badge badge-red">Top 3 Diario</span>
-      </div>
-      <div class="card-body">
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Top 1</th>
-              <th>Top 2</th>
-              <th>Top 3</th>
-            </tr>
-          </thead>
-          <tbody id="tblTopPorDia">
-            <tr><td colspan="4" class="text-center">Cargando desglose diario...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECCIÓN 4: Benchmark y Comparativa de la Industria -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">
-        <span>4.</span> Benchmark de la Industria vs. Desempeño Real
-      </div>
-      <span class="badge badge-blue" id="benchBadgeSector">Sector QSR</span>
-    </div>
-    <div class="card-body">
-      <div class="grid-2">
-        <div class="benchmark-box">
-          <div style="font-weight: 800; margin-bottom: 10px; color: var(--primary);" id="benchNombreSector">
-            Estándar del Mercado
-          </div>
-          
-          <div class="benchmark-metric">
-            <div>
-              <div class="metric-label">Ticket Promedio</div>
-              <span class="metric-target" id="benchRefTicket">Estándar: Q 32.00 - Q 48.00</span>
-            </div>
-            <div class="metric-val" id="benchRealTicket">Q 0.00</div>
-          </div>
-
-          <div class="benchmark-metric">
-            <div>
-              <div class="metric-label">Margen Operativo en Caja</div>
-              <span class="metric-target" id="benchRefMargen">Estándar: 40% - 50%</span>
-            </div>
-            <div class="metric-val" style="color: var(--success);" id="benchRealMargen">0.0%</div>
-          </div>
-
-          <div class="benchmark-metric">
-            <div>
-              <div class="metric-label">Costo de Insumos / Mercadería</div>
-              <span class="metric-target" id="benchRefFoodCost">Estándar: 30% - 35%</span>
-            </div>
-            <div class="metric-val" style="color: var(--warning);" id="benchRealFoodCost">~33%</div>
-          </div>
-        </div>
-
-        <div class="benchmark-box" style="background: #ffffff;">
-          <div style="font-weight: 800; margin-bottom: 10px; color: var(--primary);">
-            Diagnóstico Estratégico Ejecutivo
-          </div>
-          <div style="margin-bottom: 8px;">
-            <strong>Diagnóstico de Ticket:</strong> <span id="diagTicketText">-</span>
-          </div>
-          <div style="margin-bottom: 8px;">
-            <strong>Diagnóstico de Margen:</strong> <span id="diagMargenText">-</span>
-          </div>
-          <p style="font-size: 11px; color: var(--text-muted); line-height: 1.5;" id="diagConsejo">
-            Para maximizar los resultados comerciales, enfoque al equipo de ventas en la paquetización de bebidas y guarniciones en cada pedido.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-
 <script>
-  let cachedData = null;
-  let empresasList = [];
-  let serverInfo = null;
-  let authToken = localStorage.getItem('sg_token') || '';
-  let currentUser = null;
-  let subdomainInfo = null;
+  let currentSearchData = null;
+  let activeTab = 'all';
+  let planElegido = 'Franquicia QSR Pro (Q 599/mes)';
+  let highlightedIndex = -1;
+  let activeSuggestions = [];
 
-  async function cargarServerInfo() {
-    try {
-      const res = await fetch('/api/server-info');
-      serverInfo = await res.json();
-    } catch (e) {
-      console.warn("No se pudo cargar server-info:", e);
-    }
-  }
+  // --- SUGERENCIAS SOLO MIENTRAS ESCRIBE (TYPING-ONLY AUTOCOMPLETE) ---
+  let acDebounceTimer = null;
+  const SUGGESTION_DATABASE = [
+    { text: "manual de gestion comercial cdpe", badge: "Manual 1", icon: "📘", action: () => executeSearch("manual 1 ventas") },
+    { text: "manual de inventarios simplygest", badge: "Manual 2", icon: "📦", action: () => executeSearch("manual 2 inventarios") },
+    { text: "manual de arqueo de caja y sat fel", badge: "Manual 3", icon: "💰", action: () => executeSearch("manual 3 arqueo") },
+    { text: "manual de franquicias y expansion cdpe", badge: "Manual 4", icon: "🏢", action: () => executeSearch("manual 4 franquicias") },
+    { text: "cdpe guatemala asesoria pymes", badge: "CDPE Oficial", icon: "🏛️", action: () => executeSearch("cdpe") },
+    { text: "don pollo tienda y combos", badge: "Tienda QSR", icon: "🍗", action: () => executeSearch("don pollo") },
+    { text: "combo clasico don pollo", badge: "Q 35.00", icon: "🛍️", action: () => executeSearch("combo clasico") },
+    { text: "accion cooperativa creditos tpv", badge: "Cooperativa", icon: "🏛️", action: () => executeSearch("cooperativa") },
+    { text: "kit punto de venta simplygest 17.5", badge: "Tienda CDPE", icon: "💻", action: () => executeSearch("simplygest") },
+    { text: "compendio 4 manuales comerciales", badge: "Tienda CDPE", icon: "📚", action: () => executeSearch("manuales cdpe") },
+    { text: "membresia empresarial cdpe", badge: "Servicios", icon: "🏅", action: () => executeSearch("membresia cdpe") },
+    { text: "freidoras industriales a presion para pollo", badge: "Tienda CDPE", icon: "🔥", action: () => executeSearch("freidora pollo") },
+    { text: "hornos de conveccion y brasa", badge: "Tienda CDPE", icon: "🔥", action: () => executeSearch("horno") },
+    { text: "vitrinas y refrigeradores comerciales", badge: "Tienda CDPE", icon: "❄️", action: () => executeSearch("vitrina") },
+    { text: "empaques y vasos biodegradables", badge: "Tienda CDPE", icon: "🥡", action: () => executeSearch("empaque") },
+    { text: "mesas y sillas para restaurantes", badge: "Tienda CDPE", icon: "🪑", action: () => executeSearch("silla mesa") }
+  ];
 
-  function showToast(msg) {
-    const t = document.getElementById('toastMsg');
-    t.innerText = msg;
-    t.style.display = 'block';
-    setTimeout(() => { t.style.display = 'none'; }, 4000);
-  }
+  function onHomeInput() {
+    const raw = document.getElementById('homeInput').value;
+    const q = raw.trim().toLowerCase();
+    document.getElementById('homeClear').style.display = raw ? 'block' : 'none';
 
-  function showLoading(show, text = 'Cargando datos de SimplyGest...') {
-    const el = document.getElementById('loadingOverlay');
-    document.getElementById('loadingText').innerText = text;
-    el.style.display = show ? 'flex' : 'none';
-  }
-
-  async function checkAuth() {
-    try {
-      const res = await fetch('/api/auth/me', {
-        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
-      });
-      const data = await res.json();
-      if (data.authenticated && data.user) {
-        currentUser = data.user;
-        mostrarSesionActiva(currentUser);
-        return true;
-      }
-    } catch (e) {
-      console.warn("Error verificando sesión:", e);
-    }
-    return false;
-  }
-
-  function mostrarSesionActiva(user) {
-    document.getElementById('modalLogin').style.display = 'none';
-    const badge = document.getElementById('userSessionBadge');
-    document.getElementById('loggedUserName').innerText = user.nombre;
-    document.getElementById('loggedUserRole').innerText = user.tipo;
-    badge.style.display = 'flex';
-
-    if (user.tipo !== 'Administrador') {
-      document.getElementById('empresaSelect').value = user.empresa;
-      document.getElementById('empresaSelect').disabled = true;
-    } else {
-      document.getElementById('empresaSelect').disabled = false;
-    }
-  }
-
-  async function cargarSubdomainContext() {
-    try {
-      const res = await fetch('/api/subdomain-context');
-      subdomainInfo = await res.json();
-      document.getElementById('loginHostDisplay').innerText = window.location.host;
-      if (subdomainInfo.isDedicated) {
-        document.getElementById('loginTitle').innerText = `${subdomainInfo.empresa} • Acceso Web`;
-        document.getElementById('loginSubdomainTag').innerText = `Subdominio dedicado: ${subdomainInfo.slug}.sa.com.gt`;
-      }
-    } catch (e) {
-      console.warn("Error al cargar subdomain-context:", e);
-    }
-  }
-
-  async function cargarUsuariosEmpresa(empresaId) {
-    const sel = document.getElementById('loginUserSelect');
-    sel.innerHTML = '<option value="">Cargando usuarios de SimplyGest...</option>';
-    try {
-      const res = await fetch(`/api/auth/users?empresa=${empresaId}`);
-      const users = await res.json();
-      sel.innerHTML = '<option value="">-- Seleccione su usuario --</option>';
-      users.forEach(u => {
-        const opt = document.createElement('option');
-        opt.value = u.codigo;
-        const permTxt = (!u.estadisticas && !u.resumen && u.tipo !== 'Administrador') ? ' (Sin acceso a reportes)' : '';
-        opt.innerText = `${u.nombre} - ${u.tipo}${permTxt}`;
-        sel.appendChild(opt);
-      });
-    } catch (e) {
-      sel.innerHTML = '<option value="">Error al cargar usuarios</option>';
-    }
-  }
-
-  async function onLoginEmpresaChange() {
-    const emp = document.getElementById('loginEmpresaSelect').value;
-    await cargarUsuariosEmpresa(emp);
-  }
-
-  async function submitLogin() {
-    const emp = document.getElementById('loginEmpresaSelect').value;
-    const userId = document.getElementById('loginUserSelect').value;
-    const pass = document.getElementById('loginPassword').value;
-    const alertBox = document.getElementById('loginAlert');
-
-    alertBox.style.display = 'none';
-
-    if (!userId) {
-      alertBox.innerText = 'Por favor seleccione un usuario registrado en SimplyGest.';
-      alertBox.style.display = 'block';
+    // REGLA FUNDAMENTAL: NUNCA mostrar lista al hacer clic o con el buscador vacío
+    if (!q) {
+      hideSuggestions();
+      if (acDebounceTimer) clearTimeout(acDebounceTimer);
       return;
     }
 
-    showLoading(true, 'Autenticando contra SimplyGest 17.5...');
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ empresa: emp, userId: userId, password: pass })
-      });
-      const data = await res.json();
-      if (data.status === 'ok') {
-        authToken = data.token;
-        localStorage.setItem('sg_token', authToken);
-        currentUser = data.user;
-        mostrarSesionActiva(currentUser);
-        showToast(`¡Bienvenido, ${currentUser.nombre}!`);
-        
-        const empSelect = document.getElementById('empresaSelect');
-        empSelect.value = emp;
-        
-        await cargarReporte();
-      } else {
-        alertBox.innerText = data.error || 'Credenciales no válidas.';
-        alertBox.style.display = 'block';
+    // Filtrar sugerencias base coincidentes mientras se escribe
+    const matches = SUGGESTION_DATABASE.filter(item => 
+      item.text.toLowerCase().includes(q)
+    ).slice(0, 5);
+
+    const fullList = [
+      { text: raw.trim(), badge: "Buscar", icon: "🔍", action: () => executeSearch(raw.trim()) },
+      ...matches
+    ];
+
+    renderSuggestions(fullList, q);
+
+    // Consulta dinámica a la API para añadir productos reales de la tienda CDPE (13,396 ítems)
+    if (acDebounceTimer) clearTimeout(acDebounceTimer);
+    if (q.length >= 2) {
+      acDebounceTimer = setTimeout(async () => {
+        const curQ = document.getElementById('homeInput').value.trim().toLowerCase();
+        if (!curQ) return;
+        try {
+          const res = await fetch(`/api/buscar?q=${encodeURIComponent(curQ)}`);
+          const data = await res.json();
+          if (data && data.tiendaCdpe && data.tiendaCdpe.length > 0) {
+            const prodMatches = data.tiendaCdpe.slice(0, 4).map(p => ({
+              text: p.nombre,
+              badge: p.precioFmt || "Tienda CDPE",
+              icon: p.icono || "🛍️",
+              action: () => executeSearch(p.nombre)
+            }));
+            const updatedList = [
+              { text: curQ, badge: "Buscar", icon: "🔍", action: () => executeSearch(curQ) },
+              ...matches,
+              ...prodMatches
+            ];
+            renderSuggestions(updatedList, curQ);
+          }
+        } catch (e) {}
+      }, 250);
+    }
+  }
+
+  function renderSuggestions(items, query) {
+    activeSuggestions = items;
+    highlightedIndex = -1;
+    const listEl = document.getElementById('acItemsList');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    items.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'ac-item';
+      row.id = 'ac-item-' + idx;
+      row.onclick = () => {
+        item.action();
+        hideSuggestions();
+      };
+
+      // Resaltar en negrita la parte coincidente
+      let titleHtml = item.text;
+      const pos = item.text.toLowerCase().indexOf(query);
+      if (pos >= 0) {
+        titleHtml = item.text.substring(0, pos) + '<strong>' + item.text.substring(pos, pos + query.length) + '</strong>' + item.text.substring(pos + query.length);
       }
-    } catch (e) {
-      alertBox.innerText = 'Error al comunicarse con el servidor SimplyGest.';
-      alertBox.style.display = 'block';
-    } finally {
-      showLoading(false);
+
+      row.innerHTML = `
+        <div class="ac-icon">${item.icon}</div>
+        <div class="ac-content">
+          <span class="ac-title">${titleHtml}</span>
+          ${item.badge ? `<span class="ac-badge">${item.badge}</span>` : ''}
+        </div>
+      `;
+      listEl.appendChild(row);
+    });
+
+    document.getElementById('homeSearchBox').classList.add('has-dropdown');
+    document.getElementById('homeAcDropdown').style.display = 'block';
+  }
+
+  function hideSuggestions() {
+    const box = document.getElementById('homeSearchBox');
+    const dd = document.getElementById('homeAcDropdown');
+    if (box) box.classList.remove('has-dropdown');
+    if (dd) dd.style.display = 'none';
+    highlightedIndex = -1;
+    activeSuggestions = [];
+  }
+
+  function onHomeKeyDown(e) {
+    const dd = document.getElementById('homeAcDropdown');
+    const isVisible = dd && dd.style.display === 'block';
+
+    if (e.key === 'ArrowDown' && isVisible) {
+      e.preventDefault();
+      if (highlightedIndex < activeSuggestions.length - 1) {
+        highlightedIndex++;
+        updateHighlight();
+      }
+    } else if (e.key === 'ArrowUp' && isVisible) {
+      e.preventDefault();
+      if (highlightedIndex > 0) {
+        highlightedIndex--;
+        updateHighlight();
+      } else if (highlightedIndex === 0) {
+        highlightedIndex = -1;
+        updateHighlight();
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isVisible && highlightedIndex >= 0 && activeSuggestions[highlightedIndex]) {
+        activeSuggestions[highlightedIndex].action();
+      } else {
+        doSearchFromHome();
+      }
+      hideSuggestions();
+    } else if (e.key === 'Escape') {
+      hideSuggestions();
     }
   }
 
-  async function logout() {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
-      });
-    } catch (e) {}
-    authToken = '';
-    currentUser = null;
-    localStorage.removeItem('sg_token');
-    document.getElementById('userSessionBadge').style.display = 'none';
-    document.getElementById('modalLogin').style.display = 'flex';
-    document.getElementById('loginPassword').value = '';
-    showToast('Sesión cerrada correctamente.');
-  }
-
-  let fiscalPeriods = [];
-  let currentFiscalYear = '2026';
-
-  async function cargarPeriodosEmpresa(empresaId) {
-    const sel = document.getElementById('periodoSelect');
-    sel.innerHTML = '<option value="">Cargando períodos...</option>';
-    try {
-      const res = await fetch(`/api/periodos?empresa=${empresaId}`);
-      const data = await res.json();
-      fiscalPeriods = data.periodos || [];
-      currentFiscalYear = data.periodoEnCurso || '2026';
-
-      sel.innerHTML = '';
-      fiscalPeriods.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.year;
-        opt.innerText = p.label;
-        if (p.enCurso || p.year === currentFiscalYear) {
-          opt.selected = true;
+  function updateHighlight() {
+    document.querySelectorAll('.ac-item').forEach((el, idx) => {
+      if (idx === highlightedIndex) {
+        el.classList.add('highlighted');
+        const inp = document.getElementById('homeInput');
+        if (inp && activeSuggestions[idx]) {
+          inp.value = activeSuggestions[idx].text;
         }
-        sel.appendChild(opt);
-      });
-
-      aplicarRangoPeriodo(currentFiscalYear);
-    } catch (e) {
-      console.warn("Error cargando periodos:", e);
-      sel.innerHTML = `<option value="2026" selected>Ejercicio 2026 (En curso)</option>`;
-    }
+      } else {
+        el.classList.remove('highlighted');
+      }
+    });
   }
 
-  function aplicarRangoPeriodo(yearValue) {
-    const hastaInput = document.getElementById('fechaHasta');
-    const desdeInput = document.getElementById('fechaDesde');
+  // Cerrar sugerencias al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    const wrapper = document.getElementById('homeSearchWrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+      hideSuggestions();
+    }
+  });
 
-    if (yearValue === 'ALL' || !yearValue) {
-      desdeInput.value = '';
-      hastaInput.value = '';
+  function clearHomeInput() {
+    document.getElementById('homeInput').value = '';
+    document.getElementById('homeClear').style.display = 'none';
+    hideSuggestions();
+    document.getElementById('homeInput').focus();
+  }
+
+  function doSearchFromHome() {
+    hideSuggestions();
+    const q = document.getElementById('homeInput').value.trim();
+    if (!q) {
+      document.getElementById('homeInput').focus();
+      return;
+    }
+    executeSearch(q);
+  }
+
+  function doLuckyFromHome() {
+    hideSuggestions();
+    const q = document.getElementById('homeInput').value.trim();
+    if (q) {
+      executeSearch(q, true);
     } else {
-      const targetP = fiscalPeriods.find(p => p.year === yearValue);
-      if (targetP && targetP.desde && targetP.hasta) {
-        desdeInput.value = targetP.desde;
-        const now = new Date();
-        if (yearValue === now.getFullYear().toString()) {
-          hastaInput.value = now.toISOString().split('T')[0];
-        } else {
-          hastaInput.value = targetP.hasta;
-        }
-      } else {
-        desdeInput.value = `${yearValue}-01-01`;
-        hastaInput.value = `${yearValue}-12-31`;
-      }
+      abrirAgenteCdpe();
     }
   }
 
-  function onPeriodoChange() {
-    const selYear = document.getElementById('periodoSelect').value;
-    const targetP = fiscalPeriods.find(p => p.year === selYear);
-    if (targetP && targetP.empresaCodigo) {
-      const empSel = document.getElementById('empresaSelect');
-      // Asegurarse de que la opción exista o añadirla si no está visible
-      let optExists = Array.from(empSel.options).some(o => o.value == targetP.empresaCodigo);
-      if (!optExists) {
-        const o = document.createElement('option');
-        o.value = targetP.empresaCodigo;
-        o.innerText = `Empresa ${targetP.empresaCodigo}`;
-        empSel.appendChild(o);
-      }
-      empSel.value = targetP.empresaCodigo;
+  // --- BUSCADOR EN RESULTADOS (SERP) ---
+  function onSerpInput() {
+    const q = document.getElementById('serpInput').value;
+    document.getElementById('serpClear').style.display = q ? 'block' : 'none';
+  }
+
+  function onSerpKeyDown(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      doSearchFromSerp();
     }
-    aplicarRangoPeriodo(selYear);
-    cargarReporte();
   }
 
-  async function onEmpresaChange() {
-    const emp = document.getElementById('empresaSelect').value;
-    await cargarPeriodosEmpresa(emp);
-    await cargarUsuariosEmpresa(emp);
-    cargarReporte();
+  function doSearchFromSerp() {
+    const q = document.getElementById('serpInput').value.trim();
+    if (!q) {
+      document.getElementById('serpInput').focus();
+      return;
+    }
+    executeSearch(q);
   }
 
-  async function init() {
-    showLoading(true, 'Iniciando conexión con SimplyGest...');
-    cargarServerInfo();
-    await cargarSubdomainContext();
+  function clearSerpInput() {
+    document.getElementById('serpInput').value = '';
+    document.getElementById('serpClear').style.display = 'none';
+    document.getElementById('serpInput').focus();
+  }
+
+  function returnToHome() {
+    document.getElementById('serpView').style.display = 'none';
+    document.getElementById('homeView').style.display = 'flex';
+    document.getElementById('homeInput').value = '';
+    document.getElementById('homeClear').style.display = 'none';
+    hideSuggestions();
+    document.getElementById('homeInput').focus();
+    window.history.pushState({}, '', '/');
+  }
+
+  // --- MASTER SEARCH EXECUTION (5 NIVELES) ---
+  async function executeSearch(query, isLucky = false) {
+    document.getElementById('homeView').style.display = 'none';
+    document.getElementById('serpView').style.display = 'flex';
+    document.getElementById('serpInput').value = query;
+    document.getElementById('serpClear').style.display = 'block';
+
+    window.history.pushState({ q: query }, '', '/?q=' + encodeURIComponent(query));
+    document.getElementById('serpStats').innerText = `Buscando en la Red CDPE, SimplyGest y la Web Global...`;
+
     try {
-      const res = await fetch('/api/empresas');
-      empresasList = await res.json();
-
-      let targetEmp = 1;
-      if (subdomainInfo && subdomainInfo.codigo) {
-        targetEmp = subdomainInfo.codigo;
-      }
-
-      // Configuración de la UI según sea Subdominio Dedicado o Portal Central
-      const isDed = subdomainInfo && subdomainInfo.isDedicated;
-      const groupEmpresa = document.getElementById('filterGroupEmpresa');
-      const loginGroupEmp = document.getElementById('loginGroupEmpresa');
-      const loginDedBadge = document.getElementById('loginDedicatedBadge');
-
-      if (isDed) {
-        // MODO AISLADO DEDICADO POR SUBDOMINIO:
-        // El subdominio SOLO muestra la empresa en particular con todos sus períodos fiscales
-        groupEmpresa.style.display = 'none';
-        loginGroupEmp.style.display = 'none';
-        loginDedBadge.style.display = 'block';
-
-        const empName = subdomainInfo.empresa || 'DON POLLO';
-        document.getElementById('navBrandTitle').innerText = `${empName} • Resumen Ejecutivo`;
-        document.getElementById('navBrandSubtitle').innerText = `${window.location.host} • Subdominio Exclusivo`;
-        document.getElementById('loginDedicatedEmpresaNombre').innerText = empName;
-        document.getElementById('loginDedicatedPeriodoTag').innerText = `Ejercicio Fiscal en curso: ${subdomainInfo.periodoEnCurso || '2026'}`;
-        document.title = `${empName} - Resumen Ejecutivo SimplyGest`;
-      } else {
-        // MODO PORTAL CENTRAL:
-        groupEmpresa.style.display = 'flex';
-        loginGroupEmp.style.display = 'flex';
-        loginDedBadge.style.display = 'none';
-      }
-
-      const sel = document.getElementById('empresaSelect');
-      const selLogin = document.getElementById('loginEmpresaSelect');
-      sel.innerHTML = '';
-      selLogin.innerHTML = '';
-
-      empresasList.forEach(e => {
-        const opt1 = document.createElement('option');
-        opt1.value = e.codigo;
-        opt1.innerText = `${e.codigo} - ${e.empresa} (${e.year})`;
-        if (e.codigo === targetEmp) opt1.selected = true;
-        sel.appendChild(opt1);
-
-        const opt2 = document.createElement('option');
-        opt2.value = e.codigo;
-        opt2.innerText = `${e.codigo} - ${e.empresa} (${e.year})`;
-        if (e.codigo === targetEmp) opt2.selected = true;
-        selLogin.appendChild(opt2);
-      });
-
-      // Cargar períodos fiscales de la empresa activa y seleccionar período en curso
-      await cargarPeriodosEmpresa(targetEmp);
-
-      // Cargar usuarios para el login
-      await cargarUsuariosEmpresa(targetEmp);
-
-      const hasAuth = await checkAuth();
-      if (hasAuth) {
-        await cargarReporte();
-      } else {
-        document.getElementById('modalLogin').style.display = 'flex';
-      }
-    } catch (err) {
-      console.error(err);
-      showToast('Error de conexión con el servidor SimplyGest.');
-    } finally {
-      showLoading(false);
+      const res = await fetch(`/api/buscar?q=${encodeURIComponent(query)}`);
+      currentSearchData = await res.json();
+    } catch (e) {
+      console.warn(e);
+      currentSearchData = { cdpe: [], empresas: [], productos: [], tiendaCdpe: [], web: [], total: 0, query: query };
     }
+
+    renderSerp(currentSearchData, isLucky);
   }
 
-  function setQuickDate(type) {
-    if (!cachedData) return;
-    const now = new Date();
-    const hastaInput = document.getElementById('fechaHasta');
-    const desdeInput = document.getElementById('fechaDesde');
+  function renderSerp(data, isLucky = false) {
+    const stats = document.getElementById('serpStats');
+    const cdpeFeatured = document.getElementById('cdpeFeaturedSection');
+    const shoppingSection = document.getElementById('shoppingSection');
+    const shoppingGrid = document.getElementById('shoppingGrid');
+    const shoppingCount = document.getElementById('shoppingCount');
+    const organicList = document.getElementById('organicList');
+    const cdpeStoreSection = document.getElementById('cdpeStoreSection');
+    const cdpeStoreGrid = document.getElementById('cdpeStoreGrid');
+    const domainCard = document.getElementById('domainCard');
+    const webGlobalSection = document.getElementById('webGlobalSection');
+    const webGlobalList = document.getElementById('webGlobalList');
+    const kpPanel = document.getElementById('serpSideCol');
 
-    if (type === 'all') {
-      desdeInput.value = '';
-      hastaInput.value = '';
-    } else if (type === '7d') {
-      const d7 = new Date();
-      d7.setDate(now.getDate() - 7);
-      desdeInput.value = d7.toISOString().split('T')[0];
-      hastaInput.value = now.toISOString().split('T')[0];
-    } else if (type === 'month') {
-      const first = new Date(now.getFullYear(), now.getMonth(), 1);
-      desdeInput.value = first.toISOString().split('T')[0];
-      hastaInput.value = now.toISOString().split('T')[0];
-    }
-    cargarReporte();
-  }
+    // Limpieza
+    cdpeFeatured.innerHTML = '';
+    shoppingGrid.innerHTML = '';
+    organicList.innerHTML = '';
+    cdpeStoreGrid.innerHTML = '';
+    webGlobalList.innerHTML = '';
 
-  async function cargarReporte() {
-    if (!currentUser) {
-      document.getElementById('modalLogin').style.display = 'flex';
+    const cdpeList = data.cdpe || [];
+    const empresas = data.empresas || [];
+    const productos = data.productos || [];
+    const tiendaCdpe = data.tiendaCdpe || [];
+    const webList = data.web || [];
+    const total = data.total || (cdpeList.length + empresas.length + productos.length + tiendaCdpe.length + webList.length);
+
+    stats.innerText = `Cerca de ${total} resultado(s) (0.03 segundos)`;
+
+    // Redirección si es Lucky y hay coincidencia directa
+    if (isLucky && empresas.length > 0) {
+      window.location.href = `https://${empresas[0].subdomain}/`;
       return;
     }
 
-    const emp = document.getElementById('empresaSelect').value;
-    const sec = document.getElementById('sectorSelect').value;
-    const desde = document.getElementById('fechaDesde').value;
-    const hasta = document.getElementById('fechaHasta').value;
+    // ==========================================
+    // NIVEL 1: CDPE FEATURED SNIPPET & MANUALES
+    // ==========================================
+    if (cdpeList.length > 0 && (activeTab === 'all' || activeTab === 'cdpe')) {
+      const topCdpe = cdpeList[0];
+      cdpeFeatured.style.display = 'block';
+      cdpeFeatured.innerHTML = `
+        <div class="cdpe-featured-box">
+          <div class="cdpe-badge-top">🏛️ RECURSO OFICIAL • CENTRO DE DESARROLLO DE PYMES (CDPE)</div>
+          <div class="cdpe-featured-title">${topCdpe.titulo}</div>
+          <div class="cdpe-featured-desc">${topCdpe.resumen}</div>
+          <div class="cdpe-featured-actions">
+            <button class="g-btn-blue" onclick="abrirAgenteCdpe('${topCdpe.titulo}')">🤖 Consultar Asesor CDPE</button>
+            <a href="https://wa.me/50245550004?text=${encodeURIComponent(topCdpe.waText || 'Hola CDPE, tengo una consulta')}" target="_blank" class="g-btn-wa">💬 Asesoría por WhatsApp (+502 4555-0004)</a>
+            <a href="${topCdpe.linkUrl}" target="_blank" class="g-btn-blue" style="background:#5f6368;">🏢 Portal cdpe.sa.com.gt</a>
+          </div>
+        </div>
+      `;
 
-    showLoading(true, 'Consultando base de datos SimplyGest...');
-    try {
-      const query = `/api/reporte?empresa=${emp}&desde=${desde}&hasta=${hasta}&sector=${sec}`;
-      const res = await fetch(query, {
-        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
-      });
-
-      if (res.status === 401) {
-        logout();
-        return;
-      }
-
-      const data = await res.json();
-
-      if (data.error) {
-        alert(data.error);
-        return;
-      }
-
-      cachedData = data;
-      renderReporte(data);
-    } catch (err) {
-      console.error(err);
-      showToast('Error al obtener reporte.');
-    } finally {
-      showLoading(false);
-    }
-  }
-
-  function formatMoney(num) {
-    return 'Q ' + Number(num || 0).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function renderReporte(d) {
-    // Header
-    document.getElementById('dispEmpresaNombre').innerText = d.empresa.nombre;
-    document.getElementById('dispEmpresaInfo').innerText = `${d.empresa.direccion || ''} ${d.empresa.poblacion || ''} • Código Empresa: ${d.empresa.codigo}`;
-    document.getElementById('dispPeriodo').innerText = `${d.filtros.fechaDesde || 'Inicio'} al ${d.filtros.fechaHasta || 'Hoy'}`;
-    document.getElementById('dispSectorBadge').innerText = d.benchmark.nombreSector;
-
-    // Date inputs default if empty
-    if (!document.getElementById('fechaDesde').value && d.filtros.fechaDesde) {
-      document.getElementById('fechaDesde').value = d.filtros.fechaDesde;
-    }
-    if (!document.getElementById('fechaHasta').value && d.filtros.fechaHasta) {
-      document.getElementById('fechaHasta').value = d.filtros.fechaHasta;
-    }
-
-    // KPIs
-    document.getElementById('kpiVentas').innerText = formatMoney(d.kpis.ventasTotales);
-    document.getElementById('kpiTickets').innerText = `${d.kpis.totalTickets} tickets / ${d.kpis.totalItems} ítems`;
-
-    document.getElementById('kpiTicketProm').innerText = formatMoney(d.kpis.ticketPromedio);
-    document.getElementById('kpiTicketRango').innerText = `Min: Q ${d.kpis.ticketMinimo} | Max: Q ${d.kpis.ticketMaximo}`;
-
-    const totalEgresos = d.kpis.totalGastos + d.kpis.totalCompras;
-    document.getElementById('kpiEgresos').innerText = formatMoney(totalEgresos);
-    document.getElementById('kpiEgresosSub').innerText = `Gastos: Q ${d.kpis.totalGastos} | Compras: Q ${d.kpis.totalCompras}`;
-
-    document.getElementById('kpiSaldoNeto').innerText = formatMoney(d.kpis.saldoNeto);
-    document.getElementById('kpiMargen').innerText = `Margen Operativo de Caja: ${d.kpis.margenCajaPct}%`;
-
-    // 1. Vendedores
-    const tbVend = document.getElementById('tblVendedores');
-    tbVend.innerHTML = '';
-    if (d.vendedores && d.vendedores.length > 0) {
-      d.vendedores.forEach(v => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${v.vendedor}</strong></td>
-          <td class="text-right"><strong>${v.tickets}</strong></td>
-          <td class="text-right">${formatMoney(v.totalVentas)}</td>
-          <td class="text-right" style="color:var(--info); font-weight:700;">${formatMoney(v.ticketPromedio)}</td>
-          <td class="text-right"><strong>${v.porcentaje}%</strong></td>
-          <td>
-            <div class="bar-container">
-              <div class="bar-fill" style="width: ${v.porcentaje}%;"></div>
+      // Si estamos en la pestaña específica de CDPE, listar todos los manuales
+      if (activeTab === 'cdpe' && cdpeList.length > 1) {
+        cdpeList.slice(1).forEach(m => {
+          const mItem = document.createElement('div');
+          mItem.className = 'organic-item';
+          mItem.innerHTML = `
+            <div class="organic-source">
+              <span class="organic-fav">${m.icono}</span>
+              <span class="organic-name">${m.categoria} &bull; CDPE</span>
+              <span class="organic-url">${m.linkUrl}</span>
             </div>
-          </td>
+            <a href="javascript:void(0)" onclick="abrirAgenteCdpe('${m.titulo}')" class="organic-title">${m.titulo}</a>
+            <div class="organic-snippet">${m.resumen}</div>
+          `;
+          organicList.appendChild(mItem);
+        });
+      }
+    } else {
+      cdpeFeatured.style.display = 'none';
+    }
+
+    // ==========================================
+    // NIVEL 2: PRODUCTOS RED SIMPLYGEST (SHOPPING)
+    // ==========================================
+    if (productos.length > 0 && (activeTab === 'all' || activeTab === 'companies')) {
+      shoppingSection.style.display = 'block';
+      shoppingCount.innerText = `${productos.length} disponible(s)`;
+      productos.slice(0, 6).forEach(p => {
+        const itemCard = document.createElement('a');
+        itemCard.className = 'shop-card';
+        itemCard.href = p.tiendaUrl;
+        itemCard.target = '_blank';
+        itemCard.innerHTML = `
+          <div class="shop-icon">${p.icono || '🛍️'}</div>
+          <div class="shop-name">${p.nombre}</div>
+          <div class="shop-price">${p.precioFmt}</div>
+          <div class="shop-store">Vendido por <strong>${p.empresa}</strong></div>
+          <div class="shop-cta">Ver en Tienda &rarr;</div>
         `;
-        tbVend.appendChild(tr);
+        shoppingGrid.appendChild(itemCard);
       });
     } else {
-      tbVend.innerHTML = '<tr><td colspan="6" class="text-center">No hay registros de ventas en el período.</td></tr>';
+      shoppingSection.style.display = 'none';
     }
 
-    // 2. Diario
-    const tbDia = document.getElementById('tblDiario');
-    tbDia.innerHTML = '';
-    if (d.resumenDiario && d.resumenDiario.length > 0) {
-      d.resumenDiario.forEach(dia => {
-        const tr = document.createElement('tr');
-        const isPos = dia.saldoNeto >= 0;
-        const colorClass = isPos ? 'net-pos' : 'net-neg';
-        const prefix = isPos ? '+Q ' : '-Q ';
-        tr.innerHTML = `
-          <td><strong>${dia.fecha}</strong></td>
-          <td class="text-center">${dia.tickets}</td>
-          <td class="text-right">${formatMoney(dia.ventasTotales)}</td>
-          <td class="text-right">${formatMoney(dia.promedioTicket)}</td>
-          <td class="text-right" style="color:var(--accent);">Q ${dia.gastosCaja.toFixed(2)}</td>
-          <td class="text-right" style="color:var(--accent);">Q ${dia.compras.toFixed(2)}</td>
-          <td class="text-right ${colorClass}">${prefix}${Math.abs(dia.saldoNeto).toFixed(2)}</td>
+    // ==========================================
+    // NIVEL 2: EMPRESAS DE LA RED (ORGANIC)
+    // ==========================================
+    let displayEmpresas = empresas;
+    if (activeTab === 'cdpe') {
+      displayEmpresas = [];
+    } else if (activeTab === 'companies') {
+      displayEmpresas = empresas;
+    } else if (activeTab === 'storeCdpe' || activeTab === 'hosting' || activeTab === 'web') {
+      displayEmpresas = [];
+    }
+
+    if (displayEmpresas.length > 0) {
+      displayEmpresas.forEach(emp => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'organic-item';
+        const storeUrl = `https://${emp.subdomain}/`;
+        const adminUrl = `https://${emp.subdomain}/gestion`;
+
+        itemDiv.innerHTML = `
+          <div class="organic-source">
+            <span class="organic-fav">${emp.icon || '🏢'}</span>
+            <span class="organic-name">${emp.empresa}</span>
+            <span class="organic-url">${storeUrl}</span>
+          </div>
+          <a href="${storeUrl}" class="organic-title">${emp.title}</a>
+          <div class="organic-snippet">${emp.snippet}</div>
+          <div class="google-sitelinks">
+            <div class="sitelink">
+              <a href="${storeUrl}">🛍️ Menú y Tienda Online</a>
+              <div class="sitelink-desc">Catálogo de productos y pedidos inmediatos por WhatsApp</div>
+            </div>
+            <div class="sitelink">
+              <a href="${adminUrl}">📊 Portal de Gestión SimplyGest</a>
+              <div class="sitelink-desc">Acceso multi-ejercicio y control administrativo (${emp.year})</div>
+            </div>
+          </div>
         `;
-        tbDia.appendChild(tr);
+        organicList.appendChild(itemDiv);
+      });
+    }
+
+    // ==========================================
+    // NIVEL 3: TIENDA OFICIAL DEL CDPE (13,396 PRODUCTOS)
+    // ==========================================
+    if (tiendaCdpe.length > 0 && (activeTab === 'all' || activeTab === 'storeCdpe')) {
+      cdpeStoreSection.style.display = 'block';
+      tiendaCdpe.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'cdpe-store-card';
+        const prov = item.proveedor || 'CDPE Oficial';
+        const linkUrl = item.linkUrl || `https://cdpe.accion.app/tienda.html?search=${encodeURIComponent(item.nombre || '')}`;
+        const waMsg = item.waText || `Hola CDPE, deseo información y cotización de: ${item.nombre} (SKU: ${item.sku || ''})`;
+        const waUrl = `https://wa.me/50245550004?text=${encodeURIComponent(waMsg)}`;
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <div class="cdpe-store-card-icon">${item.icono || '🛍️'}</div>
+            <span style="font-size:10.5px; font-weight:600; background:#e8f0fe; color:#1a73e8; padding:2px 8px; border-radius:10px;">${prov}</span>
+          </div>
+          <div class="cdpe-store-card-name">${item.nombre}</div>
+          <div class="cdpe-store-card-price">${item.precioFmt || ('Q ' + item.precio)}</div>
+          <div class="cdpe-store-card-desc">${item.descripcion || ''}</div>
+          <div style="display:flex; gap:8px; margin-top:auto; padding-top:10px;">
+            <a href="${linkUrl}" target="_blank" class="g-btn-blue" style="flex:1; font-size:11.5px; padding:6px 8px; text-align:center; justify-content:center; text-decoration:none;">
+              🛒 Ver en Tienda
+            </a>
+            <a href="${waUrl}" target="_blank" class="g-btn-wa" style="flex:1; font-size:11.5px; padding:6px 8px; text-align:center; justify-content:center; text-decoration:none;">
+              💬 Cotizar WA
+            </a>
+          </div>
+        `;
+        cdpeStoreGrid.appendChild(card);
       });
     } else {
-      tbDia.innerHTML = '<tr><td colspan="7" class="text-center">Sin actividad en este rango.</td></tr>';
+      cdpeStoreSection.style.display = 'none';
     }
 
-    // 3. Top Global
-    const tbTop = document.getElementById('tblTopGlobal');
-    tbTop.innerHTML = '';
-    if (d.topProductos && d.topProductos.length > 0) {
-      d.topProductos.slice(0, 8).forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${p.producto}</strong></td>
-          <td class="text-right">${p.unidades}</td>
-          <td class="text-right"><strong>${formatMoney(p.totalFacturado)}</strong></td>
-          <td class="text-right">${formatMoney(p.precioPromedio)}</td>
+    // ==========================================
+    // NIVEL 4: DOMINIO sa.com.gt DISPONIBLE
+    // ==========================================
+    if (empresas.length === 0 && (activeTab === 'all' || activeTab === 'hosting')) {
+      const cleanQ = (data.query || '').toLowerCase().replace(/[^a-z0-9]/g, '') || 'miempresa';
+      const freeDom = cleanQ + '.sa.com.gt';
+      document.getElementById('lblDomainFree').innerText = freeDom;
+      document.getElementById('lblBtnDomainWA').innerText = freeDom;
+      domainCard.style.display = 'block';
+    } else {
+      domainCard.style.display = 'none';
+    }
+
+    // ==========================================
+    // NIVEL 5: RESULTADOS DE LA WEB GLOBAL (TODO INTERNET)
+    // ==========================================
+    if (webList.length > 0 && (activeTab === 'all' || activeTab === 'web')) {
+      webGlobalSection.style.display = 'block';
+      webList.forEach(w => {
+        const wDiv = document.createElement('div');
+        wDiv.className = 'web-global-item';
+        wDiv.innerHTML = `
+          <div class="web-global-source">
+            <span>${w.icon || '🌐'}</span>
+            <span style="font-weight:500;">${w.fuente || 'Web'}</span>
+            <span class="web-global-url">${w.url}</span>
+          </div>
+          <a href="${w.url}" target="_blank" class="web-global-title">${w.title}</a>
+          <div class="web-global-snippet">${w.snippet}</div>
         `;
-        tbTop.appendChild(tr);
+        webGlobalList.appendChild(wDiv);
       });
+    } else {
+      webGlobalSection.style.display = 'none';
     }
 
-    // 3. Top por Día
-    const tbTopDia = document.getElementById('tblTopPorDia');
-    tbTopDia.innerHTML = '';
-    if (d.topProductosPorDia && d.topProductosPorDia.length > 0) {
-      d.topProductosPorDia.forEach(pd => {
-        const tr = document.createElement('tr');
-        const t1 = pd.items[0] ? `${pd.items[0].producto} (${pd.items[0].unidades})` : '-';
-        const t2 = pd.items[1] ? `${pd.items[1].producto} (${pd.items[1].unidades})` : '-';
-        const t3 = pd.items[2] ? `${pd.items[2].producto} (${pd.items[2].unidades})` : '-';
-        tr.innerHTML = `
-          <td><strong>${pd.fecha}</strong></td>
-          <td>${t1}</td>
-          <td>${t2}</td>
-          <td>${t3}</td>
-        `;
-        tbTopDia.appendChild(tr);
-      });
+    // ==========================================
+    // KNOWLEDGE PANEL (COLUMNA DERECHA)
+    // ==========================================
+    if (empresas.length > 0 && activeTab === 'all') {
+      const topEmp = empresas[0];
+      kpPanel.style.display = 'block';
+      document.getElementById('kpTitle').innerText = topEmp.empresa;
+      document.getElementById('kpSubtitle').innerText = topEmp.categoria || 'Entidad registrada en la Red sa.com.gt';
+      document.getElementById('kpDomain').innerText = topEmp.subdomain;
+      document.getElementById('kpFiscal').innerText = `Ejercicio ${topEmp.year} (En curso)`;
+
+      document.getElementById('kpLinkStore').href = `https://${topEmp.subdomain}/`;
+      document.getElementById('kpLinkShop').href = `https://${topEmp.subdomain}/`;
+      document.getElementById('kpLinkAdmin').href = `https://${topEmp.subdomain}/gestion`;
+    } else {
+      kpPanel.style.display = 'none';
     }
-
-    // 4. Benchmark
-    document.getElementById('benchBadgeSector').innerText = d.benchmark.nombreSector;
-    document.getElementById('benchNombreSector').innerText = `${d.benchmark.nombreSector} (Ref: ${d.benchmark.referencias})`;
-    document.getElementById('benchRefTicket').innerText = `Estándar: ${d.benchmark.ticketEstandar}`;
-    document.getElementById('benchRealTicket').innerText = formatMoney(d.kpis.ticketPromedio);
-
-    document.getElementById('benchRefMargen').innerText = `Estándar: ${d.benchmark.margenCajaEstandar}`;
-    document.getElementById('benchRealMargen').innerText = `${d.kpis.margenCajaPct}%`;
-
-    document.getElementById('benchRefFoodCost').innerText = `Estándar: ${d.benchmark.foodCostEstandar}`;
-
-    document.getElementById('diagTicketText').innerText = d.benchmark.ticketDiagnostico;
-    document.getElementById('diagMargenText').innerText = d.benchmark.margenDiagnostico;
   }
 
-  async function exportarPdf() {
-    if (!currentUser) {
-      document.getElementById('modalLogin').style.display = 'flex';
-      return;
+  // --- TABS FILTERING (5 NIVELES) ---
+  function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.serp-tab').forEach(t => t.classList.remove('active'));
+    if (tab === 'all') document.getElementById('tabAll').classList.add('active');
+    if (tab === 'cdpe') document.getElementById('tabCdpe').classList.add('active');
+    if (tab === 'companies') document.getElementById('tabCompanies').classList.add('active');
+    if (tab === 'storeCdpe') document.getElementById('tabStoreCdpe').classList.add('active');
+    if (tab === 'hosting') document.getElementById('tabHosting').classList.add('active');
+    if (tab === 'web') document.getElementById('tabWeb').classList.add('active');
+
+    if (currentSearchData) {
+      renderSerp(currentSearchData);
     }
+  }
 
-    const emp = document.getElementById('empresaSelect').value;
-    const sec = document.getElementById('sectorSelect').value;
-    const desde = document.getElementById('fechaDesde').value;
-    const hasta = document.getElementById('fechaHasta').value;
+  function togglePaa(el) {
+    el.classList.toggle('open');
+  }
 
-    showLoading(true, 'Generando archivo PDF con Microsoft Edge...');
+  function selectPlan(planNombre, idx) {
+    planElegido = planNombre;
+    document.querySelectorAll('.domain-plan').forEach(c => c.classList.remove('selected'));
+    document.getElementById('p' + idx).classList.add('selected');
+  }
+
+  function enviarContratacionWA() {
+    const q = document.getElementById('serpInput').value.trim() || 'miempresa';
+    const cleanQ = q.toLowerCase().replace(/[^a-z0-9]/g, '') || 'miempresa';
+    const dom = cleanQ + '.sa.com.gt';
+
+    let msg = `*¡Hola sa.com.gt! Deseo activar mi Hosting Empresarial:*\n\n`;
+    msg += `🌐 *Subdominio solicitado:* ${dom}\n`;
+    msg += `📦 *Plan:* ${planElegido}\n`;
+    msg += `🏛️ *Red:* CDPE / SimplyGest Cloud 17.5\n\n`;
+    msg += `_Solicitud generada desde el buscador sa.com.gt_`;
+
+    const url = `https://wa.me/50245550004?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  }
+
+  // --- CDPE INTELLIGENT AGENT ENGINE (Commercial Management & Products) ---
+  function abrirAgenteCdpe(preguntaInicial = '') {
+    const modal = document.getElementById('agentModal');
+    if (!modal) return;
+    modal.classList.add('open');
+
+    // If an initial question or current input exists, trigger it
+    const homeVal = document.getElementById('homeInput') ? document.getElementById('homeInput').value.trim() : '';
+    const serpVal = document.getElementById('serpInput') ? document.getElementById('serpInput').value.trim() : '';
+    const q = preguntaInicial || homeVal || serpVal;
+
+    if (q) {
+      setTimeout(() => {
+        preguntarAgentePrompt(q);
+      }, 200);
+    } else {
+      setTimeout(() => {
+        const inp = document.getElementById('agentInput');
+        if (inp) inp.focus();
+      }, 150);
+    }
+  }
+
+  function cerrarAgenteCdpe() {
+    const modal = document.getElementById('agentModal');
+    if (modal) modal.classList.remove('open');
+  }
+
+  function cerrarAgenteCdpeOnBackdrop(e) {
+    if (e.target.id === 'agentModal') {
+      cerrarAgenteCdpe();
+    }
+  }
+
+  function onAgentKeyDown(e) {
+    if (e.key === 'Enter') {
+      enviarPreguntaAgente();
+    }
+  }
+
+  function preguntarAgentePrompt(texto) {
+    const inp = document.getElementById('agentInput');
+    if (inp) inp.value = texto;
+    enviarPreguntaAgente();
+  }
+
+  async function enviarPreguntaAgente() {
+    const inp = document.getElementById('agentInput');
+    const q = inp.value.trim();
+    if (!q) return;
+
+    agregarMensajeAgente('user', q);
+    inp.value = '';
+
+    // Typing indicator with animated spinner
+    const typingId = agregarMensajeAgente('bot', `
+      <div style="display:flex;align-items:center;gap:9px;color:#5f6368;font-size:13px;">
+        <span style="display:inline-block;width:14px;height:14px;border:2px solid #dadce0;border-top-color:#1a73e8;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
+        <span>El Asesor CDPE está consultando manuales, catálogo (13,396 productos) y fuentes web en tiempo real...</span>
+      </div>
+    `);
+
     try {
-      const res = await fetch(`/api/export-pdf?empresa=${emp}&desde=${desde}&hasta=${hasta}&sector=${sec}`, {
-        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
-      });
-      const data = await res.json();
-      if (data.status === 'ok') {
-        showToast('¡PDF generado con éxito y abierto en pantalla!');
-      } else {
-        alert('Error: ' + data.error);
+      const resp = await fetch('/api/agente-cdpe?q=' + encodeURIComponent(q));
+      if (!resp.ok) throw new Error('Error al consultar agente');
+      const data = await resp.json();
+      const bubbleEl = document.getElementById(typingId);
+      if (bubbleEl) {
+        bubbleEl.innerHTML = data.respuestaHtml || generarRespuestaAgente(q);
+        const msgContainer = document.getElementById('agentMessages');
+        if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
       }
     } catch (err) {
-      console.error(err);
-      showToast('Error al generar el PDF.');
-    } finally {
-      showLoading(false);
+      console.warn('Fallback a asesor local:', err);
+      const respHtml = generarRespuestaAgente(q);
+      const bubbleEl = document.getElementById(typingId);
+      if (bubbleEl) {
+        bubbleEl.innerHTML = respHtml;
+        const msgContainer = document.getElementById('agentMessages');
+        if (msgContainer) msgContainer.scrollTop = msgContainer.scrollHeight;
+      }
     }
   }
 
-  function abrirModalMovil() {
-    const modal = document.getElementById('modalMovil');
-    const qrImg = document.getElementById('qrCodeImg');
-    const txtTunnel = document.getElementById('txtTunnelUrl');
-    const txtDirect = document.getElementById('txtDirectUrl');
+  function agregarMensajeAgente(remitente, htmlContent) {
+    const msgContainer = document.getElementById('agentMessages');
+    const msgId = 'msg-' + Date.now() + '-' + Math.floor(Math.random()*1000);
 
-    const targetUrl = (serverInfo && serverInfo.tunnelUrl) ? serverInfo.tunnelUrl : ((serverInfo && serverInfo.directUrl) ? serverInfo.directUrl : window.location.href);
-    const directUrl = (serverInfo && serverInfo.directUrl) ? serverInfo.directUrl : 'http://169.58.70.76/';
+    const div = document.createElement('div');
+    div.className = `agent-msg ${remitente}`;
 
-    txtTunnel.value = targetUrl;
-    txtDirect.value = directUrl;
+    const avatar = remitente === 'bot' ? '🤖' : 'Tú';
 
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(targetUrl)}`;
+    div.innerHTML = `
+      <div class="agent-msg-avatar">${avatar}</div>
+      <div class="agent-bubble" id="${msgId}">
+        ${htmlContent}
+      </div>
+    `;
 
-    modal.style.display = 'flex';
+    msgContainer.appendChild(div);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+    return msgId;
   }
 
-  function cerrarModalMovil(e) {
-    document.getElementById('modalMovil').style.display = 'none';
-  }
+  function generarRespuestaAgente(pregunta) {
+    const q = (pregunta || '').toLowerCase().trim();
 
-  function copiarTexto(elementId) {
-    const el = document.getElementById(elementId);
-    el.select();
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(el.value).then(() => {
-        showToast('¡Enlace copiado al portapapeles!');
-      }).catch(() => {
-        document.execCommand('copy');
-        showToast('¡Enlace copiado!');
-      });
-    } else {
-      document.execCommand('copy');
-      showToast('¡Enlace copiado!');
+    // 1. Manual 1: Ventas y Combos
+    if (/venta|combo|menu|menú|cliente|fideliz|upsell|cross-sell|sugestiv|promocion|precio|ticket/.test(q)) {
+      return `
+        <p><strong>📘 Manual 1 CDPE: Gestión Comercial, Técnicas de Venta y Diseño de Combos</strong></p>
+        <p>El estándar comercial CDPE establece las siguientes directrices para negocios QSR y comercios:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <p><strong>1. Fórmula del Combo Rentable:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li><strong>Estructura:</strong> 1 Plato fuerte + 1 Acompañamiento + 1 Bebida.</li>
+            <li><strong>Margen de Descuento:</strong> El precio del combo debe ofrecer un <strong>12% a 15% de ahorro</strong> comparado con los artículos individuales, garantizando que el ticket promedio suba de Q 25 a Q 35-49.</li>
+            <li><strong>Ejemplo Don Pollo:</strong> Combo Clásico a <strong>Q 35.00</strong> (2 piezas crujientes + papas fritas + Coca Cola).</li>
+          </ul>
+          <p><strong>2. Protocolo de Venta Sugestiva (Mostrador y WhatsApp):</strong></p>
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.5;">
+            <li>Obligatorio en cada orden: <em>"¿Desea agregar porción de papas o bebida familiar por solo Q 10 más?"</em>.</li>
+            <li>En WhatsApp: Respuesta inmediata en menos de 2 minutos con el catálogo interactivo de la tienda.</li>
+          </ul>
+        </div>
+        <p>¿Deseas profundizar en las promociones semanales o en el catálogo de combos?</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('Hola CDPE, deseo asesoría sobre el Manual 1 de Ventas y Combos')}" target="_blank" class="agent-wa-link">💬 Asesoría Comercial por WhatsApp (+502 4555-0004) &rarr;</a>
+      `;
     }
+
+    // 2. Manual 2: Inventarios SimplyGest, PEPS y Mermas
+    if (/inventario|stock|merma|peps|fifo|perecedero|simplygest|pollo crudo|aceite|porcion|almacen/.test(q)) {
+      return `
+        <p><strong>📦 Manual 2 CDPE: Control de Inventarios, Mermas y Rotación con SimplyGest 17.5</strong></p>
+        <p>Para garantizar rentabilidad y evitar pérdidas en negocios de comida y retail:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <p><strong>1. Regla PEPS (Primeras Entradas, Primeras Salidas):</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li>El lote más antiguo de pollo o insumos perecederos debe consumirse primero. Rotular siempre fecha de recepción y temperatura (&lt; 4°C).</li>
+          </ul>
+          <p><strong>2. Control Riguroso de Mermas:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li><strong>Merma por descongelamiento:</strong> Tolerancia máxima <strong>3% a 5%</strong>. Excesos deben reportarse al proveedor.</li>
+            <li><strong>Merma de aceite:</strong> Registro de horas de freído; reemplazo programado para mantener sabor crujiente sin quemar el producto.</li>
+            <li>Registrar en SimplyGest: Menú <code>Artículos &gt; Movimientos de Almacén &gt; Salida por Merma / Rotura</code>.</li>
+          </ul>
+          <p><strong>3. Punto de Reorden Automático:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.5;">
+            <li>Configurar en SimplyGest el <em>Stock Mínimo</em> = (Consumo diario promedio &times; Días de entrega) + 20% de colchón.</li>
+          </ul>
+        </div>
+        <p>El sistema SimplyGest descuenta automáticamente los ingredientes al facturar cada ticket en el TPV.</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('Hola CDPE, deseo soporte técnico sobre inventarios SimplyGest')}" target="_blank" class="agent-wa-link">💬 Asesoría de Inventarios por WhatsApp (+502 4555-0004) &rarr;</a>
+      `;
+    }
+
+    // 3. Manual 3: Arqueo de Caja, Cierres y SAT FEL
+    if (/arqueo|caja|cierre|factura|sat|fel|cuadre|sobrante|faltante|efectivo|tarjeta|pos|turno/.test(q)) {
+      return `
+        <p><strong>💰 Manual 3 CDPE: Procedimiento de Arqueo de Caja, Cierres y Facturación SAT</strong></p>
+        <p>Pasos indispensables para el control financiero y tributario de tu punto de venta:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <p><strong>1. Apertura de Turno (Fondo Fijo):</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li>Fondo de caja recomendado: <strong>Q 300 a Q 500</strong> en billetes de Q 5, Q 10 y monedas para cambio.</li>
+          </ul>
+          <p><strong>2. Cuadre a Ciegas (Doble Ciego):</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li>El cajero cuenta el dinero físico y los vouchers de POS <strong>antes de imprimir el reporte del sistema</strong>.</li>
+            <li>En SimplyGest: Ejecutar <code>TPV &gt; Cierre de Caja (Z)</code>.</li>
+            <li>Tolerancia máxima de descuadre: <strong>&plusmn; Q 5.00</strong>. Cualquier monto mayor requiere firma del supervisor.</li>
+          </ul>
+          <p><strong>3. Facturación Electrónica en Línea (FEL):</strong></p>
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.5;">
+            <li>SimplyGest 17.5 emite el DTE (Documento Tributario Electrónico) con código de autorización SAT al instante, enviando copia digital al cliente.</li>
+          </ul>
+        </div>
+        <p>¿Necesitas configurar tu certificado FEL de la SAT o capacitar a tus cajeros?</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('Hola CDPE, deseo asistencia sobre arqueo de caja y facturación FEL')}" target="_blank" class="agent-wa-link">💬 Asistencia de Cajas por WhatsApp (+502 4555-0004) &rarr;</a>
+      `;
+    }
+
+    // 4. Manual 4: Franquicias, Subdominios y Afiliación CDPE
+    if (/franquicia|afiliar|cdpe|subdominio|abrir|sucursal|requisito|formaliz|costo|pyme/.test(q)) {
+      return `
+        <p><strong>🏢 Manual 4 CDPE: Modelo de Franquicias, Expansión y Formalización PYME</strong></p>
+        <p>El CDPE acompaña a emprendedores guatemaltecos para convertir su negocio en una marca formal y escalable:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <p><strong>1. Requisitos de Afiliación a la Red CDPE:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li>Estar inscrito o en proceso de inscripción en SAT (Régimen Pequeño Contribuyente o General).</li>
+            <li>Local comercial o cocina oculta con estándar de higiene y BPM (Buenas Prácticas de Manufactura).</li>
+            <li>Dispositivo de punto de venta (computadora, tablet o TPV SimplyGest).</li>
+          </ul>
+          <p><strong>2. Beneficios de la Infraestructura sa.com.gt:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.5;">
+            <li><strong>Subdominio Exclusivo:</strong> Tu marca en <code>tuempresa.sa.com.gt</code> con SSL oficial.</li>
+            <li><strong>Tienda E-Commerce y Pedidos WhatsApp:</strong> Menú digital con carrito de compras en tiempo real.</li>
+            <li><strong>Portal de Gestión SimplyGest Cloud:</strong> Facturación, inventarios, compras y reportes multi-ejercicio.</li>
+            <li><strong>Buzón de Correo Corporativo:</strong> Cuentas oficiales en <code>correo.sa.com.gt</code>.</li>
+          </ul>
+        </div>
+        <p>Planes de hosting desde <strong>Q 299/mes</strong>. Puedes solicitar la activación de tu subdominio hoy mismo:</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('¡Hola CDPE! Deseo iniciar el proceso de afiliación y activar mi subdominio sa.com.gt')}" target="_blank" class="agent-wa-link">💬 Iniciar Afiliación por WhatsApp (+502 4555-0004) &rarr;</a>
+      `;
+    }
+
+    // 5. Acción Cooperativa R.L.
+    if (/cooperativa|accion|acción|credito|crédito|ahorro|asociad|aporte|financiamiento|prestamo|equipo/.test(q)) {
+      return `
+        <p><strong>🏛️ Acción Cooperativa R.L. &bull; Apoyo Financiero y Servicios al Asociado</strong></p>
+        <p>Acción Cooperativa es la entidad financiera solidaria de la Red CDPE y sa.com.gt:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.6;">
+            <li><strong>Línea de Crédito Productivo SimplyGest:</strong> Financiamiento con cuotas accesibles para TPV táctil, impresora de tickets, lector de código de barras y licencias cloud.</li>
+            <li><strong>Fondo Mutual y Ahorro Cooperativo:</strong> Intereses preferenciales y dividendos de fin de año para asociados activos.</li>
+            <li><strong>Compras Comunitarias de Insumos:</strong> Adquisición al por mayor de materias primas (pollo, aceite, empaques) con descuento de escala para los afiliados.</li>
+            <li><strong>Acceso al Correo Corporativo:</strong> Buzón institucional en <a href="https://correo.sa.com.gt" target="_blank" style="color:#1a73e8;">correo.sa.com.gt</a> para circulares oficiales de asamblea y estados de cuenta.</li>
+          </ul>
+        </div>
+        <p>¿Deseas solicitar una línea de crédito o afiliarte como asociado?</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('Hola Acción Cooperativa, deseo información sobre la línea de crédito para equipamiento SimplyGest')}" target="_blank" class="agent-wa-link">💬 Contactar a Acción Cooperativa (+502 4555-0004) &rarr;</a>
+      `;
+    }
+
+    // 6. Don Pollo Productos y Combos
+    if (/pollo|don pollo|donpollo|combo|pechuga|pierna|cuadril|papas|gaseosa/.test(q)) {
+      return `
+        <p><strong>🍗 Catálogo Oficial Don Pollo &bull; Franquicia Modelo CDPE (2026)</strong></p>
+        <p>Precios vigentes en Quetzales sincronizados directamente con SimplyGest 17.5 Cloud:</p>
+        <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+          <p><strong>📦 Combos Especiales:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0 8px 0; font-size:12.5px; line-height:1.5;">
+            <li><strong>Combo Clásico:</strong> 2 Piezas + Papas + Bebida &bull; <strong>Q 35.00</strong></li>
+            <li><strong>Combo Dúo:</strong> 4 Piezas + 2 Papas + 2 Bebidas &bull; <strong>Q 49.00</strong></li>
+            <li><strong>Combo Familiar:</strong> 8 Piezas + Papas Familiares + Bebida 1.5L &bull; <strong>Q 125.00</strong></li>
+          </ul>
+          <p><strong>🍗 Piezas Individuales:</strong></p>
+          <ul style="padding-left:18px; margin:4px 0; font-size:12.5px; line-height:1.5;">
+            <li>Pechuga Crujiente: <strong>Q 16.00</strong> | Pierna Dorada: <strong>Q 8.00</strong> | Cuadril: <strong>Q 10.00</strong></li>
+            <li>Cups de Papas Fritas: <strong>Q 10.00</strong> | Coca Cola Lata: <strong>Q 6.00</strong></li>
+          </ul>
+        </div>
+        <p>Puedes ordenar en línea en <a href="https://donpollo.sa.com.gt/" target="_blank" style="color:#1a73e8; font-weight:600;">donpollo.sa.com.gt</a> o por WhatsApp directo:</p>
+        <a href="https://wa.me/50245550004?text=${encodeURIComponent('¡Hola Don Pollo! Deseo realizar un pedido directo')}" target="_blank" class="agent-wa-link">🍗 Pedir Don Pollo por WhatsApp (+502 4555-0004) &rarr;</a>
+      `;
+    }
+
+    // 7. Todos los Manuales o Consulta General
+    return `
+      <p><strong>📚 Compendio de Asesoría y Manuales Comerciales CDPE</strong></p>
+      <p>El Centro de Desarrollo de Pequeñas y Medianas Empresas te ofrece capacitación técnica estructurada en 4 áreas clave:</p>
+      <div style="background:#ffffff; border:1px solid #e0e2e6; border-radius:8px; padding:10px 14px; margin:8px 0;">
+        <ol style="padding-left:18px; font-size:12.5px; line-height:1.6; color:#3c4043;">
+          <li><strong>Manual 1 (Ventas &amp; Combos):</strong> Estrategia de pricing psicológico, combos de alto margen y técnicas de venta sugestiva.</li>
+          <li><strong>Manual 2 (Inventarios &amp; Mermas):</strong> Rotación PEPS/FIFO, control de mermas de pollo/aceite y punto de reorden en SimplyGest.</li>
+          <li><strong>Manual 3 (Cajas &amp; SAT):</strong> Protocolo de arqueo de caja con doble ciego, cuadres de POS y emisión de facturación electrónica FEL.</li>
+          <li><strong>Manual 4 (Franquicias &amp; CDPE):</strong> Estandarización de marca, apertura de sucursales y subdominios en <code>sa.com.gt</code>.</li>
+        </ol>
+      </div>
+      <p>¿Sobre cuál de estos manuales o procesos deseas orientación personalizada?</p>
+      <a href="https://wa.me/50245550004?text=${encodeURIComponent('Hola CDPE, tengo una consulta sobre: ' + pregunta)}" target="_blank" class="agent-wa-link">💬 Chatear con un Asesor (+502 4555-0004) &rarr;</a>
+    `;
   }
 
-  window.addEventListener('DOMContentLoaded', init);
+  function toggleWaffle(e) {
+    e.stopPropagation();
+    const m = document.getElementById('waffleMenuHome');
+    if (m) m.classList.toggle('open');
+  }
+
+  document.addEventListener('click', () => {
+    const m = document.getElementById('waffleMenuHome');
+    if (m) m.classList.remove('open');
+  });
+
+  // Check URL params on initial load (e.g. ?q=donpollo)
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) {
+      executeSearch(q);
+    }
+  });
 </script>
 </body>
 </html>

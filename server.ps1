@@ -248,9 +248,22 @@ while ($listener.IsListening) {
 
         # 2.05 Global Enterprise & Product Search (Google-Style Multi-Store Search)
         } elseif ($url -eq "/api/buscar") {
-            $q = if ($queryParams.ContainsKey("q")) { $queryParams["q"] } else { "" }
+            $rawQ = if ($queryParams.ContainsKey("q")) { $queryParams["q"] } else { "" }
+            $q = [System.Uri]::UnescapeDataString(($rawQ -replace '\+', ' '))
             $res = Search-EmpresasYProductos $q
             $json = ConvertTo-Json $res -Depth 8
+            Send-Response $context $json "application/json; charset=utf-8"
+
+        # 2.06 CDPE Agent Advisor with Live Internet Permissions & Catalog Intelligence
+        } elseif ($url -eq "/api/agente-cdpe") {
+            $rawQ = if ($queryParams.ContainsKey("q")) { $queryParams["q"] } else { "" }
+            $q = [System.Uri]::UnescapeDataString(($rawQ -replace '\+', ' '))
+            if ([string]::IsNullOrWhiteSpace($q) -and $postData) {
+                if ($postData.q) { $q = $postData.q }
+                elseif ($postData.pregunta) { $q = $postData.pregunta }
+            }
+            $agentResp = Invoke-CdpeAgentAdvisor $q
+            $json = ConvertTo-Json $agentResp -Depth 8
             Send-Response $context $json "application/json; charset=utf-8"
 
         # 2.1 Subdomain Directory List (for sa.com.gt Portal)
