@@ -18,6 +18,14 @@ http://cuentas.sa.com.gt, https://cuentas.sa.com.gt {
     }
 }
 
+http://panel.sa.com.gt, https://panel.sa.com.gt, http://whm.sa.com.gt, https://whm.sa.com.gt {
+    encode gzip zstd
+    reverse_proxy 127.0.0.1:9001 {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+    }
+}
+
 http://sa.com.gt, http://www.sa.com.gt, http://donpollo.sa.com.gt, http://cdpe.sa.com.gt, :80 {
     encode gzip zstd
     @mail path /correo /correo/ /webmail /webmail/
