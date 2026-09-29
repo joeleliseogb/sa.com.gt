@@ -1169,6 +1169,52 @@ function Search-EmpresasYProductos($query) {
         }
     }
 
+    # Búsqueda institucional para Sistema Contable Manager.io (Cuentas)
+    if ($q -match "cuenta|cuentas|contab|balance|manager|asiento|financier|fiscal|factura|libro|sat") {
+        $matchedEmpresas += @{
+            codigo         = 98
+            empresa        = "Manager.io Contabilidad Cloud"
+            slug           = "cuentas"
+            subdomain      = "cuentas.sa.com.gt"
+            year           = "2026"
+            isCdpe         = $false
+            isCoop         = $false
+            title          = "Cuentas • Sistema Contable Manager.io Server Edition"
+            snippet        = "Plataforma contable corporativa en la nube para empresas asociadas al CDPE: asientos contables, estados financieros, balances, libro diario y mayores en cuentas.sa.com.gt."
+            icon           = "💼"
+            categoria      = "Contabilidad & Finanzas Empresariales"
+            sitelink1Title = "🔑 Acceso al Servidor Contable"
+            sitelink1Url   = "https://cuentas.sa.com.gt/"
+            sitelink1Desc  = "Inicio de sesión para administradores y contadores"
+            sitelink2Title = "⚙️ CloudPanel y Configuración"
+            sitelink2Url   = "/panel"
+            sitelink2Desc  = "Gestión de servicios y subdominios"
+        }
+    }
+
+    # Búsqueda institucional para Webmail Roundcube (Correo)
+    if ($q -match "correo|webmail|email|mail|roundcube|buzon|inbox") {
+        $matchedEmpresas += @{
+            codigo         = 97
+            empresa        = "Webmail Corporativo Roundcube"
+            slug           = "correo"
+            subdomain      = "correo.sa.com.gt"
+            year           = "2026"
+            isCdpe         = $false
+            isCoop         = $false
+            title          = "Correo Corporativo • Webmail Roundcube sa.com.gt"
+            snippet        = "Buzones oficiales con conexión cifrada SSL, cliente webmail responsivo Roundcube, soporte IMAP/SMTP y administración de cuentas corporativas."
+            icon           = "📧"
+            categoria      = "Comunicaciones & Correo Empresarial"
+            sitelink1Title = "✉️ Abrir Webmail"
+            sitelink1Url   = "https://correo.sa.com.gt/"
+            sitelink1Desc  = "Acceso web directo a bandejas de entrada"
+            sitelink2Title = "📱 Parámetros IMAP / SMTP"
+            sitelink2Url   = "/panel"
+            sitelink2Desc  = "Configuración para Outlook, iPhone y Android"
+        }
+    }
+
     # ----------------------------------------------------
     # NIVEL 3: PRODUCTOS DE LA TIENDA DEL CDPE (13,396 Ítems)
     # ----------------------------------------------------
