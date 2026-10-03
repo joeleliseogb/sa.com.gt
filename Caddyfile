@@ -128,6 +128,14 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
         file_server
     }
 
+    @theme_favicon path /favicon.ico /Images/favicon.ico
+    handle @theme_favicon {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /favicon.ico
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
     handle {
         reverse_proxy 127.0.0.1:8081 {
             header_up Host {host}

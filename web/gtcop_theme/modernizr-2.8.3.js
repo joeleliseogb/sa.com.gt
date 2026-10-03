@@ -1556,6 +1556,36 @@ window.Modernizr = (function( window, document, undefined ) {
                 }
             }
         } catch(e) {}
+
+        // 5. Replace "Inversiones" menu items and headers with "Ahorros"
+        try {
+            document.querySelectorAll('.sidebar-menu span, .sidebar-menu li.header, .content-header h1, .breadcrumb li, a > span').forEach(function(el) {
+                if (el.children.length === 0 && el.textContent.trim().toLowerCase() === 'inversiones') {
+                    el.textContent = 'Ahorros';
+                } else if (el.childNodes.length > 0) {
+                    el.childNodes.forEach(function(cn) {
+                        if (cn.nodeType === 3 && cn.nodeValue && cn.nodeValue.trim().toLowerCase() === 'inversiones') {
+                            cn.nodeValue = ' Ahorros';
+                        }
+                    });
+                }
+            });
+        } catch(e) {}
+
+        // 6. Favicon guarantee
+        try {
+            var favicons = document.querySelectorAll('link[rel*="icon"]');
+            if (favicons.length === 0) {
+                var link = document.createElement('link');
+                link.rel = 'shortcut icon';
+                link.href = '/favicon.ico?v=2';
+                document.head.appendChild(link);
+            } else {
+                favicons.forEach(function(f) {
+                    f.href = '/favicon.ico?v=2';
+                });
+            }
+        } catch(e) {}
     }
 
     if (document.readyState === 'loading') {
