@@ -89,6 +89,25 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
         file_server
     }
 
+    @pwa_manifest path /manifest.webmanifest /manifest.json
+    handle @pwa_manifest {
+        header Content-Type "application/manifest+json"
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /manifest.webmanifest
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @pwa_sw path /service-worker.js /sw.js
+    handle @pwa_sw {
+        header Content-Type "application/javascript"
+        header Cache-Control "no-cache, must-revalidate"
+        header Service-Worker-Allowed "/"
+        rewrite * /service-worker.js
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
     @theme_bundles_modernizr path /bundles/modernizr*
     handle @theme_bundles_modernizr {
         header Content-Type "application/javascript"

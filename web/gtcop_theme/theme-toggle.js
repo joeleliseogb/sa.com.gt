@@ -128,4 +128,43 @@
             observer.observe(document.body, { childList: true, subtree: true });
         }
     }
+
+    // PWA Service Worker Registration & Mobile Install Banner
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
+                .then(function(reg) {
+                    console.log('[PWA] Service Worker activo:', reg.scope);
+                })
+                .catch(function(err) {
+                    console.warn('[PWA] Service Worker no registrado:', err);
+                });
+        });
+    }
+
+    window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.__pwaInstallPrompt = e;
+        var pwaBtn = document.getElementById('cdpe-pwa-install-btn');
+        if (!pwaBtn) {
+            var navbarCustomMenu = document.querySelector('.navbar-custom-menu > .navbar-nav');
+            if (navbarCustomMenu) {
+                var li = document.createElement('li');
+                li.id = 'cdpe-pwa-install-btn';
+                li.innerHTML = '<a href="#" title="Instalar Aplicación Móvil (PWA)" style="color:#10B981; font-weight:700; cursor:pointer;"><i class="fa fa-download"></i> <span class="hidden-xs">Instalar App</span></a>';
+                li.addEventListener('click', function(ev) {
+                    ev.preventDefault();
+                    if (window.__pwaInstallPrompt) {
+                        window.__pwaInstallPrompt.prompt();
+                        window.__pwaInstallPrompt.userChoice.then(function(choice) {
+                            if (choice.outcome === 'accepted') {
+                                li.remove();
+                            }
+                        });
+                    }
+                });
+                navbarCustomMenu.insertBefore(li, navbarCustomMenu.firstChild);
+            }
+        }
+    });
 })();

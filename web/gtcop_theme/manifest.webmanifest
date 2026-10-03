@@ -1,0 +1,26 @@
+{
+  "name": "Acción Cooperativa R.L. - Sistema Financiero",
+  "short_name": "Acción Cop",
+  "description": "Sistema Integrado de Gestión Financiera, Créditos y Ahorros de Acción Cooperativa R.L.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#0F528A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/gtcop_theme/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/gtcop_theme/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "business"]
+}
