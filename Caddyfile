@@ -81,6 +81,23 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
         }
     }
 
+    @gtcop_theme_assets path /gtcop_theme/*
+    handle @gtcop_theme_assets {
+        header Cache-Control "no-cache, must-revalidate"
+        uri strip_prefix /gtcop_theme
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_bundles_modernizr path /bundles/modernizr*
+    handle @theme_bundles_modernizr {
+        header Content-Type "application/javascript"
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /modernizr-2.8.3.js
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
     @theme_css path /Content/Site.css
     handle @theme_css {
         header Cache-Control "no-cache, must-revalidate"
@@ -137,7 +154,7 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
     }
 
     handle {
-        reverse_proxy 127.0.0.1:8081 {
+        reverse_proxy 127.0.0.1:8082 {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
         }

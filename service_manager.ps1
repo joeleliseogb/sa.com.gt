@@ -154,11 +154,27 @@ try {
 
 $gtcopBackupScript = Join-Path $scriptDir "bin\gtcop_backup_service.ps1"
 if (-not $isGtcopBackupRunning -and (Test-Path $gtcopBackupScript)) {
-    Write-Host "[8/8] Iniciando Servicio de Copias de Seguridad GTcop en puerto 56992..." -ForegroundColor Yellow
+    Write-Host "[8/9] Iniciando Servicio de Copias de Seguridad GTcop en puerto 56992..." -ForegroundColor Yellow
     Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$gtcopBackupScript`"" -WorkingDirectory (Split-Path $gtcopBackupScript) -WindowStyle Hidden
     Start-Sleep -Seconds 1
 } else {
-    Write-Host "[8/8] Servicio de Copias de Seguridad GTcop activo en puerto 56992." -ForegroundColor Green
+    Write-Host "[8/9] Servicio de Copias de Seguridad GTcop activo en puerto 56992." -ForegroundColor Green
+}
+
+# 9. Iniciar Proxy Filtrado GTcop - Accion Cooperativa (Puerto 8082)
+$isGtcopProxyRunning = $false
+try {
+    $conn8082 = Get-NetTCPConnection -LocalPort 8082 -ErrorAction SilentlyContinue
+    if ($conn8082) { $isGtcopProxyRunning = $true }
+} catch {}
+
+$gtcopProxyExe = Join-Path $scriptDir "bin\gtcop_proxy.exe"
+if (-not $isGtcopProxyRunning -and (Test-Path $gtcopProxyExe)) {
+    Write-Host "[9/9] Iniciando Proxy Filtrado GTcop (Accion Cooperativa) en puerto 8082..." -ForegroundColor Yellow
+    Start-Process -FilePath $gtcopProxyExe -WorkingDirectory (Split-Path $gtcopProxyExe) -WindowStyle Hidden
+    Start-Sleep -Seconds 1
+} else {
+    Write-Host "[9/9] Proxy Filtrado GTcop (Accion Cooperativa) activo en puerto 8082." -ForegroundColor Green
 }
 
 Write-Host ""
