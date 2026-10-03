@@ -66,6 +66,13 @@
 /* ==========================================================================
    GLOBAL BASE & TYPOGRAPHY
    ========================================================================== */
+html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+}
+
 body {
     background-color: var(--md-surface-bg) !important;
     color: var(--md-text-primary) !important;
@@ -93,6 +100,47 @@ body {
 
 .box:hover {
     box-shadow: var(--md-shadow-lg) !important;
+}
+
+body.login-page {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 16px !important;
+    box-sizing: border-box !important;
+}
+
+.login-box, .register-box {
+    width: 100% !important;
+    max-width: 380px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+.login-logo {
+    width: 100% !important;
+    margin: 0 auto 20px auto !important;
+    text-align: center !important;
+}
+
+.login-logo a {
+    display: inline-block !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.login-logo img {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+}
+
+.login-box-body {
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .box-header {
