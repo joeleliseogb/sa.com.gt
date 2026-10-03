@@ -1011,20 +1011,97 @@
     border-color: #1a73e8;
   }
 
-  /* CDPE Intelligent Agent Modal */
+  /* Floating Action Button (Always Visible Bot Launcher) */
+  .agent-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #ffffff;
+    border: 1px solid #dadce0;
+    border-radius: 28px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.16);
+    padding: 8px 18px 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    z-index: 900;
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .agent-fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 26px rgba(26,115,232,0.32);
+    border-color: #1a73e8;
+  }
+  .agent-fab-avatar {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #1a73e8, #188038);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+  .agent-fab-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  .agent-fab-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #202124;
+    line-height: 1.2;
+  }
+  .agent-fab-status {
+    font-size: 11px;
+    color: #188038;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .agent-fab-status::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #188038;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(24,128,56,0.2);
+    animation: agentPulse 2s infinite;
+  }
+  @keyframes agentPulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(24,128,56,0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(24,128,56,0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(24,128,56,0); }
+  }
+
+  /* CDPE Intelligent Agent Modal (Minimalist & Prolijo) */
   .agent-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(32, 33, 36, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 9999;
     display: none;
     align-items: center;
     justify-content: center;
     padding: 16px;
+    animation: fadeInOverlay 0.2s ease-out;
+  }
+  @keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   .agent-overlay.open {
     display: flex;
@@ -1032,28 +1109,29 @@
   .agent-card {
     background: #ffffff;
     width: 100%;
-    max-width: 820px;
-    height: 86vh;
-    max-height: 740px;
-    border-radius: 18px;
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+    max-width: 660px;
+    height: 82vh;
+    max-height: 720px;
+    border-radius: 24px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes modalPop {
-    from { opacity: 0; transform: scale(0.96) translateY(10px); }
+    from { opacity: 0; transform: scale(0.97) translateY(12px); }
     to { opacity: 1; transform: scale(1) translateY(0); }
   }
   .agent-header {
-    padding: 16px 20px;
+    padding: 14px 20px;
     background: #ffffff;
-    border-bottom: 1px solid #e8eaed;
+    border-bottom: 1px solid #f1f5f9;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
+    gap: 12px;
   }
   .agent-header-brand {
     display: flex;
@@ -1061,91 +1139,105 @@
     gap: 12px;
   }
   .agent-header-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #1a73e8, #1557b0);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #ffffff;
-    font-size: 22px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 8px rgba(26, 115, 232, 0.25);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
   }
   .agent-header-info h3 {
-    font-size: 16.5px;
-    font-weight: 700;
-    color: #202124;
-    line-height: 1.2;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.25;
+    margin: 0;
   }
   .agent-header-info p {
-    font-size: 12px;
-    color: #5f6368;
-  }
-  .agent-status-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
     font-size: 11.5px;
-    font-weight: 600;
-    color: #137333;
-    background: #e6f4ea;
-    padding: 3px 9px;
-    border-radius: 12px;
+    color: #64748b;
+    margin: 2px 0 0 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  .agent-header-close {
+  .agent-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .agent-header-btn {
     background: transparent;
     border: none;
-    font-size: 26px;
-    color: #70757a;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #64748b;
     cursor: pointer;
-    padding: 4px 8px;
-    line-height: 1;
-    border-radius: 50%;
+    transition: all 0.15s ease;
   }
-  .agent-header-close:hover { background: #f1f3f4; color: #202124; }
+  .agent-header-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+  .agent-header-btn svg {
+    width: 17px;
+    height: 17px;
+  }
   .agent-chips {
     padding: 10px 18px;
-    background: #f8fafd;
-    border-bottom: 1px solid #eef2f6;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     white-space: nowrap;
+  }
+  .agent-chips::-webkit-scrollbar {
+    display: none;
   }
   .agent-chip {
     padding: 6px 13px;
-    background: #ffffff;
-    border: 1px solid #dadce0;
-    border-radius: 16px;
-    font-size: 12.5px;
-    color: #3c4043;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s ease;
     user-select: none;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-weight: 500;
   }
   .agent-chip:hover {
-    border-color: #1a73e8;
-    color: #1a73e8;
-    background: #f4f8fe;
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+    color: #0f172a;
+    transform: translateY(-1px);
   }
   .agent-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 20px 22px;
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: #fdfdfe;
+    background: #fafafc;
   }
   .agent-msg {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     max-width: 90%;
   }
   .agent-msg.bot {
@@ -1156,109 +1248,178 @@
     flex-direction: row-reverse;
   }
   .agent-msg-avatar {
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 17px;
+    font-size: 14px;
     flex-shrink: 0;
   }
   .agent-msg.bot .agent-msg-avatar {
-    background: #e8f0fe;
-    color: #1a73e8;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #dbeafe;
   }
   .agent-msg.user .agent-msg-avatar {
-    background: #1a73e8;
+    background: #0f172a;
     color: #ffffff;
-    font-size: 13.5px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
   }
   .agent-bubble {
-    padding: 13px 17px;
-    border-radius: 14px;
+    padding: 12px 16px;
     font-size: 13.5px;
     line-height: 1.55;
-    color: #202124;
+    border-radius: 18px;
+    word-break: break-word;
   }
   .agent-msg.bot .agent-bubble {
-    background: #f8f9fa;
-    border-top-left-radius: 2px;
-    border: 1px solid #e8eaed;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top-left-radius: 4px;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   }
   .agent-msg.user .agent-bubble {
-    background: #1a73e8;
+    background: #0f172a;
     color: #ffffff;
-    border-top-right-radius: 2px;
+    border-top-right-radius: 4px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
   }
   .agent-bubble p { margin-bottom: 8px; }
   .agent-bubble p:last-child { margin-bottom: 0; }
   .agent-bubble code {
-    background: #eef2f6;
+    background: #f1f5f9;
     padding: 2px 6px;
     border-radius: 4px;
-    font-family: monospace;
-    font-size: 12.5px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    color: #0f172a;
   }
   .agent-msg.user .agent-bubble code {
-    background: rgba(255,255,255,0.2);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+  }
+  /* Quick Cards inside Bot Welcome Bubble */
+  .agent-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+    margin: 12px 0 10px 0;
+  }
+  .agent-quick-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+  }
+  .agent-quick-card:hover {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
+  }
+  .agent-quick-card-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .agent-quick-card-title {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 2px;
+  }
+  .agent-quick-card-desc {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.35;
   }
   .agent-wa-link {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    padding: 8px 16px;
-    background: #25d366;
-    color: #ffffff;
+    padding: 8px 14px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
     border-radius: 20px;
     text-decoration: none;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     margin-top: 10px;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
   }
   .agent-wa-link:hover {
-    background: #1ea952;
+    background: #10b981;
+    color: #ffffff;
+    border-color: #10b981;
   }
-  .agent-input-bar {
-    padding: 14px 18px;
+  /* Input Container (Minimalist Floating Pill) */
+  .agent-input-container {
+    padding: 12px 18px 14px 18px;
     background: #ffffff;
-    border-top: 1px solid #e8eaed;
+    border-top: 1px solid #f1f5f9;
+  }
+  .agent-input-pill {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 26px;
+    padding: 4px 6px 4px 16px;
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .agent-input-pill:focus-within {
+    background: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
   .agent-input {
     flex: 1;
-    height: 44px;
-    border: 1px solid #dadce0;
-    border-radius: 24px;
-    padding: 0 18px;
-    font-size: 14.5px;
+    height: 38px;
+    border: none;
+    background: transparent;
     outline: none;
-    transition: border-color 0.15s;
+    font-size: 13.5px;
+    color: #0f172a;
     font-family: inherit;
   }
-  .agent-input:focus {
-    border-color: #1a73e8;
-    box-shadow: 0 0 0 2px rgba(26,115,232,0.18);
+  .agent-input::placeholder {
+    color: #94a3b8;
   }
-  .agent-send-btn {
-    height: 44px;
-    padding: 0 22px;
-    background: #1a73e8;
+  .agent-send-button {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #0f172a;
     color: #ffffff;
     border: none;
-    border-radius: 24px;
-    font-weight: 600;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
   }
-  .agent-send-btn:hover {
-    background: #1557b0;
+  .agent-send-button:hover {
+    background: #2563eb;
+    transform: scale(1.04);
+  }
+  .agent-send-button svg {
+    width: 15px;
+    height: 15px;
+  }
+  .agent-footer-caption {
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: center;
+    margin-top: 6px;
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -1273,6 +1434,9 @@
      ======================================================== -->
 <div class="home-view" id="homeView">
   <header class="home-header">
+    <button class="agent-serp-btn" onclick="abrirAgenteCdpe()" style="background:#e8f0fe; color:#1a73e8; border-color:#c2e7ff; margin-right:4px;">
+      <span>🤖 Asistente Virtual</span>
+    </button>
     <a href="https://correo.sa.com.gt" class="header-link">📧 Correo</a>
     <a href="https://cuentas.sa.com.gt" class="header-link">💼 Cuentas</a>
     <a href="/panel" class="header-link" style="color:var(--g-blue);font-weight:600;">⚙️ CloudPanel</a>
@@ -1310,7 +1474,7 @@
         <span class="waffle-icon">🏢</span>
         <span class="waffle-name">Red CDPE</span>
       </a>
-      <a href="https://correo.sa.com.gt" class="waffle-item">
+      <a href="https://gtcop.sa.com.gt" class="waffle-item">
         <span class="waffle-icon">🏛️</span>
         <span class="waffle-name">Acción Cooperativa</span>
       </a>
@@ -1347,6 +1511,7 @@
     <div class="home-buttons">
       <button class="g-btn" onclick="doSearchFromHome()">Buscar con sa.com.gt</button>
       <button class="g-btn" onclick="doLuckyFromHome()" title="Consultar manuales de gestión comercial y asesoría CDPE">Me siento con suerte</button>
+      <button class="g-btn" onclick="abrirAgenteCdpe()" style="color:#1a73e8; font-weight:600; border-color:#dadce0; background:#f8fafd;">🤖 Asistente Virtual CDPE</button>
     </div>
   </main>
 
@@ -1412,17 +1577,20 @@
       <div class="serp-tab" id="tabCdpe" onclick="switchTab('cdpe')">
         <span>📘</span> CDPE &amp; Manuales
       </div>
+      <div class="serp-tab" id="tabCoop" onclick="switchTab('coop')">
+        <span>🏛️</span> Acción Cooperativa
+      </div>
       <div class="serp-tab" id="tabCompanies" onclick="switchTab('companies')">
         <span>🏢</span> Red SimplyGest
       </div>
       <div class="serp-tab" id="tabStoreCdpe" onclick="switchTab('storeCdpe')">
         <span>🛍️</span> Tienda CDPE
       </div>
-      <div class="serp-tab" id="tabHosting" onclick="switchTab('hosting')">
-        <span>☁️</span> Hosting sa.com.gt
-      </div>
       <div class="serp-tab" id="tabWeb" onclick="switchTab('web')">
         <span>🌐</span> Web Global
+      </div>
+      <div class="serp-tab" id="tabHosting" onclick="switchTab('hosting')">
+        <span>☁️</span> Hosting sa.com.gt
       </div>
     </div>
   </header>
@@ -1589,60 +1757,95 @@
   <div class="agent-card">
     <div class="agent-header">
       <div class="agent-header-brand">
-        <div class="agent-header-icon">🤖</div>
+        <div class="agent-header-icon">✦</div>
         <div class="agent-header-info">
-          <h3>Agente CDPE &bull; Asesor Comercial &amp; Manuales de Gestión</h3>
-          <p>Centro de Desarrollo de PYMES &bull; Conectado a Internet &bull; Catálogo de 13,396 Productos</p>
+          <h3>Asistente Inteligente sa.com.gt</h3>
+          <p>
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;"></span>
+            CDPE &bull; Acción Cooperativa &bull; Web en vivo
+          </p>
         </div>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span class="agent-status-tag" style="background:#e8f0fe;color:#1a73e8;border:1px solid #c2e7ff;">🌐 Web Live &amp; CDPE</span>
-        <button class="agent-header-close" onclick="cerrarAgenteCdpe()">&times;</button>
+      <div class="agent-header-actions">
+        <button class="agent-header-btn" onclick="limpiarChatAgente()" title="Reiniciar conversación">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+            <path d="M16 21h5v-5"/>
+          </svg>
+        </button>
+        <button class="agent-header-btn" onclick="cerrarAgenteCdpe()" title="Cerrar (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
     </div>
 
     <!-- Quick Manual Topics Chips -->
     <div class="agent-chips">
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué manuales de gestión comercial ofrece el CDPE?')">📚 Todos los Manuales</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo aplicar el manual de ventas y diseño de combos para maximizar ingresos?')">📘 Manual 1: Ventas &amp; Combos</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo controlar inventarios y mermas con el método PEPS en SimplyGest 17.5?')">📦 Manual 2: Inventarios &amp; Mermas</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo realizar el arqueo de caja, cuadre de turnos y facturación SAT FEL?')">💰 Manual 3: Arqueo &amp; Facturación SAT</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los requisitos y pasos para afiliar una franquicia a la Red CDPE?')">🏢 Manual 4: Franquicias &amp; Subdominios</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">🏛️ Créditos Acción Cooperativa</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los productos, combos y precios de Don Pollo?')">🍗 Productos Don Pollo</div>
-      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">🛍️ Freidoras en Tienda CDPE</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué manuales de gestión comercial ofrece el CDPE?')">📚 4 Manuales CDPE</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">🏛️ Créditos Acción Coop</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los productos, combos y precios de Don Pollo?')">🍗 Menú Don Pollo</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo controlar inventarios y mermas con el método PEPS en SimplyGest 17.5?')">📦 Inventarios PEPS</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cómo realizar el arqueo de caja, cuadre de turnos y facturación SAT FEL?')">💰 Arqueo &amp; Facturación SAT</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">🛍️ Tienda (13,396 ítems)</div>
+      <div class="agent-chip" onclick="preguntarAgentePrompt('¿Cuáles son los requisitos y pasos para afiliar una franquicia a la Red CDPE?')">🏢 Franquicias sa.com.gt</div>
     </div>
 
     <!-- Conversation Messages Area -->
     <div class="agent-messages" id="agentMessages">
       <div class="agent-msg bot">
-        <div class="agent-msg-avatar">🤖</div>
+        <div class="agent-msg-avatar">✦</div>
         <div class="agent-bubble">
-          <p><strong>¡Hola! Soy tu Agente Especializado del CDPE con Acceso a Internet y Catálogo Oficial.</strong></p>
-          <p style="margin-top:6px;">Tengo permisos completos para consultar fuentes externas, la web en vivo y el catálogo oficial de <strong>13,396 productos y equipos</strong> de la tienda CDPE (<a href="https://cdpe.accion.app/tienda.html" target="_blank" style="color:#1a73e8;font-weight:600;">cdpe.accion.app/tienda.html</a>), además de nuestros <strong>Manuales de Gestión Comercial</strong>:</p>
-          <div style="margin:10px 0; background:#ffffff; border-radius:10px; padding:12px; border:1px solid #dadce0;">
-            <p style="margin-bottom:6px;"><strong>📖 Cobertura Técnica y Comercial:</strong></p>
-            <ul style="padding-left:18px; line-height:1.6; font-size:12.5px; color:#3c4043;">
-              <li><strong>Manual 1:</strong> Técnicas de Venta Sugestiva (Upselling), Ingeniería de Menús y Combos QSR.</li>
-              <li><strong>Manual 2:</strong> Control de Inventarios, Mermas y Rotación PEPS (FIFO) con SimplyGest 17.5.</li>
-              <li><strong>Manual 3:</strong> Arqueo de Caja, Cierres de Turno a Ciegas y Facturación Electrónica SAT (FEL).</li>
-              <li><strong>Manual 4:</strong> Expansión de Franquicias, Estandarización de Calidad y Subdominios <code>sa.com.gt</code>.</li>
-              <li><strong>Tienda CDPE (13,396 Ítems):</strong> Maquinaria industrial, hornos, freidoras, vitrinas, empaques ecológicos y TPV.</li>
-              <li><strong>🌐 Búsqueda Web Externa:</strong> Respuestas en tiempo real con datos de internet y normativas.</li>
-            </ul>
+          <p style="font-weight:600;font-size:14px;color:#0f172a;">¡Hola! ¿En qué puedo orientarte hoy?</p>
+          <p style="color:#64748b;margin-top:4px;">Asesor oficial de <strong>sa.com.gt</strong> con acceso al catálogo de <strong>13,396 productos</strong> de la tienda CDPE, financiamiento de <strong>Acción Cooperativa R.L.</strong> y búsqueda web en vivo.</p>
+
+          <div class="agent-quick-grid">
+            <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué manuales de gestión comercial ofrece el CDPE?')">
+              <div class="agent-quick-card-icon">📘</div>
+              <div class="agent-quick-card-title">Manuales CDPE</div>
+              <div class="agent-quick-card-desc">Ventas, inventarios PEPS, arqueo de caja y franquicias.</div>
+            </div>
+            <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">
+              <div class="agent-quick-card-icon">🏛️</div>
+              <div class="agent-quick-card-title">Acción Cooperativa</div>
+              <div class="agent-quick-card-desc">Créditos para TPV SimplyGest, ahorro y cuentas asociadas.</div>
+            </div>
+            <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">
+              <div class="agent-quick-card-icon">🛍️</div>
+              <div class="agent-quick-card-title">Tienda CDPE &amp; Don Pollo</div>
+              <div class="agent-quick-card-desc">13,396 ítems, maquinaria gastronómica y combos QSR.</div>
+            </div>
           </div>
-          <p>¿En qué puedo orientarte hoy? Haz clic en cualquiera de los temas arriba o escribe tu duda abajo.</p>
-          <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20con%20un%20consultor%20humano" target="_blank" class="agent-wa-link">
-            💬 Chatear con un Asesor Humano (+502 4555-0004) &rarr;
-          </a>
+
+          <p style="font-size:12px;color:#64748b;margin-top:6px;">Escribe cualquier consulta o selecciona un tema arriba para comenzar.</p>
+
+          <div>
+            <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20con%20un%20consultor%20humano" target="_blank" class="agent-wa-link">
+              💬 Asesor humano por WhatsApp (+502 4555-0004) &rarr;
+            </a>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Input Bar -->
-    <div class="agent-input-bar">
-      <input type="text" id="agentInput" class="agent-input" placeholder="Pregunta sobre ventas, inventario SimplyGest, combos, arqueo..." onkeydown="onAgentKeyDown(event)" />
-      <button class="agent-send-btn" onclick="enviarPreguntaAgente()">Consultar</button>
+    <div class="agent-input-container">
+      <div class="agent-input-pill">
+        <input type="text" id="agentInput" class="agent-input" placeholder="Escribe tu pregunta sobre manuales, SimplyGest, créditos..." onkeydown="onAgentKeyDown(event)" autocomplete="off" />
+        <button class="agent-send-button" onclick="enviarPreguntaAgente()" title="Enviar mensaje">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/>
+            <polyline points="5 12 12 5 19 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="agent-footer-caption">
+        Asistente oficial sa.com.gt &bull; Datos en tiempo real &bull; 0 costo de tokens
+      </div>
     </div>
   </div>
 </div>
@@ -2014,13 +2217,35 @@
     }
 
     // ==========================================
-    // NIVEL 2: EMPRESAS DE LA RED (ORGANIC)
+    // NIVEL 2: EMPRESAS DE LA RED & ACCIÓN COOPERATIVA
     // ==========================================
     let displayEmpresas = empresas;
     if (activeTab === 'cdpe') {
       displayEmpresas = [];
+    } else if (activeTab === 'coop') {
+      displayEmpresas = empresas.filter(e => e.isCoop || e.slug === 'cooperativa' || e.slug === 'gtcop');
+      if (displayEmpresas.length === 0) {
+        displayEmpresas = [{
+          codigo: 99,
+          empresa: "Acción Cooperativa R.L.",
+          slug: "gtcop",
+          subdomain: "gtcop.sa.com.gt",
+          year: "2026",
+          isCoop: true,
+          title: "Acción Cooperativa R.L. • Sistema Financiero Cooperativo & Portal del Asociado",
+          snippet: "Entidad cooperativa de ahorro, crédito y apoyo mutuo para asociados. Financiamiento para equipamiento comercial y TPV SimplyGest, fondos de ahorro y portal financiero en gtcop.sa.com.gt.",
+          icon: "🏛️",
+          categoria: "Cooperativa de Ahorro, Crédito & Servicios Especiales",
+          sitelink1Title: "💳 Sistema Financiero Cooperativo GTcop",
+          sitelink1Url: "https://gtcop.sa.com.gt/",
+          sitelink1Desc: "Portal en línea de préstamos, aportaciones y saldos",
+          sitelink2Title: "📧 Correo y Circulares de Asociados",
+          sitelink2Url: "https://correo.sa.com.gt/",
+          sitelink2Desc: "Acceso al buzón corporativo y avisos oficiales"
+        }];
+      }
     } else if (activeTab === 'companies') {
-      displayEmpresas = empresas;
+      displayEmpresas = empresas.filter(e => !e.isCoop);
     } else if (activeTab === 'storeCdpe' || activeTab === 'hosting' || activeTab === 'web') {
       displayEmpresas = [];
     }
@@ -2032,22 +2257,29 @@
         const storeUrl = `https://${emp.subdomain}/`;
         const adminUrl = `https://${emp.subdomain}/gestion`;
 
+        const sl1Title = emp.sitelink1Title || '🛍️ Menú y Tienda Online';
+        const sl1Url = emp.sitelink1Url || storeUrl;
+        const sl1Desc = emp.sitelink1Desc || 'Catálogo de productos y pedidos inmediatos por WhatsApp';
+        const sl2Title = emp.sitelink2Title || '📊 Portal de Gestión SimplyGest';
+        const sl2Url = emp.sitelink2Url || adminUrl;
+        const sl2Desc = emp.sitelink2Desc || `Acceso multi-ejercicio y control administrativo (${emp.year})`;
+
         itemDiv.innerHTML = `
           <div class="organic-source">
             <span class="organic-fav">${emp.icon || '🏢'}</span>
             <span class="organic-name">${emp.empresa}</span>
             <span class="organic-url">${storeUrl}</span>
           </div>
-          <a href="${storeUrl}" class="organic-title">${emp.title}</a>
+          <a href="${sl1Url}" class="organic-title">${emp.title}</a>
           <div class="organic-snippet">${emp.snippet}</div>
           <div class="google-sitelinks">
             <div class="sitelink">
-              <a href="${storeUrl}">🛍️ Menú y Tienda Online</a>
-              <div class="sitelink-desc">Catálogo de productos y pedidos inmediatos por WhatsApp</div>
+              <a href="${sl1Url}">${sl1Title}</a>
+              <div class="sitelink-desc">${sl1Desc}</div>
             </div>
             <div class="sitelink">
-              <a href="${adminUrl}">📊 Portal de Gestión SimplyGest</a>
-              <div class="sitelink-desc">Acceso multi-ejercicio y control administrativo (${emp.year})</div>
+              <a href="${sl2Url}">${sl2Title}</a>
+              <div class="sitelink-desc">${sl2Desc}</div>
             </div>
           </div>
         `;
@@ -2092,9 +2324,30 @@
     }
 
     // ==========================================
+    // RESULTADOS DE LA WEB GLOBAL (TODO INTERNET - ESTILO GOOGLE REAL)
+    // ==========================================
+    if (webList.length > 0 && (activeTab === 'all' || activeTab === 'web')) {
+      webList.forEach(w => {
+        const wDiv = document.createElement('div');
+        wDiv.className = 'organic-item web-result';
+        wDiv.innerHTML = `
+          <div class="organic-source">
+            <span class="organic-fav">${w.icon || '🌐'}</span>
+            <span class="organic-name">${w.fuente || 'Web'}</span>
+            <span class="organic-url">${w.url}</span>
+          </div>
+          <a href="${w.url}" target="_blank" class="organic-title">${w.title}</a>
+          <div class="organic-snippet">${w.snippet}</div>
+        `;
+        organicList.appendChild(wDiv);
+      });
+    }
+
+    // ==========================================
     // NIVEL 4: DOMINIO sa.com.gt DISPONIBLE
     // ==========================================
-    if (empresas.length === 0 && (activeTab === 'all' || activeTab === 'hosting')) {
+    const isDomainQuery = /(dominio|hosting|subdominio|sa\.com\.gt|crear web|miempresa)/i.test(data.query || '');
+    if (activeTab === 'hosting' || (activeTab === 'all' && isDomainQuery && empresas.length === 0)) {
       const cleanQ = (data.query || '').toLowerCase().replace(/[^a-z0-9]/g, '') || 'miempresa';
       const freeDom = cleanQ + '.sa.com.gt';
       document.getElementById('lblDomainFree').innerText = freeDom;
@@ -2104,27 +2357,20 @@
       domainCard.style.display = 'none';
     }
 
-    // ==========================================
-    // NIVEL 5: RESULTADOS DE LA WEB GLOBAL (TODO INTERNET)
-    // ==========================================
-    if (webList.length > 0 && (activeTab === 'all' || activeTab === 'web')) {
-      webGlobalSection.style.display = 'block';
-      webList.forEach(w => {
-        const wDiv = document.createElement('div');
-        wDiv.className = 'web-global-item';
-        wDiv.innerHTML = `
-          <div class="web-global-source">
-            <span>${w.icon || '🌐'}</span>
-            <span style="font-weight:500;">${w.fuente || 'Web'}</span>
-            <span class="web-global-url">${w.url}</span>
-          </div>
-          <a href="${w.url}" target="_blank" class="web-global-title">${w.title}</a>
-          <div class="web-global-snippet">${w.snippet}</div>
-        `;
-        webGlobalList.appendChild(wDiv);
-      });
-    } else {
-      webGlobalSection.style.display = 'none';
+    // Mensaje de estado cuando no hay resultados en la pestaña activa
+    if (organicList.children.length === 0 && cdpeList.length === 0 && productos.length === 0 && tiendaCdpe.length === 0 && domainCard.style.display === 'none') {
+      const noRes = document.createElement('div');
+      noRes.style.padding = '32px 0';
+      noRes.innerHTML = `
+        <p style="font-size:16px; color:#202124; margin-bottom:12px;">No se encontraron resultados directos para <strong>${data.query || ''}</strong>.</p>
+        <ul style="padding-left:20px; font-size:14px; color:#5f6368; line-height:1.7; margin-bottom:18px;">
+          <li>Revisa que no haya errores ortográficos.</li>
+          <li>Prueba con términos más generales o busca en la pestaña "Web Global".</li>
+          <li>Consulta directamente con el Asistente Virtual CDPE (con acceso a internet y catálogo).</li>
+        </ul>
+        <button class="g-btn-blue" onclick="abrirAgenteCdpe('${data.query || ''}')" style="padding:10px 22px; font-size:14px; font-weight:600;">🤖 Consultar al Asistente Inteligente</button>
+      `;
+      organicList.appendChild(noRes);
     }
 
     // ==========================================
@@ -2138,9 +2384,10 @@
       document.getElementById('kpDomain').innerText = topEmp.subdomain;
       document.getElementById('kpFiscal').innerText = `Ejercicio ${topEmp.year} (En curso)`;
 
-      document.getElementById('kpLinkStore').href = `https://${topEmp.subdomain}/`;
-      document.getElementById('kpLinkShop').href = `https://${topEmp.subdomain}/`;
-      document.getElementById('kpLinkAdmin').href = `https://${topEmp.subdomain}/gestion`;
+      const kpTarget = topEmp.sitelink1Url || `https://${topEmp.subdomain}/`;
+      document.getElementById('kpLinkStore').href = kpTarget;
+      document.getElementById('kpLinkShop').href = kpTarget;
+      document.getElementById('kpLinkAdmin').href = topEmp.sitelink2Url || `https://${topEmp.subdomain}/gestion`;
     } else {
       kpPanel.style.display = 'none';
     }
@@ -2152,10 +2399,11 @@
     document.querySelectorAll('.serp-tab').forEach(t => t.classList.remove('active'));
     if (tab === 'all') document.getElementById('tabAll').classList.add('active');
     if (tab === 'cdpe') document.getElementById('tabCdpe').classList.add('active');
+    if (tab === 'coop') document.getElementById('tabCoop').classList.add('active');
     if (tab === 'companies') document.getElementById('tabCompanies').classList.add('active');
     if (tab === 'storeCdpe') document.getElementById('tabStoreCdpe').classList.add('active');
-    if (tab === 'hosting') document.getElementById('tabHosting').classList.add('active');
     if (tab === 'web') document.getElementById('tabWeb').classList.add('active');
+    if (tab === 'hosting') document.getElementById('tabHosting').classList.add('active');
 
     if (currentSearchData) {
       renderSerp(currentSearchData);
@@ -2215,6 +2463,54 @@
     if (modal) modal.classList.remove('open');
   }
 
+  const WELCOME_AGENTE_HTML = `
+    <div class="agent-msg bot">
+      <div class="agent-msg-avatar">✦</div>
+      <div class="agent-bubble">
+        <p style="font-weight:600;font-size:14px;color:#0f172a;">¡Hola! ¿En qué puedo orientarte hoy?</p>
+        <p style="color:#64748b;margin-top:4px;">Asesor oficial de <strong>sa.com.gt</strong> con acceso al catálogo de <strong>13,396 productos</strong> de la tienda CDPE, financiamiento de <strong>Acción Cooperativa R.L.</strong> y búsqueda web en vivo.</p>
+
+        <div class="agent-quick-grid">
+          <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué manuales de gestión comercial ofrece el CDPE?')">
+            <div class="agent-quick-card-icon">📘</div>
+            <div class="agent-quick-card-title">Manuales CDPE</div>
+            <div class="agent-quick-card-desc">Ventas, inventarios PEPS, arqueo de caja y franquicias.</div>
+          </div>
+          <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué financiamiento y beneficios ofrece Acción Cooperativa para equipos SimplyGest?')">
+            <div class="agent-quick-card-icon">🏛️</div>
+            <div class="agent-quick-card-title">Acción Cooperativa</div>
+            <div class="agent-quick-card-desc">Créditos para TPV SimplyGest, ahorro y cuentas asociadas.</div>
+          </div>
+          <div class="agent-quick-card" onclick="preguntarAgentePrompt('¿Qué freidoras industriales para pollo tienen disponibles en la tienda CDPE?')">
+            <div class="agent-quick-card-icon">🛍️</div>
+            <div class="agent-quick-card-title">Tienda CDPE &amp; Don Pollo</div>
+            <div class="agent-quick-card-desc">13,396 ítems, maquinaria gastronómica y combos QSR.</div>
+          </div>
+        </div>
+
+        <p style="font-size:12px;color:#64748b;margin-top:6px;">Escribe cualquier consulta o selecciona un tema arriba para comenzar.</p>
+
+        <div>
+          <a href="https://wa.me/50245550004?text=%C2%A1Hola%20CDPE!%20Deseo%20asesor%C3%ADa%20personalizada%20con%20un%20consultor%20humano" target="_blank" class="agent-wa-link">
+            💬 Asesor humano por WhatsApp (+502 4555-0004) &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  function limpiarChatAgente() {
+    const msgContainer = document.getElementById('agentMessages');
+    if (msgContainer) {
+      msgContainer.innerHTML = WELCOME_AGENTE_HTML;
+    }
+    const inp = document.getElementById('agentInput');
+    if (inp) {
+      inp.value = '';
+      inp.focus();
+    }
+  }
+
   function cerrarAgenteCdpeOnBackdrop(e) {
     if (e.target.id === 'agentModal') {
       cerrarAgenteCdpe();
@@ -2243,9 +2539,9 @@
 
     // Typing indicator with animated spinner
     const typingId = agregarMensajeAgente('bot', `
-      <div style="display:flex;align-items:center;gap:9px;color:#5f6368;font-size:13px;">
-        <span style="display:inline-block;width:14px;height:14px;border:2px solid #dadce0;border-top-color:#1a73e8;border-radius:50%;animation:spin 0.8s linear infinite;"></span>
-        <span>El Asesor CDPE está consultando manuales, catálogo (13,396 productos) y fuentes web en tiempo real...</span>
+      <div style="display:flex;align-items:center;gap:9px;color:#64748b;font-size:13px;">
+        <span style="display:inline-block;width:14px;height:14px;border:2px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin 0.7s linear infinite;"></span>
+        <span>El Asesor está consultando manuales, catálogo y web en tiempo real...</span>
       </div>
     `);
 
@@ -2278,7 +2574,7 @@
     const div = document.createElement('div');
     div.className = `agent-msg ${remitente}`;
 
-    const avatar = remitente === 'bot' ? '🤖' : 'Tú';
+    const avatar = remitente === 'bot' ? '✦' : 'Tú';
 
     div.innerHTML = `
       <div class="agent-msg-avatar">${avatar}</div>
@@ -2291,6 +2587,12 @@
     msgContainer.scrollTop = msgContainer.scrollHeight;
     return msgId;
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      cerrarAgenteCdpe();
+    }
+  });
 
   function generarRespuestaAgente(pregunta) {
     const q = (pregunta || '').toLowerCase().trim();
@@ -2473,5 +2775,15 @@
     }
   });
 </script>
+
+<!-- Floating Action Button (Always Visible Bot Launcher) -->
+<div class="agent-fab" onclick="abrirAgenteCdpe()" title="Consultar con el Asesor Virtual CDPE e Internet">
+  <div class="agent-fab-avatar">🤖</div>
+  <div class="agent-fab-text">
+    <div class="agent-fab-title">Asistente CDPE</div>
+    <div class="agent-fab-status">En línea • Web &amp; Catálogo</div>
+  </div>
+</div>
+
 </body>
 </html>

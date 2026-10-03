@@ -1,0 +1,208 @@
+/*
+ * CDPE - Accion Cooperativa Theme for GTcop (replaces skin-yellow)
+ * Palette based on https://cdpe.accion.app/
+ * Primary: hsl(206, 80%, 30%) [#0F528A]
+ * Accent: hsl(195, 85%, 50%) [#13B5EC]
+ * Cooperativa Emerald: #10B981
+ * Gold/Amber: #FBBF24
+ */
+
+.skin-yellow .main-header .navbar {
+  background: linear-gradient(135deg, hsl(206, 80%, 25%) 0%, hsl(206, 80%, 35%) 100%) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.skin-yellow .main-header .navbar .nav > li > a {
+  color: #ffffff !important;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.skin-yellow .main-header .navbar .nav > li > a:hover,
+.skin-yellow .main-header .navbar .nav > li > a:active,
+.skin-yellow .main-header .navbar .nav > li > a:focus,
+.skin-yellow .main-header .navbar .nav .open > a,
+.skin-yellow .main-header .navbar .nav .open > a:hover,
+.skin-yellow .main-header .navbar .nav .open > a:focus,
+.skin-yellow .main-header .navbar .nav > .active > a {
+  background: rgba(0, 0, 0, 0.18) !important;
+  color: #ffffff !important;
+}
+.skin-yellow .main-header .navbar .sidebar-toggle {
+  color: #ffffff !important;
+}
+.skin-yellow .main-header .navbar .sidebar-toggle:hover {
+  background-color: hsl(206, 80%, 22%) !important;
+  color: #ffffff !important;
+}
+.skin-yellow .main-header .logo {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-bottom: 0 solid transparent;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+.skin-yellow .main-header .logo:hover {
+  background: #f8fafc !important;
+}
+.skin-yellow .main-header .logo .logo-lg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.skin-yellow .main-header .logo .logo-lg img {
+  max-height: 38px;
+  max-width: 190px;
+  object-fit: contain;
+}
+.skin-yellow .main-header .logo .logo-mini {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.skin-yellow .main-header .logo .logo-mini img {
+  max-height: 36px;
+  max-width: 36px;
+  object-fit: contain;
+}
+body.sidebar-collapse.skin-yellow .main-header .logo .logo-lg,
+.sidebar-collapse .main-header .logo .logo-lg {
+  display: none !important;
+}
+body.sidebar-collapse.skin-yellow .main-header .logo .logo-mini,
+.sidebar-collapse .main-header .logo .logo-mini {
+  display: flex !important;
+}
+
+body.dark-mode.skin-yellow .main-header .logo,
+.skin-yellow.dark-mode .main-header .logo {
+  background: #0d1a29 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+body.dark-mode.skin-yellow .main-header .logo img,
+.skin-yellow.dark-mode .main-header .logo img {
+  filter: brightness(1.2) drop-shadow(0 0 2px rgba(255,255,255,0.25));
+}
+body.dark-mode.skin-yellow .main-header .logo:hover,
+.skin-yellow.dark-mode .main-header .logo:hover {
+  background: #112236 !important;
+}
+.skin-yellow .main-header li.user-header {
+  background: linear-gradient(135deg, hsl(206, 80%, 25%) 0%, hsl(195, 85%, 45%) 100%) !important;
+}
+.skin-yellow .content-header {
+  background: transparent;
+}
+.skin-yellow .wrapper,
+.skin-yellow .main-sidebar,
+.skin-yellow .left-side {
+  background-color: #0d1a29 !important; /* CDPE Deep Corporate Slate Navy */
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.08);
+}
+.skin-yellow .user-panel > .info,
+.skin-yellow .user-panel > .info > a {
+  color: #f1f5f9;
+}
+.skin-yellow .sidebar-menu > li.header {
+  color: #64748b !important;
+  background: #09131e !important;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.skin-yellow .sidebar-menu > li > a {
+  border-left: 3px solid transparent;
+  color: #94a3b8;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.skin-yellow .sidebar-menu > li:hover > a,
+.skin-yellow .sidebar-menu > li.active > a {
+  color: #ffffff !important;
+  background: #132438 !important;
+  border-left-color: hsl(195, 85%, 50%) !important; /* CDPE Electric Cyan Accent */
+}
+.skin-yellow .sidebar-menu > li > .treeview-menu {
+  margin: 0 1px;
+  background: #0a1420 !important;
+}
+.skin-yellow .sidebar a {
+  color: #94a3b8;
+}
+.skin-yellow .treeview-menu > li > a {
+  color: #8198ad;
+  transition: all 0.15s ease;
+}
+.skin-yellow .treeview-menu > li.active > a,
+.skin-yellow .treeview-menu > li > a:hover {
+  color: hsl(195, 85%, 60%) !important;
+  background: rgba(19, 181, 236, 0.08) !important;
+}
+.skin-yellow .sidebar-form {
+  border-radius: 6px;
+  border: 1px solid #1e334a;
+  margin: 10px 10px;
+}
+.skin-yellow .sidebar-form input[type="text"],
+.skin-yellow .sidebar-form .btn {
+  box-shadow: none;
+  background-color: #112235;
+  border: 1px solid transparent;
+  height: 35px;
+  color: #e2e8f0;
+}
+.skin-yellow .sidebar-form input[type="text"]:focus {
+  background-color: #162a42;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   DARK MODE OVERRIDES (Applied when body has .dark-mode class)
+   ========================================================================== */
+body.dark-mode.skin-yellow .main-header .navbar {
+  background: #070e17 !important;
+  border-bottom: 1px solid #1e293b !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
+}
+body.dark-mode.skin-yellow .main-header .logo {
+  background: #050b12 !important;
+  border-right: 1px solid #1e293b !important;
+}
+body.dark-mode.skin-yellow .wrapper,
+body.dark-mode.skin-yellow .main-sidebar,
+body.dark-mode.skin-yellow .left-side {
+  background-color: #060c14 !important;
+  border-right: 1px solid #162032 !important;
+}
+body.dark-mode.skin-yellow .sidebar-menu > li.header {
+  background: #04080e !important;
+  color: #475569 !important;
+}
+body.dark-mode.skin-yellow .sidebar-menu > li > a {
+  color: #8da2ba;
+}
+body.dark-mode.skin-yellow .sidebar-menu > li:hover > a,
+body.dark-mode.skin-yellow .sidebar-menu > li.active > a {
+  background: #0d1a29 !important;
+  color: #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+}
+body.dark-mode.skin-yellow .sidebar-menu > li > .treeview-menu {
+  background: #04080e !important;
+}
+body.dark-mode.skin-yellow .sidebar-form {
+  border-color: #1e293b;
+}
+body.dark-mode.skin-yellow .sidebar-form input[type="text"] {
+  background-color: #0b1320;
+}

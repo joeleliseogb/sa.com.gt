@@ -1147,25 +1147,25 @@ function Search-EmpresasYProductos($query) {
     }
 
     # Búsqueda institucional para Acción Cooperativa
-    if ($q -match "cooperativa|accion|asociad|credito|ahorro|financiamiento|asamblea|aporte") {
+    if ($q -match "cooperativa|accion|asociad|credito|ahorro|financiamiento|asamblea|aporte|prestamo|coop|gtcop|solidar") {
         $matchedEmpresas += @{
             codigo         = 99
             empresa        = "Acción Cooperativa R.L."
             slug           = "cooperativa"
-            subdomain      = "correo.sa.com.gt"
+            subdomain      = "gtcop.sa.com.gt"
             year           = "2026"
             isCdpe         = $false
             isCoop         = $true
-            title          = "Acción Cooperativa R.L. • Portal del Asociado, Crédito & Servicios"
-            snippet        = "Entidad cooperativa de apoyo mutuo para asociados. Financiamiento para equipamiento y licencias SimplyGest, fondos de ahorro y compras comunitarias para franquicias."
+            title          = "Acción Cooperativa R.L. • Sistema Financiero Cooperativo & Portal del Asociado"
+            snippet        = "Entidad cooperativa de ahorro, crédito y apoyo mutuo para asociados. Financiamiento para equipamiento comercial y TPV SimplyGest, fondos de ahorro y portal financiero en gtcop.sa.com.gt."
             icon           = "🏛️"
             categoria      = "Cooperativa de Ahorro, Crédito & Servicios Especiales"
-            sitelink1Title = "📧 Correo y Circulares de Asociados"
-            sitelink1Url   = "https://correo.sa.com.gt/"
-            sitelink1Desc  = "Acceso al buzón corporativo y avisos oficiales"
-            sitelink2Title = "💳 Crédito para Equipamiento SimplyGest"
+            sitelink1Title = "💳 Sistema Financiero Cooperativo GTcop"
+            sitelink1Url   = "https://gtcop.sa.com.gt/"
+            sitelink1Desc  = "Portal en línea de préstamos, aportaciones y saldos"
+            sitelink2Title = "📧 Correo y Circulares de Asociados"
             sitelink2Url   = "https://correo.sa.com.gt/"
-            sitelink2Desc  = "Línea de financiamiento de TPV, licencias e impresoras"
+            sitelink2Desc  = "Acceso al buzón corporativo y avisos oficiales"
         }
     }
 
@@ -1461,6 +1461,12 @@ function Invoke-CdpeAgentAdvisor($query) {
             titulo = "Manual 4 CDPE: Modelo de Franquicias, BPM y Expansión en Red sa.com.gt"
             resumen = "Buenas Prácticas de Manufactura (BPM), estandarización operativa, tienda digital y subdominio empresarial dedicado tuempresa.sa.com.gt con SSL institucional y buzón de correo corporativo."
         }
+    } elseif ($qLower -match "cooperativa|accion|credito|préstamo|prestamo|financiamiento|asociad|ahorro|aporte|gtcop") {
+        $manualEncontrado = @{
+            num = 5
+            titulo = "🏛️ Acción Cooperativa R.L.: Servicios Financieros, Créditos y Apoyo al Asociado"
+            resumen = "Acción Cooperativa R.L. brinda respaldo financiero integral: 1) Líneas de financiamiento blandas para equipamiento de negocios y licencias SimplyGest Cloud 17.5. 2) Cuentas de ahorro cooperativo y aportaciones societarias. 3) Plataforma financiera en línea para asociados en https://gtcop.sa.com.gt/ y atención personalizada por WhatsApp (+502 4555-0004)."
+        }
     }
 
     # 2. Catálogo Oficial CDPE (Top 4 productos afines de los 13,396 disponibles)
@@ -1477,36 +1483,38 @@ function Invoke-CdpeAgentAdvisor($query) {
     $sb = New-Object System.Text.StringBuilder
     [void]$sb.Append("<div class='cdpe-agent-response'>")
 
-    # Status Badges
-    [void]$sb.Append("<div style='display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:12px;'>")
-    [void]$sb.Append("<span style='font-size:11px;font-weight:700;color:#137333;background:#e6f4ea;padding:3px 9px;border-radius:12px;'>🌐 Conexión a Internet & Fuentes Externas</span>")
-    [void]$sb.Append("<span style='font-size:11px;font-weight:700;color:#1a73e8;background:#e8f0fe;padding:3px 9px;border-radius:12px;'>🛍️ Catálogo Oficial CDPE (13,396 Productos)</span>")
+    # Status Badges (Minimalist)
+    [void]$sb.Append("<div style='display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:10px;'>")
+    [void]$sb.Append("<span style='font-size:10.5px;font-weight:600;color:#047857;background:#ecfdf5;border:1px solid #d1fae5;padding:2px 8px;border-radius:9999px;'>🌐 Web en vivo</span>")
+    [void]$sb.Append("<span style='font-size:10.5px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #dbeafe;padding:2px 8px;border-radius:9999px;'>🛍️ Catálogo 13,396 Ítems</span>")
     [void]$sb.Append("</div>")
 
     # Core CDPE Guidance
     if ($manualEncontrado) {
-        [void]$sb.Append("<p style='margin-bottom:6px;'><strong>📘 $($manualEncontrado.titulo)</strong></p>")
-        [void]$sb.Append("<div style='background:#ffffff;border:1px solid #e0e2e6;border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.55;color:#202124;'>")
+        [void]$sb.Append("<div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.55;color:#1e293b;'>")
+        [void]$sb.Append("<div style='font-weight:600;font-size:13.5px;color:#0f172a;margin-bottom:6px;'>📘 $($manualEncontrado.titulo)</div>")
         [void]$sb.Append($manualEncontrado.resumen)
         [void]$sb.Append("</div>")
     } else {
         $encTerm = [System.Web.HttpUtility]::HtmlEncode($q)
-        [void]$sb.Append("<p style='margin-bottom:6px;'><strong>🤖 Asesoría Especializada CDPE</strong></p>")
-        [void]$sb.Append("<p style='font-size:13.5px;line-height:1.55;margin-bottom:12px;color:#202124;'>Para consultas sobre <em>'$encTerm'</em>, el CDPE recomienda implementar protocolos estandarizados de atención, control en SimplyGest 17.5 y equipamiento con garantía oficial.</p>")
+        [void]$sb.Append("<div style='background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.55;color:#1e293b;'>")
+        [void]$sb.Append("<div style='font-weight:600;font-size:13.5px;color:#0f172a;margin-bottom:4px;'>✦ Orientación Especializada</div>")
+        [void]$sb.Append("<p style='margin:0;font-size:13px;color:#334155;'>Para consultas sobre <em>'$encTerm'</em>, el CDPE recomienda aplicar los estándares comerciales de los manuales técnicos, control riguroso en SimplyGest 17.5 y asesoría financiera con Acción Cooperativa R.L.</p>")
+        [void]$sb.Append("</div>")
     }
 
     # External Web Intel Block
     if ($fuentesExternas.Count -gt 0) {
-        [void]$sb.Append("<div style='margin-bottom:14px;background:#f8f9fa;border-left:3px solid #1a73e8;padding:10px 14px;border-radius:0 8px 8px 0;'>")
-        [void]$sb.Append("<div style='font-size:11.5px;font-weight:700;color:#1a73e8;margin-bottom:6px;display:flex;align-items:center;gap:5px;'><span>🌐 Información Consultada en Internet / Fuentes Externas:</span></div>")
+        [void]$sb.Append("<div style='margin-bottom:12px;background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #2563eb;padding:10px 14px;border-radius:8px;'>")
+        [void]$sb.Append("<div style='font-size:11px;font-weight:600;color:#2563eb;margin-bottom:6px;'>🌐 Fuentes consultadas en la Web:</div>")
         foreach ($src in $fuentesExternas) {
             $sTitle = [System.Web.HttpUtility]::HtmlEncode($src.title)
             $sSnip = [System.Web.HttpUtility]::HtmlEncode($src.snippet)
             $sUrl = $src.url
             $sFuente = [System.Web.HttpUtility]::HtmlEncode($src.fuente)
             [void]$sb.Append("<div style='margin-bottom:8px;font-size:12px;line-height:1.45;'>")
-            [void]$sb.Append("<strong><a href='$sUrl' target='_blank' style='color:#1a0dab;text-decoration:underline;'>$sTitle</a></strong> <span style='color:#70757a;'>($sFuente)</span><br/>")
-            [void]$sb.Append("<span style='color:#3c4043;'>$sSnip</span>")
+            [void]$sb.Append("<strong><a href='$sUrl' target='_blank' style='color:#2563eb;text-decoration:none;'>$sTitle</a></strong> <span style='color:#64748b;font-size:11px;'>($sFuente)</span><br/>")
+            [void]$sb.Append("<span style='color:#475569;'>$sSnip</span>")
             [void]$sb.Append("</div>")
         }
         [void]$sb.Append("</div>")
@@ -1515,27 +1523,27 @@ function Invoke-CdpeAgentAdvisor($query) {
     # Products from CDPE Store
     if ($productosCdpe.Count -gt 0) {
         [void]$sb.Append("<div style='margin-bottom:14px;'>")
-        [void]$sb.Append("<div style='font-size:12.5px;font-weight:700;color:#202124;margin-bottom:8px;display:flex;align-items:center;gap:6px;'>")
-        [void]$sb.Append("<span>🛍️ Equipamiento y Soluciones Disponibles en Tienda CDPE:</span>")
+        [void]$sb.Append("<div style='font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;'>")
+        [void]$sb.Append("<span>🛍️ Equipamiento sugerido en Tienda CDPE:</span>")
         [void]$sb.Append("</div>")
-        [void]$sb.Append("<div style='display:grid;grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));gap:10px;'>")
+        [void]$sb.Append("<div style='display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:8px;'>")
         foreach ($p in $productosCdpe) {
             $pNom = [System.Web.HttpUtility]::HtmlEncode($p.nombre)
             $pProv = [System.Web.HttpUtility]::HtmlEncode($p.proveedor)
             $pUrl = $p.linkUrl
             $pWa = "https://wa.me/50245550004?text=" + [System.Uri]::EscapeDataString($p.waText)
-            [void]$sb.Append("<div style='background:#ffffff;border:1px solid #dadce0;border-radius:8px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.05);'>")
+            [void]$sb.Append("<div style='background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.02);'>")
             [void]$sb.Append("<div>")
             [void]$sb.Append("<div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;'>")
-            [void]$sb.Append("<span style='font-size:20px;'>$($p.icono)</span>")
-            [void]$sb.Append("<span style='font-size:10px;font-weight:600;background:#f1f3f4;color:#5f6368;padding:2px 6px;border-radius:4px;'>$pProv</span>")
+            [void]$sb.Append("<span style='font-size:18px;'>$($p.icono)</span>")
+            [void]$sb.Append("<span style='font-size:10px;font-weight:600;background:#f1f5f9;color:#64748b;padding:2px 6px;border-radius:4px;'>$pProv</span>")
             [void]$sb.Append("</div>")
-            [void]$sb.Append("<div style='font-size:12.5px;font-weight:600;color:#1a0dab;line-height:1.3;margin-bottom:4px;'><a href='$pUrl' target='_blank' style='color:#1a0dab;text-decoration:none;'>$pNom</a></div>")
-            [void]$sb.Append("<div style='font-size:13px;font-weight:700;color:#188038;margin-bottom:6px;'>$($p.precioFmt)</div>")
+            [void]$sb.Append("<div style='font-size:12px;font-weight:600;color:#0f172a;line-height:1.3;margin-bottom:4px;'><a href='$pUrl' target='_blank' style='color:#0f172a;text-decoration:none;'>$pNom</a></div>")
+            [void]$sb.Append("<div style='font-size:12.5px;font-weight:700;color:#047857;margin-bottom:6px;'>$($p.precioFmt)</div>")
             [void]$sb.Append("</div>")
             [void]$sb.Append("<div style='display:flex;gap:6px;margin-top:6px;'>")
-            [void]$sb.Append("<a href='$pUrl' target='_blank' style='flex:1;background:#f8f9fa;border:1px solid #dadce0;border-radius:12px;font-size:11px;color:#1a73e8;text-align:center;padding:5px 6px;text-decoration:none;font-weight:600;'>🛒 Ver Tienda</a>")
-            [void]$sb.Append("<a href='$pWa' target='_blank' style='flex:1;background:#e6f4ea;border:1px solid #ceead6;border-radius:12px;font-size:11px;color:#137333;text-align:center;padding:5px 6px;text-decoration:none;font-weight:600;'>💬 Cotizar</a>")
+            [void]$sb.Append("<a href='$pUrl' target='_blank' style='flex:1;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9999px;font-size:11px;color:#2563eb;text-align:center;padding:5px 8px;text-decoration:none;font-weight:600;'>Ver Ítem</a>")
+            [void]$sb.Append("<a href='$pWa' target='_blank' style='flex:1;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:9999px;font-size:11px;color:#047857;text-align:center;padding:5px 8px;text-decoration:none;font-weight:600;'>Cotizar</a>")
             [void]$sb.Append("</div>")
             [void]$sb.Append("</div>")
         }
@@ -1545,9 +1553,9 @@ function Invoke-CdpeAgentAdvisor($query) {
 
     # WhatsApp and Direct Links
     $waGral = "https://wa.me/50245550004?text=" + [System.Uri]::EscapeDataString("Hola Asesor CDPE, deseo ampliar la consulta sobre: $q")
-    [void]$sb.Append("<div style='margin-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;'>")
-    [void]$sb.Append("<a href='$waGral' target='_blank' class='agent-wa-link' style='margin:0;'>💬 Consultar a un Especialista CDPE (+502 4555-0004) &rarr;</a>")
-    [void]$sb.Append("<a href='https://cdpe.accion.app/tienda.html' target='_blank' style='font-size:12px;color:#1a73e8;font-weight:600;text-decoration:none;'>🌐 Catálogo Completo CDPE &rarr;</a>")
+    [void]$sb.Append("<div style='margin-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;'>")
+    [void]$sb.Append("<a href='$waGral' target='_blank' class='agent-wa-link' style='margin:0;'>💬 Asesor humano por WhatsApp (+502 4555-0004) &rarr;</a>")
+    [void]$sb.Append("<a href='https://cdpe.accion.app/tienda.html' target='_blank' style='font-size:11.5px;color:#2563eb;font-weight:600;text-decoration:none;'>🌐 Catálogo completo &rarr;</a>")
     [void]$sb.Append("</div>")
 
     [void]$sb.Append("</div>")

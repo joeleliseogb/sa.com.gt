@@ -63,3 +63,75 @@ https://sa.com.gt, https://www.sa.com.gt, https://donpollo.sa.com.gt, https://cd
         }
     }
 }
+
+http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
+    encode gzip zstd
+
+    handle /Backup/Backup {
+        reverse_proxy 127.0.0.1:56992 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    handle /Backup/Restore {
+        reverse_proxy 127.0.0.1:56992 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
+    @theme_css path /Content/Site.css
+    handle @theme_css {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /Site.css
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_skin path /Content/AdminLTE/skins/skin-yellow.css
+    handle @theme_skin {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /skin-yellow.css
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_js path /Scripts/modernizr-2.8.3.js
+    handle @theme_js {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /modernizr-2.8.3.js
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_logo_horizontal path /Images/LogoIQHorizontal.png /Images/LogoIQSD.png
+    handle @theme_logo_horizontal {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /logo_cdpe.png
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_logo_icon path /Images/logoSolo.png /Images/LogoIQHorizontalSmall.png
+    handle @theme_logo_icon {
+        header Cache-Control "no-cache, must-revalidate"
+        rewrite * /logo_cdpe_icon.png
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    @theme_custom_images path /Images/logo_cdpe.png /Images/logo_cdpe_icon.png
+    handle @theme_custom_images {
+        header Cache-Control "no-cache, must-revalidate"
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme
+        file_server
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:8081 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+}

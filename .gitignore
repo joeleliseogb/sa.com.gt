@@ -1,5 +1,8 @@
 # Binarios y ejecutables externos
-bin/
+/bin/*
+!/bin/*.ps1
+web/roundcube/**/bin/
+web/roundcube/bin/
 *.exe
 *.zip
 *.dll
