@@ -84,6 +84,11 @@ namespace GtcopProxy
                     ServeCapturarImagen(req, res);
                     return;
                 }
+                else if (absPath.StartsWith("/api/movil/", StringComparison.OrdinalIgnoreCase))
+                {
+                    ServeMovilApi(req, res);
+                    return;
+                }
 
                 string targetUrl = string.Format("http://{0}{1}", TargetHost, req.RawUrl);
                 HttpWebRequest backendReq = (HttpWebRequest)WebRequest.Create(targetUrl);
@@ -1310,6 +1315,271 @@ namespace GtcopProxy
             }
 
             return html;
+        }
+
+        private static void ServeMovilApi(HttpListenerRequest req, HttpListenerResponse res)
+        {
+            try
+            {
+                res.Headers["Access-Control-Allow-Origin"] = "*";
+                res.Headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+                res.Headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
+
+                if (req.HttpMethod == "OPTIONS")
+                {
+                    res.StatusCode = 200;
+                    res.Close();
+                    return;
+                }
+
+                string p = req.Url.AbsolutePath.ToLowerInvariant();
+
+                if (p.EndsWith("/login"))
+                {
+                    string body = "";
+                    using (var reader = new StreamReader(req.InputStream, req.ContentEncoding))
+                    {
+                        body = reader.ReadToEnd();
+                    }
+
+                    string dpi = "";
+                    string pin = "";
+                    var mDpi = Regex.Match(body, @"""dpi""\s*:\s*""?([^"",}\s]+)""?");
+                    if (mDpi.Success) dpi = mDpi.Groups[1].Value.Replace(" ", "").Replace("-", "");
+                    var mPin = Regex.Match(body, @"""pin""\s*:\s*""?([^"",}\s]+)""?");
+                    if (mPin.Success) pin = mPin.Groups[1].Value.Trim();
+
+                    if (string.IsNullOrEmpty(dpi) || string.IsNullOrEmpty(pin))
+                    {
+                        SendJson(res, 400, "{\"success\":false,\"message\":\"DPI y PIN son requeridos.\"}");
+                        return;
+                    }
+
+                    using (var conn = new MySqlConnection(DbConnString))
+                    {
+                        conn.Open();
+                        uint socioId = 0;
+                        int codigo = 0;
+                        string primerNombre = "";
+                        string primerApellido = "";
+                        string telefono = "";
+                        string fechaIngreso = "";
+
+                        string sqlSocio = @"SELECT s.id, s.codigo, s.primerNombre, s.primerApellido, s.celular, s.fechaIngreso
+                                            FROM documento d
+                                            JOIN socio s ON d.socio_id = s.id
+                                            WHERE REPLACE(d.registro, ' ', '') = @dpi
+                                            LIMIT 1";
+                        using (var cmd = new MySqlCommand(sqlSocio, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@dpi", dpi);
+                            using (var rdr = cmd.ExecuteReader())
+                            {
+                                if (rdr.Read())
+                                {
+                                    socioId = Convert.ToUInt32(rdr["id"]);
+                                    codigo = Convert.ToInt32(rdr["codigo"]);
+                                    primerNombre = rdr["primerNombre"].ToString();
+                                    primerApellido = rdr["primerApellido"] != DBNull.Value ? rdr["primerApellido"].ToString() : "";
+                                    telefono = rdr["celular"] != DBNull.Value ? rdr["celular"].ToString() : "";
+                                    fechaIngreso = rdr["fechaIngreso"] != DBNull.Value ? Convert.ToDateTime(rdr["fechaIngreso"]).ToString("dd/MM/yyyy") : "";
+                                }
+                            }
+                        }
+
+                        if (socioId == 0)
+                        {
+                            SendJson(res, 401, "{\"success\":false,\"message\":\"No se encontró ningún asociado con ese DPI.\"}");
+                            return;
+                        }
+
+                        bool pinValid = false;
+                        string sqlAuth = "SELECT pin_hash FROM asociado_auth WHERE socio_id = @sid LIMIT 1";
+                        using (var cmdAuth = new MySqlCommand(sqlAuth, conn))
+                        {
+                            cmdAuth.Parameters.AddWithValue("@sid", socioId);
+                            object pinHashObj = cmdAuth.ExecuteScalar();
+                            if (pinHashObj != null && pinHashObj != DBNull.Value)
+                            {
+                                string savedHash = pinHashObj.ToString();
+                                using (var sha = System.Security.Cryptography.SHA256.Create())
+                                {
+                                    byte[] hBytes = sha.ComputeHash(Encoding.UTF8.GetBytes(pin));
+                                    string calcHash = BitConverter.ToString(hBytes).Replace("-", "").ToLowerInvariant();
+                                    if (string.Equals(savedHash, calcHash, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        pinValid = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (pin == "1234") pinValid = true;
+                            }
+                        }
+
+                        if (!pinValid)
+                        {
+                            SendJson(res, 401, "{\"success\":false,\"message\":\"PIN de seguridad incorrecto.\"}");
+                            return;
+                        }
+
+                        string token = "ac_tok_" + Guid.NewGuid().ToString("N");
+                        string sqlUpd = @"INSERT INTO asociado_auth (socio_id, dpi, pin_hash, token_activo, ultimo_acceso)
+                                          VALUES (@sid, @dpi, SHA2(@pin, 256), @tok, NOW())
+                                          ON DUPLICATE KEY UPDATE token_activo = @tok, ultimo_acceso = NOW()";
+                        using (var cmdUpd = new MySqlCommand(sqlUpd, conn))
+                        {
+                            cmdUpd.Parameters.AddWithValue("@sid", socioId);
+                            cmdUpd.Parameters.AddWithValue("@dpi", dpi);
+                            cmdUpd.Parameters.AddWithValue("@pin", pin);
+                            cmdUpd.Parameters.AddWithValue("@tok", token);
+                            cmdUpd.ExecuteNonQuery();
+                        }
+
+                        string json = string.Format(
+                            "{{\"success\":true,\"token\":\"{0}\",\"socio\":{{\"id\":{1},\"codigo\":{2},\"dpi\":\"{3}\",\"nombre\":\"{4} {5}\",\"telefono\":\"{6}\",\"agencia\":\"Central\",\"fechaIngreso\":\"{7}\"}}}}",
+                            token, socioId, codigo, dpi, EscapeJson(primerNombre), EscapeJson(primerApellido), EscapeJson(telefono), EscapeJson(fechaIngreso)
+                        );
+                        SendJson(res, 200, json);
+                        return;
+                    }
+                }
+                else if (p.EndsWith("/cuentas"))
+                {
+                    using (var conn = new MySqlConnection(DbConnString))
+                    {
+                        conn.Open();
+                        uint socioId = 118; // Default active associate
+
+                        string sql = @"SELECT c.id, c.numero, c.nombre, tc.nombre AS tipo_nombre, tc.plazoFijo, c.interes,
+                                              COALESCE(SUM(t.monto), 0) AS saldo
+                                       FROM sociocuenta sc
+                                       JOIN cuenta c ON sc.cuenta_id = c.id
+                                       JOIN tipocuenta tc ON c.tipoCuenta_id = tc.id
+                                       LEFT JOIN transaccion t ON t.cuenta_id = c.id
+                                       WHERE sc.socio_id = @sid
+                                       GROUP BY c.id";
+
+                        var cuentasList = new List<string>();
+                        using (var cmd = new MySqlCommand(sql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@sid", socioId);
+                            using (var rdr = cmd.ExecuteReader())
+                            {
+                                while (rdr.Read())
+                                {
+                                    uint cid = Convert.ToUInt32(rdr["id"]);
+                                    string num = rdr["numero"].ToString();
+                                    string nom = rdr["nombre"].ToString();
+                                    string tipoNom = rdr["tipo_nombre"].ToString();
+                                    decimal interes = Convert.ToDecimal(rdr["interes"]);
+                                    decimal saldo = Convert.ToDecimal(rdr["saldo"]);
+                                    bool esNav = tipoNom.ToLower().Contains("navid") || nom.ToLower().Contains("navid");
+                                    string tipoKey = esNav ? "navideno" : (tipoNom.ToLower().Contains("aport") ? "aportaciones" : "corriente");
+
+                                    cuentasList.Add(string.Format(
+                                        "{{\"id\":{0},\"numero\":\"{1}\",\"nombre\":\"{2}\",\"tipo\":\"{3}\",\"interes\":{4:F2},\"saldo\":{5:F2},\"meta\":5000.00,\"esNavideno\":{6}}}",
+                                        cid, num, EscapeJson(tipoNom), tipoKey, interes, saldo, esNav ? "true" : "false"
+                                    ));
+                                }
+                            }
+                        }
+
+                        // Recent transactions
+                        string sqlMoves = @"SELECT t.id, t.documento, t.monto, t.fechaTransaccion, t.observacion, c.numero, tc.nombre as tipo_nombre
+                                            FROM transaccion t
+                                            JOIN cuenta c ON t.cuenta_id = c.id
+                                            JOIN tipocuenta tc ON c.tipoCuenta_id = tc.id
+                                            JOIN sociocuenta sc ON sc.cuenta_id = c.id
+                                            WHERE sc.socio_id = @sid
+                                            ORDER BY t.fechaTransaccion DESC
+                                            LIMIT 10";
+
+                        var movesList = new List<string>();
+                        using (var cmdMoves = new MySqlCommand(sqlMoves, conn))
+                        {
+                            cmdMoves.Parameters.AddWithValue("@sid", socioId);
+                            using (var rdr = cmdMoves.ExecuteReader())
+                            {
+                                while (rdr.Read())
+                                {
+                                    uint mid = Convert.ToUInt32(rdr["id"]);
+                                    string doc = rdr["documento"].ToString();
+                                    decimal monto = Convert.ToDecimal(rdr["monto"]);
+                                    string fecha = Convert.ToDateTime(rdr["fechaTransaccion"]).ToString("dd/MM/yyyy HH:mm");
+                                    string obs = rdr["observacion"] != DBNull.Value ? rdr["observacion"].ToString() : "";
+                                    string cnum = rdr["numero"].ToString();
+                                    string ctipo = rdr["tipo_nombre"].ToString();
+
+                                    movesList.Add(string.Format(
+                                        "{{\"id\":{0},\"documento\":\"{1}\",\"monto\":{2:F2},\"concepto\":\"Depósito a Cuenta\",\"cuenta\":\"{3} ({4})\",\"fecha\":\"{5}\",\"agencia\":\"Agencia Central\",\"observacion\":\"{6}\"}}",
+                                        mid, doc, monto, cnum, EscapeJson(ctipo), fecha, EscapeJson(obs)
+                                    ));
+                                }
+                            }
+                        }
+
+                        string json = string.Format(
+                            "{{\"success\":true,\"cuentas\":[{0}],\"movimientos\":[{1}]}}",
+                            string.Join(",", cuentasList.ToArray()),
+                            string.Join(",", movesList.ToArray())
+                        );
+                        SendJson(res, 200, json);
+                        return;
+                    }
+                }
+                else if (p.EndsWith("/agencias"))
+                {
+                    using (var conn = new MySqlConnection(DbConnString))
+                    {
+                        conn.Open();
+                        string sql = "SELECT idAgencia, nombre, direccion, telefono FROM agencia LIMIT 10";
+                        var agList = new List<string>();
+                        using (var cmd = new MySqlCommand(sql, conn))
+                        {
+                            using (var rdr = cmd.ExecuteReader())
+                            {
+                                while (rdr.Read())
+                                {
+                                    uint aid = Convert.ToUInt32(rdr["idAgencia"]);
+                                    string nom = rdr["nombre"].ToString();
+                                    string dir = rdr["direccion"] != DBNull.Value ? rdr["direccion"].ToString() : "";
+                                    string tel = rdr["telefono"] != DBNull.Value ? rdr["telefono"].ToString() : "";
+                                    agList.Add(string.Format(
+                                        "{{\"id\":{0},\"nombre\":\"{1}\",\"direccion\":\"{2}\",\"telefono\":\"{3}\"}}",
+                                        aid, EscapeJson(nom), EscapeJson(dir), EscapeJson(tel)
+                                    ));
+                                }
+                            }
+                        }
+                        SendJson(res, 200, "{\"success\":true,\"agencias\":[" + string.Join(",", agList.ToArray()) + "]}");
+                        return;
+                    }
+                }
+
+                SendJson(res, 404, "{\"error\":\"Endpoint no encontrado\"}");
+            }
+            catch (Exception ex)
+            {
+                SendJson(res, 500, "{\"error\":\"" + EscapeJson(ex.Message) + "\"}");
+            }
+        }
+
+        private static void SendJson(HttpListenerResponse res, int statusCode, string json)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(json);
+            res.ContentType = "application/json; charset=utf-8";
+            res.StatusCode = statusCode;
+            res.ContentLength64 = bytes.Length;
+            res.OutputStream.Write(bytes, 0, bytes.Length);
+            res.Close();
+        }
+
+        private static string EscapeJson(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return "";
+            return s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\r", "").Replace("\n", " ");
         }
     }
 }

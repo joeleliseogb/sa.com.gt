@@ -81,6 +81,17 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
         }
     }
 
+    @movil_app path /app /app/* /movil /movil/*
+    handle @movil_app {
+        header Cache-Control "no-cache, must-revalidate"
+        uri strip_prefix /app
+        uri strip_prefix /movil
+        root * C:/SimplyGest/ResumenEjecutivo/web/app
+        file_server {
+            index index.html
+        }
+    }
+
     @gtcop_theme_assets path /gtcop_theme/*
     handle @gtcop_theme_assets {
         header Cache-Control "no-cache, must-revalidate"
