@@ -89,6 +89,14 @@ http://gtcop.sa.com.gt, https://gtcop.sa.com.gt {
         file_server
     }
 
+    @asociados_images path /Images/Asociados/*
+    handle @asociados_images {
+        header Cache-Control "no-cache, must-revalidate"
+        uri strip_prefix /Images/Asociados
+        root * C:/SimplyGest/ResumenEjecutivo/web/gtcop_theme/asociados
+        file_server
+    }
+
     @pwa_manifest path /manifest.webmanifest /manifest.json
     handle @pwa_manifest {
         header Content-Type "application/manifest+json"

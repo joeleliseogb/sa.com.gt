@@ -62,7 +62,7 @@ namespace GtcopProxy
                 res.Headers["X-Frame-Options"] = "SAMEORIGIN";
                 res.Headers["X-XSS-Protection"] = "1; mode=block";
                 res.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
-                res.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+                res.Headers["Permissions-Policy"] = "camera=(self), microphone=(), geolocation=()";
                 res.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
 
                 string absPath = req.Url.AbsolutePath;
@@ -77,6 +77,11 @@ namespace GtcopProxy
                 else if (absPath.Equals("/Bitacora/ExportarCsv", StringComparison.OrdinalIgnoreCase))
                 {
                     ExportBitacoraCsv(req, res);
+                    return;
+                }
+                else if (req.HttpMethod == "POST" && absPath.Equals("/Imagen/Capturar", StringComparison.OrdinalIgnoreCase))
+                {
+                    ServeCapturarImagen(req, res);
                     return;
                 }
 
@@ -252,6 +257,52 @@ namespace GtcopProxy
                     res.Headers["Expires"] = "0";
                     res.ContentLength64 = modifiedBytes.Length;
                     res.OutputStream.Write(modifiedBytes, 0, modifiedBytes.Length);
+                }
+                else if (contentType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string json;
+                    using (Stream resStream = backendRes.GetResponseStream())
+                    using (StreamReader reader = new StreamReader(resStream, Encoding.UTF8))
+                    {
+                        json = reader.ReadToEnd();
+                    }
+
+                    if (absPath.IndexOf("FindSocio", StringComparison.OrdinalIgnoreCase) >= 0 && json.Contains("sinfoto.jpg"))
+                    {
+                        var mId = Regex.Match(json, @"""Id""\s*:\s*(\d+)");
+                        if (mId.Success)
+                        {
+                            string sid = mId.Groups[1].Value;
+                            try
+                            {
+                                using (MySqlConnection conn = new MySqlConnection(DbConnString))
+                                {
+                                    conn.Open();
+                                    using (MySqlCommand cmd = new MySqlCommand("SELECT codigo FROM socio WHERE id = @sid LIMIT 1", conn))
+                                    {
+                                        cmd.Parameters.AddWithValue("@sid", sid);
+                                        object codObj = cmd.ExecuteScalar();
+                                        if (codObj != null && codObj != DBNull.Value)
+                                        {
+                                            string cod = codObj.ToString();
+                                            string diskPath = Path.Combine(@"C:\SimplyGest\ResumenEjecutivo\web\gtcop_theme\asociados", cod, "foto.png");
+                                            if (File.Exists(diskPath))
+                                            {
+                                                json = json.Replace("/Images/sinfoto.jpg", "/gtcop_theme/asociados/" + cod + "/foto.png");
+                                                json = json.Replace("~/Images/sinfoto.jpg", "/gtcop_theme/asociados/" + cod + "/foto.png");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch { }
+                        }
+                    }
+
+                    byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+                    res.ContentType = "application/json; charset=utf-8";
+                    res.ContentLength64 = jsonBytes.Length;
+                    res.OutputStream.Write(jsonBytes, 0, jsonBytes.Length);
                 }
                 else
                 {
@@ -992,6 +1043,160 @@ namespace GtcopProxy
 </section>";
         }
 
+        private static void ServeCapturarImagen(HttpListenerRequest req, HttpListenerResponse res)
+        {
+            try
+            {
+                string body = "";
+                using (StreamReader sr = new StreamReader(req.InputStream, Encoding.UTF8))
+                {
+                    body = sr.ReadToEnd();
+                }
+
+                uint codigo = 0;
+                string rawImageData = null;
+
+                if (body.TrimStart().StartsWith("{"))
+                {
+                    var mCod = Regex.Match(body, @"""codigo""\s*:\s*(\d+)");
+                    if (mCod.Success) uint.TryParse(mCod.Groups[1].Value, out codigo);
+
+                    var mImg = Regex.Match(body, @"""imageData""\s*:\s*""([^""]+)""");
+                    if (mImg.Success) rawImageData = mImg.Groups[1].Value;
+                }
+                else
+                {
+                    string[] pairs = body.Split('&');
+                    foreach (string pair in pairs)
+                    {
+                        int eqIdx = pair.IndexOf('=');
+                        if (eqIdx > 0)
+                        {
+                            string k = WebUtility.UrlDecode(pair.Substring(0, eqIdx));
+                            string v = WebUtility.UrlDecode(pair.Substring(eqIdx + 1));
+                            if (string.Equals(k, "codigo", StringComparison.OrdinalIgnoreCase))
+                            {
+                                uint.TryParse(v, out codigo);
+                            }
+                            else if (string.Equals(k, "imageData", StringComparison.OrdinalIgnoreCase))
+                            {
+                                rawImageData = v;
+                            }
+                        }
+                    }
+                }
+
+                if (codigo == 0 || string.IsNullOrEmpty(rawImageData))
+                {
+                    res.StatusCode = 400;
+                    byte[] errBytes = Encoding.UTF8.GetBytes("{\"Result\":\"ERROR\",\"Message\":\"Código o imagen no válidos.\"}");
+                    res.ContentType = "application/json; charset=utf-8";
+                    res.OutputStream.Write(errBytes, 0, errBytes.Length);
+                    res.Close();
+                    return;
+                }
+
+                string base64 = rawImageData;
+                int commaIdx = base64.IndexOf(',');
+                if (commaIdx >= 0)
+                {
+                    base64 = base64.Substring(commaIdx + 1);
+                }
+                base64 = base64.Trim().Replace(" ", "+").Replace("\r", "").Replace("\n", "");
+
+                byte[] imgBytes = Convert.FromBase64String(base64);
+
+                // Save to web/gtcop_theme/asociados/{codigo}/foto.png
+                string caddyDir = Path.Combine(@"C:\SimplyGest\ResumenEjecutivo\web\gtcop_theme\asociados", codigo.ToString());
+                if (!Directory.Exists(caddyDir)) Directory.CreateDirectory(caddyDir);
+                string caddyFile = Path.Combine(caddyDir, "foto.png");
+                File.WriteAllBytes(caddyFile, imgBytes);
+
+                // Also save to GTcop repo directory
+                try
+                {
+                    string repoDir = Path.Combine(@"C:\Users\Joel\Documents\gtcop\GTcop2\Images\Asociados", codigo.ToString());
+                    if (!Directory.Exists(repoDir)) Directory.CreateDirectory(repoDir);
+                    string repoFile = Path.Combine(repoDir, "foto.png");
+                    File.WriteAllBytes(repoFile, imgBytes);
+                }
+                catch { }
+
+                string imageUrl = string.Format("/gtcop_theme/asociados/{0}/foto.png", codigo);
+
+                using (MySqlConnection conn = new MySqlConnection(DbConnString))
+                {
+                    conn.Open();
+                    uint socioId = 0;
+                    using (MySqlCommand cmdSocio = new MySqlCommand("SELECT id FROM socio WHERE codigo = @cod LIMIT 1", conn))
+                    {
+                        cmdSocio.Parameters.AddWithValue("@cod", codigo);
+                        object result = cmdSocio.ExecuteScalar();
+                        if (result != null && result != DBNull.Value) socioId = Convert.ToUInt32(result);
+                    }
+
+                    if (socioId > 0)
+                    {
+                        uint imgId = 0;
+                        using (MySqlCommand cmdCheck = new MySqlCommand("SELECT idImagen FROM imagen WHERE socio_id = @sid LIMIT 1", conn))
+                        {
+                            cmdCheck.Parameters.AddWithValue("@sid", socioId);
+                            object resImg = cmdCheck.ExecuteScalar();
+                            if (resImg != null && resImg != DBNull.Value) imgId = Convert.ToUInt32(resImg);
+                        }
+
+                        if (imgId > 0)
+                        {
+                            using (MySqlCommand cmdUpd = new MySqlCommand("UPDATE imagen SET fecha = NOW(), url = @url WHERE idImagen = @iid", conn))
+                            {
+                                cmdUpd.Parameters.AddWithValue("@url", imageUrl);
+                                cmdUpd.Parameters.AddWithValue("@iid", imgId);
+                                cmdUpd.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            using (MySqlCommand cmdIns = new MySqlCommand("INSERT INTO imagen (fecha, tipo, url, socio_id) VALUES (NOW(), 0, @url, @sid)", conn))
+                            {
+                                cmdIns.Parameters.AddWithValue("@url", imageUrl);
+                                cmdIns.Parameters.AddWithValue("@sid", socioId);
+                                cmdIns.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                    // Audit log
+                    string clientIp = req.Headers["X-Forwarded-For"] ?? (req.RemoteEndPoint != null ? req.RemoteEndPoint.Address.ToString() : "127.0.0.1");
+                    using (MySqlCommand cmdLog = new MySqlCommand(
+                        "INSERT INTO bitacora_auditoria (fecha, usuario, ip, modulo, accion, registroId, detalle, resultado) " +
+                        "VALUES (NOW(3), 'Joel', @ip, 'ASOCIADOS', 'CAPTURA_FOTOGRAFIA', @cod, 'Fotografía del asociado guardada exitosamente.', 'EXITO')", conn))
+                    {
+                        cmdLog.Parameters.AddWithValue("@ip", clientIp);
+                        cmdLog.Parameters.AddWithValue("@cod", codigo.ToString());
+                        cmdLog.ExecuteNonQuery();
+                    }
+                }
+
+                res.StatusCode = 200;
+                res.ContentType = "application/json; charset=utf-8";
+                byte[] respBytes = Encoding.UTF8.GetBytes("{\"Result\":\"OK\",\"Message\":\"Fotografía guardada con éxito.\",\"Url\":\"" + imageUrl + "\"}");
+                res.OutputStream.Write(respBytes, 0, respBytes.Length);
+                res.Close();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    res.StatusCode = 500;
+                    res.ContentType = "application/json; charset=utf-8";
+                    byte[] err = Encoding.UTF8.GetBytes("{\"Result\":\"ERROR\",\"Message\":\"Error procesando fotografía: " + ex.Message.Replace("\"", "'") + "\"}");
+                    res.OutputStream.Write(err, 0, err.Length);
+                    res.Close();
+                }
+                catch { }
+            }
+        }
+
         private static string TransformHtml(string html)
         {
             if (string.IsNullOrEmpty(html)) return html;
@@ -1051,7 +1256,37 @@ namespace GtcopProxy
                 html = Regex.Replace(html, @"<li class="""">\s*<a href=""/User"">", bitacoraItem, RegexOptions.IgnoreCase);
             }
 
-            // 8. Inject CDPE Stylesheets, modern Material 3 theme, PWA manifest, and interactive scripts
+            // 8. Associate Profile Photo & Camera Trigger Injection
+            if (html.IndexOf("profile-user-img", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                string socioCod = "";
+                var mCod = Regex.Match(html, @"(?:No\.|No\.\s*Asociado:?)\s*(?:<b>)?\s*(\d+)", RegexOptions.IgnoreCase);
+                if (mCod.Success) socioCod = mCod.Groups[1].Value.Trim();
+
+                if (!string.IsNullOrEmpty(socioCod))
+                {
+                    string diskPhoto = string.Format(@"C:\SimplyGest\ResumenEjecutivo\web\gtcop_theme\asociados\{0}\foto.png", socioCod);
+                    if (File.Exists(diskPhoto))
+                    {
+                        string photoUrl = string.Format("/gtcop_theme/asociados/{0}/foto.png?t={1}", socioCod, DateTime.UtcNow.Ticks);
+                        html = Regex.Replace(html, @"src=""~?/Images/account_box\.jpg""", "src=\"" + photoUrl + "\"", RegexOptions.IgnoreCase);
+                    }
+
+                    if (html.IndexOf("btn-cambiar-foto", StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        string btnHtml = string.Format(
+                            "<div class=\"text-center\" style=\"margin-top:8px; margin-bottom:12px;\">" +
+                            "<button type=\"button\" id=\"btn-cambiar-foto\" data-codigo=\"{0}\" class=\"btn btn-warning btn-xs\" style=\"border-radius:15px; padding:4px 14px; font-weight:600; box-shadow:0 2px 6px rgba(245,158,11,0.3);\">" +
+                            "<i class=\"fa fa-camera\"></i> Tomar / Cambiar Foto" +
+                            "</button>" +
+                            "</div>", socioCod);
+
+                        html = Regex.Replace(html, @"(<img[^>]*class=""[^""]*profile-user-img[^""]*""[^>]*>)", "$1" + btnHtml, RegexOptions.IgnoreCase);
+                    }
+                }
+            }
+
+            // 9. Inject CDPE Stylesheets, modern Material 3 theme, PWA manifest, and interactive scripts
             string injection = "\n    <!-- CDPE - Accion Cooperativa Identity & Modern Theme (Google M3) -->\n" +
                 "    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n" +
                 "    <meta name=\"theme-color\" content=\"#0F528A\" />\n" +
@@ -1066,7 +1301,8 @@ namespace GtcopProxy
                 "    <script src=\"/gtcop_theme/theme-toggle.js?v=cdpe\"></script>\n" +
                 "    <script src=\"/gtcop_theme/form-wizard.js?v=m3\"></script>\n" +
                 "    <script src=\"/gtcop_theme/anti-error.js?v=m3_sec\"></script>\n" +
-                "    <script src=\"/gtcop_theme/pos-caja.js?v=m3\"></script>\n</head>";
+                "    <script src=\"/gtcop_theme/pos-caja.js?v=m3\"></script>\n" +
+                "    <script src=\"/gtcop_theme/socio-camera.js?v=m3\"></script>\n</head>";
 
             if (html.IndexOf("</head>", StringComparison.OrdinalIgnoreCase) >= 0)
             {
