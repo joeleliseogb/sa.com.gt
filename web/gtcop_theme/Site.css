@@ -571,9 +571,22 @@ body.dark-mode .login-logo a {
     vertical-align: middle;
 }
 .main-footer {
-    font-size: 13px;
-    border-top: 1px solid var(--cdpe-border-light);
+    background-color: #FFFFFF !important;
+    color: #64748B !important;
+    font-size: 13px !important;
+    border-top: 1px solid #E2E8F0 !important;
+    padding: 15px 20px !important;
+    transition: all 0.22s ease !important;
 }
-body.dark-mode .main-footer {
-    border-top: 1px solid var(--cdpe-border-dark);
+body.dark-mode .main-footer,
+html.dark-mode .main-footer,
+.dark-theme .main-footer {
+    background-color: #101927 !important;
+    color: #94A3B8 !important;
+    border-top: 1px solid #1E2D42 !important;
+}
+body.dark-mode .main-footer a,
+html.dark-mode .main-footer a,
+.dark-theme .main-footer a {
+    color: #38BDF8 !important;
 }

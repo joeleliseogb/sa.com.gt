@@ -1,35 +1,57 @@
-/**
- * Accion Cooperativa - CDPE Identity & Theme Controller
- * Manages Dark/Light mode and ensures complete branding compliance.
+﻿/**
+ * Accion Cooperativa - CDPE Identity & Single Theme Controller
+ * Manages Dark/Light mode universally and ensures complete branding compliance.
  */
 (function() {
     'use strict';
 
-    function initTheme() {
-        var savedTheme = localStorage.getItem('gtcop_theme');
-        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    // 1. Immediate early execution to prevent Flash of Unstyled Content (FOUC)
+    var savedTheme = null;
+    try {
+        savedTheme = localStorage.getItem('gtcop_theme') || localStorage.getItem('gtcop-theme');
+    } catch(e) {}
 
-        applyTheme(theme);
+    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var activeTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+    if (activeTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme', 'dark-mode');
+    } else {
+        document.documentElement.classList.remove('dark-theme', 'dark-mode');
+    }
+
+    function initTheme() {
+        // Clean up any legacy or duplicate buttons if they exist
+        var oldFloating = document.getElementById('gtcop-theme-toggle-floating');
+        if (oldFloating) oldFloating.remove();
+        var oldNavLi = document.getElementById('gtcop-navbar-theme-li');
+        if (oldNavLi) oldNavLi.remove();
+
+        applyTheme(activeTheme);
         injectToggleButton();
         enforceBranding();
     }
 
     function applyTheme(theme) {
+        activeTheme = theme;
         if (theme === 'dark') {
-            document.documentElement.classList.add('dark-theme');
-            if (document.body) document.body.classList.add('dark-theme');
+            document.documentElement.classList.add('dark-theme', 'dark-mode');
+            if (document.body) document.body.classList.add('dark-theme', 'dark-mode');
         } else {
-            document.documentElement.classList.remove('dark-theme');
-            if (document.body) document.body.classList.remove('dark-theme');
+            document.documentElement.classList.remove('dark-theme', 'dark-mode');
+            if (document.body) document.body.classList.remove('dark-theme', 'dark-mode');
         }
-        localStorage.setItem('gtcop_theme', theme);
+
+        try {
+            localStorage.setItem('gtcop_theme', theme);
+            localStorage.setItem('gtcop-theme', theme);
+        } catch(e) {}
+
         updateToggleIcon(theme);
     }
 
     function toggleTheme() {
-        var current = localStorage.getItem('gtcop_theme') === 'dark' ? 'dark' : 'light';
-        var next = current === 'dark' ? 'light' : 'dark';
+        var next = (activeTheme === 'dark') ? 'light' : 'dark';
         applyTheme(next);
     }
 
@@ -40,32 +62,44 @@
         if (icon) {
             if (theme === 'dark') {
                 icon.className = 'fa fa-sun-o';
+                icon.style.color = '#FBBF24';
                 btn.title = 'Cambiar a Modo Claro';
             } else {
                 icon.className = 'fa fa-moon-o';
+                icon.style.color = '';
                 btn.title = 'Cambiar a Modo Oscuro';
             }
         }
     }
 
     function injectToggleButton() {
-        if (document.getElementById('cdpe-theme-toggle-li')) return;
+        if (document.getElementById('cdpe-theme-toggle-li')) {
+            updateToggleIcon(activeTheme);
+            return;
+        }
+
         var navbarCustomMenu = document.querySelector('.navbar-custom-menu > .navbar-nav');
         if (!navbarCustomMenu) return;
 
         var li = document.createElement('li');
         li.id = 'cdpe-theme-toggle-li';
-        var isDark = localStorage.getItem('gtcop_theme') === 'dark';
 
         var a = document.createElement('a');
         a.id = 'cdpe-theme-toggle-btn';
         a.href = '#';
         a.role = 'button';
-        a.title = isDark ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro';
+        a.title = (activeTheme === 'dark') ? 'Cambiar a Modo Claro' : 'Cambiar a Modo Oscuro';
         a.style.fontSize = '16px';
         a.style.padding = '15px 15px';
         a.style.cursor = 'pointer';
-        a.innerHTML = '<i class="' + (isDark ? 'fa fa-sun-o' : 'fa fa-moon-o') + '"></i>';
+        a.style.display = 'inline-flex';
+        a.style.alignItems = 'center';
+
+        if (activeTheme === 'dark') {
+            a.innerHTML = '<i class="fa fa-sun-o" style="color:#FBBF24;"></i>';
+        } else {
+            a.innerHTML = '<i class="fa fa-moon-o"></i>';
+        }
 
         a.addEventListener('click', function(e) {
             e.preventDefault();
@@ -116,7 +150,7 @@
 
     window.addEventListener('load', function() {
         initTheme();
-        setTimeout(initTheme, 500);
+        setTimeout(initTheme, 400);
     });
 
     // Observer for dynamically loaded content

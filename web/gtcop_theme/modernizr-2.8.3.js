@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * Modernizr v2.8.3
  * www.modernizr.com
  *
@@ -1406,105 +1406,10 @@ window.Modernizr = (function( window, document, undefined ) {
 })(this, this.document);
 
 /* ==========================================================================
-   GTcop CDPE - Accion Cooperativa Theme Switcher (Modo Claro / Modo Oscuro)
+   GTcop CDPE - Accion Cooperativa Branding & Content Sanitizer
+   (Theme toggling handled exclusively by /gtcop_theme/theme-toggle.js)
    ========================================================================== */
 (function() {
-    function getStoredTheme() {
-        try {
-            return localStorage.getItem('gtcop-theme');
-        } catch(e) { return null; }
-    }
-
-    function setStoredTheme(theme) {
-        try {
-            localStorage.setItem('gtcop-theme', theme);
-        } catch(e) {}
-    }
-
-    function isDarkMode() {
-        var stored = getStoredTheme();
-        if (stored === 'dark') return true;
-        if (stored === 'light') return false;
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    function applyTheme(isDark) {
-        if (isDark) {
-            document.documentElement.classList.add('dark-mode');
-            if (document.body) document.body.classList.add('dark-mode');
-        } else {
-            document.documentElement.classList.remove('dark-mode');
-            if (document.body) document.body.classList.remove('dark-mode');
-        }
-        updateToggleButtons(isDark);
-    }
-
-    // Apply early to prevent FOUC
-    if (isDarkMode()) {
-        document.documentElement.classList.add('dark-mode');
-    }
-
-    function updateToggleButtons(isDark) {
-        var floatBtn = document.getElementById('gtcop-theme-toggle-floating');
-        if (floatBtn) {
-            floatBtn.innerHTML = isDark 
-                ? '<span class=\"theme-switch-icon\">☀️</span> <span>Modo Claro</span>'
-                : '<span class=\"theme-switch-icon\">🌙</span> <span>Modo Oscuro</span>';
-            floatBtn.title = isDark ? 'Cambiar a Tema Claro (CDPE)' : 'Cambiar a Tema Oscuro (Nocturno)';
-        }
-        var navBtn = document.getElementById('gtcop-navbar-theme-toggle');
-        if (navBtn) {
-            navBtn.innerHTML = isDark
-                ? '<i class=\"fa fa-sun-o\" style=\"color:#FBBF24; font-size:16px;\"></i>'
-                : '<i class=\"fa fa-moon-o\" style=\"font-size:16px;\"></i>';
-            navBtn.title = isDark ? 'Cambiar a Tema Claro (CDPE)' : 'Cambiar a Tema Oscuro (Nocturno)';
-        }
-    }
-
-    function setupUI() {
-        var dark = isDarkMode();
-        applyTheme(dark);
-
-        // 1. Floating Switch
-        if (!document.getElementById('gtcop-theme-toggle-floating') && document.body) {
-            var floatBtn = document.createElement('div');
-            floatBtn.id = 'gtcop-theme-toggle-floating';
-            floatBtn.className = 'theme-switch-floating';
-            floatBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                var nextDark = !document.body.classList.contains('dark-mode');
-                setStoredTheme(nextDark ? 'dark' : 'light');
-                applyTheme(nextDark);
-            });
-            document.body.appendChild(floatBtn);
-            updateToggleButtons(dark);
-        }
-
-        // 2. Navbar Switch (if navbar exists)
-        var navMenu = document.querySelector('.navbar-custom-menu .nav.navbar-nav');
-        if (navMenu && !document.getElementById('gtcop-navbar-theme-li')) {
-            var li = document.createElement('li');
-            li.id = 'gtcop-navbar-theme-li';
-            var a = document.createElement('a');
-            a.id = 'gtcop-navbar-theme-toggle';
-            a.href = '#';
-            a.className = 'navbar-theme-btn';
-            a.setAttribute('role', 'button');
-            a.addEventListener('click', function(e) {
-                e.preventDefault();
-                var nextDark = !document.body.classList.contains('dark-mode');
-                setStoredTheme(nextDark ? 'dark' : 'light');
-                applyTheme(nextDark);
-            });
-            li.appendChild(a);
-            navMenu.insertBefore(li, navMenu.firstChild);
-            updateToggleButtons(dark);
-        }
-
-        // Apply Accion Cooperativa branding and logo replacements
-        applyAccionCooperativaBranding();
-    }
-
     function applyAccionCooperativaBranding() {
         // 1. Sanitize Document Title
         if (document.title) {
@@ -1522,12 +1427,12 @@ window.Modernizr = (function( window, document, undefined ) {
         // 2. Main Header Logo (.logo-lg and .logo-mini)
         var logoLg = document.querySelector('.main-header .logo .logo-lg');
         if (logoLg && !logoLg.querySelector('img[src*="logo_cdpe"]')) {
-            logoLg.innerHTML = '<img src="/Images/logo_cdpe.png" alt="Acción Cooperativa" style="height:36px; max-width:185px; object-fit:contain; vertical-align:middle;" />';
+            logoLg.innerHTML = '<img src="/gtcop_theme/logo_cdpe.png" alt="Acción Cooperativa" style="height:36px; max-width:185px; object-fit:contain; vertical-align:middle;" />';
         }
 
         var logoMini = document.querySelector('.main-header .logo .logo-mini');
         if (logoMini && !logoMini.querySelector('img[src*="logo_cdpe_icon"]')) {
-            logoMini.innerHTML = '<img src="/Images/logo_cdpe_icon.png" alt="AC" style="height:34px; width:34px; object-fit:contain; vertical-align:middle;" />';
+            logoMini.innerHTML = '<img src="/gtcop_theme/logo_cdpe_icon.png" alt="AC" style="height:34px; width:34px; object-fit:contain; vertical-align:middle;" />';
         }
 
         // 3. Footer Copyright Rebranding
@@ -1550,6 +1455,7 @@ window.Modernizr = (function( window, document, undefined ) {
                 if (node.nodeValue && /(IQ'?\s*Ahorro\s*y\s*Cr[eé]dito|IQ'?\s*A&C|IQ\s*Software|iQsoftware)/i.test(node.nodeValue)) {
                     node.nodeValue = node.nodeValue
                         .replace(/IQ'?\s*Ahorro\s*y\s*Cr[eé]dito/gi, 'Acción Cooperativa R.L.')
+                        .replace(/IQ'?\s*Ahorro\s*y\s*Credito/gi, 'Acción Cooperativa R.L.')
                         .replace(/IQ'?\s*A&C/gi, 'Acción Cooperativa')
                         .replace(/IQ\s*Software/gi, 'Acción Cooperativa')
                         .replace(/iQsoftware/gi, 'Acción Cooperativa');
@@ -1578,20 +1484,20 @@ window.Modernizr = (function( window, document, undefined ) {
             if (favicons.length === 0) {
                 var link = document.createElement('link');
                 link.rel = 'shortcut icon';
-                link.href = '/favicon.ico?v=2';
+                link.href = '/gtcop_theme/favicon.ico?v=cdpe';
                 document.head.appendChild(link);
             } else {
                 favicons.forEach(function(f) {
-                    f.href = '/favicon.ico?v=2';
+                    f.href = '/gtcop_theme/favicon.ico?v=cdpe';
                 });
             }
         } catch(e) {}
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupUI);
+        document.addEventListener('DOMContentLoaded', applyAccionCooperativaBranding);
     } else {
-        setupUI();
+        applyAccionCooperativaBranding();
     }
 
     // Secondary pass after DOM is fully painted

@@ -47,7 +47,7 @@
 }
 
 /* Dark Mode Tokens */
-.dark-theme {
+.dark-theme, body.dark-mode, html.dark-mode {
     --md-surface-bg: #080E18;
     --md-surface-card: #101927;
     --md-surface-modal: #131E30;
@@ -643,4 +643,30 @@ textarea.form-control {
     .table-modern-cards thead {
         display: none !important;
     }
+}
+
+/* ==========================================================================
+   FOOTER (COHESION IN LIGHT & DARK MODE)
+   ========================================================================== */
+.main-footer {
+    background-color: var(--md-surface-card, #FFFFFF) !important;
+    color: var(--md-text-secondary, #64748B) !important;
+    font-size: 13px !important;
+    border-top: 1px solid var(--md-surface-border, #E2E8F0) !important;
+    padding: 15px 20px !important;
+    transition: var(--md-transition, all 0.22s ease) !important;
+}
+
+.dark-theme .main-footer,
+body.dark-mode .main-footer,
+html.dark-mode .main-footer {
+    background-color: #101927 !important;
+    color: #94A3B8 !important;
+    border-top: 1px solid #1E2D42 !important;
+}
+
+.dark-theme .main-footer a,
+body.dark-mode .main-footer a,
+html.dark-mode .main-footer a {
+    color: #38BDF8 !important;
 }
