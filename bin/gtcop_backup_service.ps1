@@ -32,7 +32,7 @@ try {
 }
 
 function Generate-BackupZip() {
-    $conn = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1; Port=3306; Database=gtcop; Uid=gtcopa; Pwd=C00p3r4t1v4.2014; CharacterSet=utf8mb4;")
+    $conn = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1; Port=3306; Database=gtcop; Uid=gtcopa; Pwd=Joel@59124393; CharacterSet=utf8mb4;")
     $cmd = $conn.CreateCommand()
     $backup = New-Object MySql.Data.MySqlClient.MySqlBackup($cmd)
     $conn.Open()
@@ -66,7 +66,7 @@ function Restore-BackupZip([byte[]]$zipData) {
     }
     
     $reader = New-Object System.IO.StreamReader($sqlEntry.Open(), [System.Text.Encoding]::UTF8)
-    $conn = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1; Port=3306; Database=gtcop; Uid=gtcopa; Pwd=C00p3r4t1v4.2014; CharacterSet=utf8mb4;")
+    $conn = New-Object MySql.Data.MySqlClient.MySqlConnection("Server=127.0.0.1; Port=3306; Database=gtcop; Uid=gtcopa; Pwd=Joel@59124393; CharacterSet=utf8mb4;")
     $cmd = $conn.CreateCommand()
     $backup = New-Object MySql.Data.MySqlClient.MySqlBackup($cmd)
     $conn.Open()

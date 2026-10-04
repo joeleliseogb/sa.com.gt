@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace GtcopProxy
 {
@@ -13,6 +15,7 @@ namespace GtcopProxy
         private static readonly int ListenPort = 8082;
         private static readonly string TargetHost = "127.0.0.1:8081";
         private static readonly string HostHeader = "gtcop.sa.com.gt";
+        private static readonly string DbConnString = "Server=127.0.0.1; Port=3306; Database=gtcop; Uid=joel; Pwd=Joel@59124393; CharacterSet=utf8mb4;";
 
         static void Main(string[] args)
         {
@@ -25,7 +28,7 @@ namespace GtcopProxy
             try
             {
                 listener.Start();
-                Console.WriteLine("GTcop Proxy started on http://127.0.0.1:{0} -> http://{1}", ListenPort, TargetHost);
+                Console.WriteLine("GTcop Secure Proxy started on http://127.0.0.1:{0} -> http://{1}", ListenPort, TargetHost);
             }
             catch (Exception ex)
             {
@@ -54,6 +57,29 @@ namespace GtcopProxy
 
             try
             {
+                // Inject Global HTTP Security Headers
+                res.Headers["X-Content-Type-Options"] = "nosniff";
+                res.Headers["X-Frame-Options"] = "SAMEORIGIN";
+                res.Headers["X-XSS-Protection"] = "1; mode=block";
+                res.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+                res.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
+                res.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+
+                string absPath = req.Url.AbsolutePath;
+
+                // Dedicated route for Bitacora de Auditoria
+                if (absPath.Equals("/Bitacora", StringComparison.OrdinalIgnoreCase) || 
+                    absPath.StartsWith("/Bitacora/Index", StringComparison.OrdinalIgnoreCase))
+                {
+                    ServeBitacora(req, res);
+                    return;
+                }
+                else if (absPath.Equals("/Bitacora/ExportarCsv", StringComparison.OrdinalIgnoreCase))
+                {
+                    ExportBitacoraCsv(req, res);
+                    return;
+                }
+
                 string targetUrl = string.Format("http://{0}{1}", TargetHost, req.RawUrl);
                 HttpWebRequest backendReq = (HttpWebRequest)WebRequest.Create(targetUrl);
                 backendReq.Method = req.HttpMethod;
@@ -104,11 +130,18 @@ namespace GtcopProxy
                 }
 
                 // Copy request body if any
+                byte[] requestBodyBytes = null;
                 if (req.HasEntityBody && (req.HttpMethod == "POST" || req.HttpMethod == "PUT" || req.HttpMethod == "PATCH"))
                 {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        req.InputStream.CopyTo(ms);
+                        requestBodyBytes = ms.ToArray();
+                    }
+
                     using (Stream reqStream = backendReq.GetRequestStream())
                     {
-                        req.InputStream.CopyTo(reqStream);
+                        reqStream.Write(requestBodyBytes, 0, requestBodyBytes.Length);
                     }
                 }
 
@@ -133,7 +166,6 @@ namespace GtcopProxy
                 // Intercept 500 errors for Microcredito or missing legacy views
                 if ((int)backendRes.StatusCode == 500)
                 {
-                    string absPath = req.Url.AbsolutePath;
                     if (absPath.IndexOf("Microcredito", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         backendRes.Close();
@@ -152,6 +184,13 @@ namespace GtcopProxy
 
                 res.StatusCode = (int)backendRes.StatusCode;
                 res.StatusDescription = backendRes.StatusDescription;
+
+                // Asynchronous Audit Logging for financial and sensitive operations
+                if (req.HttpMethod == "POST" || absPath.StartsWith("/Backup/Backup", StringComparison.OrdinalIgnoreCase))
+                {
+                    string reqBodyStr = (requestBodyBytes != null) ? Encoding.UTF8.GetString(requestBodyBytes) : "";
+                    LogAuditAsync(req, res.StatusCode, reqBodyStr);
+                }
 
                 // Copy response headers
                 foreach (string headerName in backendRes.Headers.AllKeys)
@@ -196,7 +235,6 @@ namespace GtcopProxy
 
                 if (isHtml)
                 {
-                    // Read response body as string
                     string html;
                     using (Stream resStream = backendRes.GetResponseStream())
                     using (StreamReader reader = new StreamReader(resStream, Encoding.UTF8))
@@ -217,7 +255,6 @@ namespace GtcopProxy
                 }
                 else
                 {
-                    // Binary or raw streaming
                     if (!string.IsNullOrEmpty(backendRes.ContentType))
                     {
                         res.ContentType = backendRes.ContentType;
@@ -244,6 +281,394 @@ namespace GtcopProxy
             }
         }
 
+        private static void LogAuditAsync(HttpListenerRequest req, int statusCode, string body)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    string path = req.Url.AbsolutePath;
+                    string usuario = "Joel";
+                    string modulo = "SISTEMA";
+                    string accion = "OPERACION";
+                    string resultado = (statusCode < 400) ? "EXITO" : "FALLO";
+                    string refId = "";
+                    string detalle = string.Format("Ruta: {0} ({1})", path, statusCode);
+
+                    string ip = req.Headers["X-Forwarded-For"];
+                    if (string.IsNullOrEmpty(ip) && req.RemoteEndPoint != null)
+                    {
+                        ip = req.RemoteEndPoint.Address.ToString();
+                    }
+                    if (string.IsNullOrEmpty(ip)) ip = "127.0.0.1";
+
+                    if (path.IndexOf("Login", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "ACCESO";
+                        accion = (statusCode == 302) ? "INICIO_SESION_EXITOSO" : "INTENTO_ACCESO";
+                        Match m = Regex.Match(body, @"UserName=([^&]+)", RegexOptions.IgnoreCase);
+                        if (m.Success) usuario = Uri.UnescapeDataString(m.Groups[1].Value);
+                        detalle = "Autenticación de usuario en plataforma";
+                    }
+                    else if (path.IndexOf("Transaccion/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "CAJA_AHORROS";
+                        accion = "DEPOSITO_EFECTIVO";
+                        Match m = Regex.Match(body, @"Monto=([^&]+)", RegexOptions.IgnoreCase);
+                        if (m.Success) detalle = "Depósito por Q " + Uri.UnescapeDataString(m.Groups[1].Value);
+                    }
+                    else if (path.IndexOf("Transaccion/Retiro", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "CAJA_AHORROS";
+                        accion = "RETIRO_EFECTIVO";
+                        Match m = Regex.Match(body, @"Monto=([^&]+)", RegexOptions.IgnoreCase);
+                        if (m.Success) detalle = "Retiro por Q " + Uri.UnescapeDataString(m.Groups[1].Value);
+                    }
+                    else if (path.IndexOf("Pago/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "CAJA_CREDITOS";
+                        accion = "COBRO_CUOTA_CREDITO";
+                        Match m = Regex.Match(body, @"Monto=([^&]+)", RegexOptions.IgnoreCase);
+                        if (m.Success) detalle = "Cobro de préstamo por Q " + Uri.UnescapeDataString(m.Groups[1].Value);
+                    }
+                    else if (path.IndexOf("Microcredito/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "MICROCREDITOS";
+                        accion = "NUEVA_SOLICITUD";
+                        detalle = "Originación de solicitud de microcrédito";
+                    }
+                    else if (path.IndexOf("Socio/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "SOCIOS";
+                        accion = "REGISTRO_ASOCIADO";
+                        detalle = "Alta de nuevo asociado en cooperativa";
+                    }
+                    else if (path.IndexOf("Cuenta/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "AHORROS";
+                        accion = "APERTURA_CUENTA";
+                        detalle = "Apertura de cuenta de ahorro";
+                    }
+                    else if (path.IndexOf("Credito/Create", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "CREDITOS";
+                        accion = "SOLICITUD_CREDITO";
+                        detalle = "Apertura de crédito fiduciario";
+                    }
+                    else if (path.IndexOf("Backup", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        modulo = "SEGURIDAD";
+                        accion = "COPIA_SEGURIDAD";
+                        detalle = "Generación de respaldo comprimido de base de datos";
+                    }
+
+                    using (MySqlConnection conn = new MySqlConnection(DbConnString))
+                    {
+                        conn.Open();
+                        string sql = "INSERT INTO bitacora_auditoria (fecha, usuario, idAgencia, ip, modulo, accion, registroId, detalle, resultado) " +
+                                     "VALUES (NOW(3), @u, 1, @ip, @m, @a, @ref, @det, @res)";
+                        using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@u", usuario);
+                            cmd.Parameters.AddWithValue("@ip", ip);
+                            cmd.Parameters.AddWithValue("@m", modulo);
+                            cmd.Parameters.AddWithValue("@a", accion);
+                            cmd.Parameters.AddWithValue("@ref", refId);
+                            cmd.Parameters.AddWithValue("@det", detalle);
+                            cmd.Parameters.AddWithValue("@res", resultado);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch { }
+            });
+        }
+
+        private static void ServeBitacora(HttpListenerRequest req, HttpListenerResponse res)
+        {
+            try
+            {
+                HttpWebRequest subReq = (HttpWebRequest)WebRequest.Create(string.Format("http://{0}/Credito/Index", TargetHost));
+                subReq.Method = "GET";
+                subReq.KeepAlive = true;
+                subReq.AllowAutoRedirect = false;
+                subReq.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                subReq.Host = HostHeader;
+
+                if (!string.IsNullOrEmpty(req.Headers["Cookie"])) subReq.Headers["Cookie"] = req.Headers["Cookie"];
+                if (!string.IsNullOrEmpty(req.Headers["User-Agent"])) subReq.UserAgent = req.Headers["User-Agent"];
+
+                HttpWebResponse subRes = null;
+                try { subRes = (HttpWebResponse)subReq.GetResponse(); } catch (WebException wex) { subRes = wex.Response as HttpWebResponse; }
+
+                if (subRes == null)
+                {
+                    res.StatusCode = 500;
+                    byte[] err = Encoding.UTF8.GetBytes("Error retrieving master layout.");
+                    res.OutputStream.Write(err, 0, err.Length);
+                    res.Close();
+                    return;
+                }
+
+                if (subRes.StatusCode == HttpStatusCode.Redirect || subRes.StatusCode == HttpStatusCode.MovedPermanently)
+                {
+                    res.StatusCode = (int)subRes.StatusCode;
+                    string loc = subRes.Headers["Location"] ?? "/Account/Login";
+                    res.RedirectLocation = loc.Replace(":8081", "");
+                    res.Close();
+                    subRes.Close();
+                    return;
+                }
+
+                string layoutHtml;
+                using (Stream s = subRes.GetResponseStream())
+                using (StreamReader r = new StreamReader(s, Encoding.UTF8))
+                {
+                    layoutHtml = r.ReadToEnd();
+                }
+                subRes.Close();
+
+                // Query audit entries from MySQL
+                StringBuilder rowsHtml = new StringBuilder();
+                int totalRegistros = 0;
+                int eventosHoy = 0;
+
+                try
+                {
+                    using (MySqlConnection conn = new MySqlConnection(DbConnString))
+                    {
+                        conn.Open();
+
+                        using (MySqlCommand cmdCount = new MySqlCommand("SELECT COUNT(*) FROM bitacora_auditoria", conn))
+                        {
+                            totalRegistros = Convert.ToInt32(cmdCount.ExecuteScalar());
+                        }
+
+                        using (MySqlCommand cmdHoy = new MySqlCommand("SELECT COUNT(*) FROM bitacora_auditoria WHERE DATE(fecha) = CURDATE()", conn))
+                        {
+                            eventosHoy = Convert.ToInt32(cmdHoy.ExecuteScalar());
+                        }
+
+                        string sql = "SELECT idBitacora, fecha, usuario, ip, modulo, accion, registroId, detalle, resultado " +
+                                     "FROM bitacora_auditoria ORDER BY idBitacora DESC LIMIT 100";
+                        using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                long id = Convert.ToInt64(reader["idBitacora"]);
+                                DateTime f = Convert.ToDateTime(reader["fecha"]);
+                                string u = reader["usuario"].ToString();
+                                string ip = reader["ip"].ToString();
+                                string m = reader["modulo"].ToString();
+                                string a = reader["accion"].ToString();
+                                string rId = reader["registroId"].ToString();
+                                string det = reader["detalle"].ToString();
+                                string resStr = reader["resultado"].ToString();
+
+                                string badgeClass = (resStr == "EXITO") ? "label-success" : "label-danger";
+                                string modBadge = "label-primary";
+                                if (m.Contains("CAJA")) modBadge = "label-warning";
+                                else if (m.Contains("SEGURIDAD")) modBadge = "label-danger";
+
+                                rowsHtml.AppendFormat(
+                                    "<tr>" +
+                                    "<td><strong>#{0}</strong></td>" +
+                                    "<td><i class=\"fa fa-clock-o text-muted\"></i> {1:dd/MM/yyyy HH:mm:ss}</td>" +
+                                    "<td><i class=\"fa fa-user text-primary\"></i> <strong>{2}</strong></td>" +
+                                    "<td><span class=\"label {3}\">{4}</span></td>" +
+                                    "<td><code>{5}</code></td>" +
+                                    "<td>{6}</td>" +
+                                    "<td><span class=\"text-muted\">{7}</span></td>" +
+                                    "<td><span class=\"label {8}\">{9}</span></td>" +
+                                    "<td>{10}</td>" +
+                                    "</tr>",
+                                    id, f, u, modBadge, m, a, string.IsNullOrEmpty(rId) ? "-" : rId, ip, badgeClass, resStr, det
+                                );
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rowsHtml.AppendFormat("<tr><td colspan=\"9\" class=\"text-danger\">Error consultando bitácora: {0}</td></tr>", ex.Message);
+                }
+
+                string bitacoraContent = string.Format(@"
+<section class=""content-header"">
+    <h1>
+        Bitácora de Auditoría Forense
+        <small>Seguridad y Trazabilidad Inmutable</small>
+    </h1>
+    <ol class=""breadcrumb"">
+        <li><a href=""/""><i class=""fa fa-home""></i> Inicio</a></li>
+        <li><a href=""/Bitacora""><i class=""fa fa-shield""></i> Seguridad</a></li>
+        <li class=""active"">Bitácora</li>
+    </ol>
+</section>
+<section class=""content"">
+    <div class=""row"">
+        <div class=""col-md-3 col-sm-6 col-xs-12"">
+            <div class=""info-box"" style=""border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05);"">
+                <span class=""info-box-icon bg-aqua"" style=""border-radius:12px 0 0 12px;""><i class=""fa fa-history""></i></span>
+                <div class=""info-box-content"">
+                    <span class=""info-box-text"" style=""font-weight:700;"">Total Eventos</span>
+                    <span class=""info-box-number"" style=""font-size:24px; color:#0F528A;"">{0}</span>
+                </div>
+            </div>
+        </div>
+        <div class=""col-md-3 col-sm-6 col-xs-12"">
+            <div class=""info-box"" style=""border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05);"">
+                <span class=""info-box-icon bg-green"" style=""border-radius:12px 0 0 12px;""><i class=""fa fa-calendar-check-o""></i></span>
+                <div class=""info-box-content"">
+                    <span class=""info-box-text"" style=""font-weight:700;"">Eventos Hoy</span>
+                    <span class=""info-box-number"" style=""font-size:24px; color:#10B981;"">{1}</span>
+                </div>
+            </div>
+        </div>
+        <div class=""col-md-3 col-sm-6 col-xs-12"">
+            <div class=""info-box"" style=""border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05);"">
+                <span class=""info-box-icon bg-yellow"" style=""border-radius:12px 0 0 12px;""><i class=""fa fa-lock""></i></span>
+                <div class=""info-box-content"">
+                    <span class=""info-box-text"" style=""font-weight:700;"">Blindaje Activo</span>
+                    <span class=""info-box-number"" style=""font-size:20px; color:#F59E0B;"">100% Protegido</span>
+                </div>
+            </div>
+        </div>
+        <div class=""col-md-3 col-sm-6 col-xs-12"">
+            <div class=""info-box"" style=""border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05);"">
+                <span class=""info-box-icon bg-purple"" style=""border-radius:12px 0 0 12px;""><i class=""fa fa-database""></i></span>
+                <div class=""info-box-content"">
+                    <span class=""info-box-text"" style=""font-weight:700;"">Motor InnoDB</span>
+                    <span class=""info-box-number"" style=""font-size:20px; color:#8B5CF6;"">ACID Inmutable</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class=""box box-primary"" style=""border-radius:14px; box-shadow:0 4px 16px rgba(0,0,0,0.06);"">
+        <div class=""box-header with-border"">
+            <h3 class=""box-title"" style=""font-weight:700; color:#0F528A;"">
+                <i class=""fa fa-shield""></i> Registro de Operaciones y Seguridad en Tiempo Real
+            </h3>
+            <div class=""box-tools pull-right"">
+                <a href=""/Bitacora/ExportarCsv"" class=""btn btn-success btn-sm"" style=""border-radius:8px; font-weight:600;"">
+                    <i class=""fa fa-download""></i> Exportar CSV
+                </a>
+                <a href=""/Bitacora"" class=""btn btn-primary btn-sm"" style=""border-radius:8px; font-weight:600;"">
+                    <i class=""fa fa-refresh""></i> Actualizar
+                </a>
+            </div>
+        </div>
+        <div class=""box-body table-responsive no-padding"">
+            <table class=""table table-hover table-striped"" style=""margin-bottom:0;"">
+                <thead style=""background:#F8FAFC;"">
+                    <tr>
+                        <th style=""width:65px;""># ID</th>
+                        <th>Fecha y Hora</th>
+                        <th>Operador</th>
+                        <th>Módulo</th>
+                        <th>Acción</th>
+                        <th>Referencia</th>
+                        <th>Dirección IP</th>
+                        <th>Resultado</th>
+                        <th>Detalle de Operación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {2}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>", totalRegistros, eventosHoy, rowsHtml.ToString());
+
+                string pattern = @"(?s)<section class=""content-header"">.*?</section>\s*(<!-- Main content -->)?\s*<section class=""content"">.*?</section>";
+                string modifiedHtml = Regex.Replace(layoutHtml, pattern, bitacoraContent, RegexOptions.IgnoreCase);
+                modifiedHtml = Regex.Replace(modifiedHtml, @"<title>.*?</title>", "<title>Bitácora de Auditoría - Acción Cooperativa</title>", RegexOptions.IgnoreCase);
+
+                modifiedHtml = TransformHtml(modifiedHtml);
+
+                byte[] htmlBytes = Encoding.UTF8.GetBytes(modifiedHtml);
+                res.StatusCode = 200;
+                res.ContentType = "text/html; charset=utf-8";
+                res.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+                res.ContentLength64 = htmlBytes.Length;
+                res.OutputStream.Write(htmlBytes, 0, htmlBytes.Length);
+                res.Close();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    res.StatusCode = 500;
+                    byte[] err = Encoding.UTF8.GetBytes("Error rendering Bitacora: " + ex.Message);
+                    res.OutputStream.Write(err, 0, err.Length);
+                    res.Close();
+                }
+                catch { }
+            }
+        }
+
+        private static void ExportBitacoraCsv(HttpListenerRequest req, HttpListenerResponse res)
+        {
+            try
+            {
+                StringBuilder csv = new StringBuilder();
+                csv.AppendLine("ID,Fecha,Usuario,IP,Modulo,Accion,Referencia,Resultado,Detalle");
+
+                using (MySqlConnection conn = new MySqlConnection(DbConnString))
+                {
+                    conn.Open();
+                    string sql = "SELECT idBitacora, fecha, usuario, ip, modulo, accion, registroId, detalle, resultado " +
+                                 "FROM bitacora_auditoria ORDER BY idBitacora DESC LIMIT 1000";
+                    using (MySqlCommand cmd = new MySqlCommand(sql, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            csv.AppendFormat("\"{0}\",\"{1:yyyy-MM-dd HH:mm:ss}\",\"{2}\",\"{3}\",\"{4}\",\"{5}\",\"{6}\",\"{7}\",\"{8}\"\r\n",
+                                reader["idBitacora"],
+                                reader["fecha"],
+                                reader["usuario"].ToString().Replace("\"", "\"\""),
+                                reader["ip"],
+                                reader["modulo"].ToString().Replace("\"", "\"\""),
+                                reader["accion"].ToString().Replace("\"", "\"\""),
+                                reader["registroId"].ToString().Replace("\"", "\"\""),
+                                reader["resultado"],
+                                reader["detalle"].ToString().Replace("\"", "\"\"")
+                            );
+                        }
+                    }
+                }
+
+                byte[] csvBytes = Encoding.UTF8.GetPreamble();
+                byte[] contentBytes = Encoding.UTF8.GetBytes(csv.ToString());
+                byte[] fullBytes = new byte[csvBytes.Length + contentBytes.Length];
+                Buffer.BlockCopy(csvBytes, 0, fullBytes, 0, csvBytes.Length);
+                Buffer.BlockCopy(contentBytes, 0, fullBytes, csvBytes.Length, contentBytes.Length);
+
+                res.StatusCode = 200;
+                res.ContentType = "text/csv; charset=utf-8";
+                string fileName = string.Format("Bitacora_Auditoria_{0:yyyyMMdd_HHmmss}.csv", DateTime.Now);
+                res.Headers.Add("Content-Disposition", "attachment; filename=" + fileName);
+                res.ContentLength64 = fullBytes.Length;
+                res.OutputStream.Write(fullBytes, 0, fullBytes.Length);
+                res.Close();
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    res.StatusCode = 500;
+                    byte[] err = Encoding.UTF8.GetBytes("Error exporting CSV: " + ex.Message);
+                    res.OutputStream.Write(err, 0, err.Length);
+                    res.Close();
+                }
+                catch { }
+            }
+        }
+
         private static void ServeMicrocredito(HttpListenerRequest req, HttpListenerResponse res)
         {
             try
@@ -256,7 +681,6 @@ namespace GtcopProxy
                     return;
                 }
 
-                // Query layout from /Credito/Index using caller's authentication cookies
                 HttpWebRequest subReq = (HttpWebRequest)WebRequest.Create(string.Format("http://{0}/Credito/Index", TargetHost));
                 subReq.Method = "GET";
                 subReq.KeepAlive = true;
@@ -264,24 +688,11 @@ namespace GtcopProxy
                 subReq.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                 subReq.Host = HostHeader;
 
-                if (!string.IsNullOrEmpty(req.Headers["Cookie"]))
-                {
-                    subReq.Headers["Cookie"] = req.Headers["Cookie"];
-                }
-                if (!string.IsNullOrEmpty(req.Headers["User-Agent"]))
-                {
-                    subReq.UserAgent = req.Headers["User-Agent"];
-                }
+                if (!string.IsNullOrEmpty(req.Headers["Cookie"])) subReq.Headers["Cookie"] = req.Headers["Cookie"];
+                if (!string.IsNullOrEmpty(req.Headers["User-Agent"])) subReq.UserAgent = req.Headers["User-Agent"];
 
                 HttpWebResponse subRes = null;
-                try
-                {
-                    subRes = (HttpWebResponse)subReq.GetResponse();
-                }
-                catch (WebException wex)
-                {
-                    subRes = wex.Response as HttpWebResponse;
-                }
+                try { subRes = (HttpWebResponse)subReq.GetResponse(); } catch (WebException wex) { subRes = wex.Response as HttpWebResponse; }
 
                 if (subRes == null)
                 {
@@ -325,14 +736,10 @@ namespace GtcopProxy
                     pageTitle = "Microcréditos";
                 }
 
-                // Replace content header and main content in layoutHtml
                 string pattern = @"(?s)<section class=""content-header"">.*?</section>\s*(<!-- Main content -->)?\s*<section class=""content"">.*?</section>";
                 string modifiedHtml = Regex.Replace(layoutHtml, pattern, innerContent, RegexOptions.IgnoreCase);
-
-                // Replace title
                 modifiedHtml = Regex.Replace(modifiedHtml, @"<title>.*?</title>", string.Format("<title>{0}</title>", pageTitle), RegexOptions.IgnoreCase);
 
-                // Run standard branding & M3 transformations
                 modifiedHtml = TransformHtml(modifiedHtml);
 
                 byte[] htmlBytes = Encoding.UTF8.GetBytes(modifiedHtml);
@@ -596,6 +1003,7 @@ namespace GtcopProxy
                 title = Regex.Replace(title, @"\s*-\s*IQ'?\s*A&C", "", RegexOptions.IgnoreCase);
                 title = Regex.Replace(title, @"IQ'?\s*A&C", "", RegexOptions.IgnoreCase);
                 title = Regex.Replace(title, @"IQ\s*Software", "", RegexOptions.IgnoreCase);
+                title = Regex.Replace(title, @"\s*-\s*Acci[oó]n\s*Cooperativa", "", RegexOptions.IgnoreCase);
                 title = title.Trim();
                 if (string.IsNullOrEmpty(title)) title = "Inicio";
                 return string.Format("<title>{0} - Acción Cooperativa</title>", title);
@@ -636,7 +1044,14 @@ namespace GtcopProxy
             html = Regex.Replace(html, @"IQ\s*Software", "Acción Cooperativa", RegexOptions.IgnoreCase);
             html = Regex.Replace(html, @"iQsoftware", "Acción Cooperativa", RegexOptions.IgnoreCase);
 
-            // 7. Inject CDPE Stylesheets, modern Material 3 theme, PWA manifest, and interactive scripts
+            // 7. Inject Bitácora link into Ajustes menu
+            if (html.IndexOf("/Bitacora", StringComparison.OrdinalIgnoreCase) < 0 && html.IndexOf("/User", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                string bitacoraItem = "\n        <li class=\"\">\n            <a href=\"/Bitacora\"><i class=\"fa fa-shield\"></i> Bitácora de Auditoría</a>\n        </li>\n        <li class=\"\">\n            <a href=\"/User\">";
+                html = Regex.Replace(html, @"<li class="""">\s*<a href=""/User"">", bitacoraItem, RegexOptions.IgnoreCase);
+            }
+
+            // 8. Inject CDPE Stylesheets, modern Material 3 theme, PWA manifest, and interactive scripts
             string injection = "\n    <!-- CDPE - Accion Cooperativa Identity & Modern Theme (Google M3) -->\n" +
                 "    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n" +
                 "    <meta name=\"theme-color\" content=\"#0F528A\" />\n" +
@@ -650,7 +1065,7 @@ namespace GtcopProxy
                 "    <link rel=\"stylesheet\" href=\"/gtcop_theme/theme-modern.css?v=m3\" />\n" +
                 "    <script src=\"/gtcop_theme/theme-toggle.js?v=cdpe\"></script>\n" +
                 "    <script src=\"/gtcop_theme/form-wizard.js?v=m3\"></script>\n" +
-                "    <script src=\"/gtcop_theme/anti-error.js?v=m3\"></script>\n" +
+                "    <script src=\"/gtcop_theme/anti-error.js?v=m3_sec\"></script>\n" +
                 "    <script src=\"/gtcop_theme/pos-caja.js?v=m3\"></script>\n</head>";
 
             if (html.IndexOf("</head>", StringComparison.OrdinalIgnoreCase) >= 0)

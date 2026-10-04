@@ -1,10 +1,13 @@
 /**
- * Acción Cooperativa R.L. - Sistema Anti-Error en Ventanilla ("A Prueba de Tontos")
- * Features:
- * 1. Double confirmation modal with numbers and letters
- * 2. Overdraft prevention on withdrawals
- * 3. RENAP CUI Modulo-11 verification
- * 4. Idempotency & anti-double-click protection
+ * Acción Cooperativa R.L. - Sistema Anti-Error y Blindaje de Calidad de Datos
+ * Características:
+ * 1. Confirmación de ventanilla con números y letras en Quetzales
+ * 2. Control de saldo y fondos insuficientes en retiros
+ * 3. Validación algorítmica Módulo 11 de CUI / DPI (RENAP Guatemala)
+ * 4. Validación algorítmica de NIT (SAT Guatemala)
+ * 5. Estandarización automática de nombres propios (Capitalización limpia)
+ * 6. Máscara telefónica de Guatemala (####-####)
+ * 7. Prevención de doble clic e idempotencia en formularios
  */
 (function() {
     'use strict';
@@ -88,6 +91,40 @@
         return modulo === validador;
     }
 
+    // Validación Algorítmica de NIT SAT Guatemala
+    function validarNit(nitStr) {
+        if (!nitStr) return false;
+        var nit = nitStr.trim().toUpperCase().replace(/[\s-]/g, '');
+        if (nit === 'CF' || nit === 'C/F') return true;
+        if (nit.length < 2) return false;
+
+        var checkChar = nit.charAt(nit.length - 1);
+        var numeroStr = nit.substring(0, nit.length - 1);
+        if (!/^\d+$/.test(numeroStr)) return false;
+
+        var factor = numeroStr.length + 1;
+        var total = 0;
+        for (var i = 0; i < numeroStr.length; i++) {
+            total += parseInt(numeroStr.charAt(i), 10) * factor;
+            factor--;
+        }
+        var residuo = total % 11;
+        var esperado = (11 - residuo) % 11;
+        var esperadoChar = (esperado === 10) ? 'K' : esperado.toString();
+        return checkChar === esperadoChar;
+    }
+
+    // Capitalizador estándar de nombres propios
+    function capitalizarNombre(str) {
+        if (!str) return '';
+        var palabrasMenores = ['de', 'del', 'la', 'las', 'los', 'y', 'e'];
+        return str.toLowerCase().split(' ').map(function(palabra, idx) {
+            if (!palabra) return '';
+            if (idx > 0 && palabrasMenores.indexOf(palabra) >= 0) return palabra;
+            return palabra.charAt(0).toUpperCase() + palabra.slice(1);
+        }).join(' ');
+    }
+
     function initAntiError() {
         // 1. Control de Retiro vs Saldo
         var isRetiro = window.location.pathname.toLowerCase().indexOf('retiro') >= 0;
@@ -130,7 +167,7 @@
                         dpiInput.style.borderColor = '#EF4444';
                         dpiInput.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.25)';
                         removeSuccessBadge(dpiInput);
-                        showWarningBadge(dpiInput, '⚠ CUI / DPI Inválido (Fallo dígito verificador)');
+                        showWarningBadge(dpiInput, '⚠ CUI / DPI Inválido (Fallo dígito verificador RENAP)');
                     }
                 } else {
                     dpiInput.style.borderColor = '';
@@ -141,7 +178,63 @@
             });
         });
 
-        // 3. Modal de Confirmación en Pagos y Transacciones
+        // 3. Validación en vivo de NIT SAT
+        var nitInputs = document.querySelectorAll('input[name*="NIT" i], input[id*="NIT" i]');
+        nitInputs.forEach(function(nitInput) {
+            if (nitInput.dataset.nitBound) return;
+            nitInput.dataset.nitBound = 'true';
+            nitInput.addEventListener('input', function() {
+                var val = nitInput.value.trim();
+                if (val.length >= 2) {
+                    if (validarNit(val)) {
+                        nitInput.style.borderColor = '#10B981';
+                        nitInput.style.boxShadow = '0 0 0 3px rgba(16,185,129,0.2)';
+                        removeWarningBadge(nitInput);
+                        showSuccessBadge(nitInput, '✓ NIT Válido (SAT)');
+                    } else if (val.replace(/[\s-]/g, '').length >= 5) {
+                        nitInput.style.borderColor = '#EF4444';
+                        nitInput.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.25)';
+                        removeSuccessBadge(nitInput);
+                        showWarningBadge(nitInput, '⚠ NIT Inválido (Dígito verificador SAT erróneo)');
+                    }
+                } else {
+                    nitInput.style.borderColor = '';
+                    nitInput.style.boxShadow = '';
+                    removeWarningBadge(nitInput);
+                    removeSuccessBadge(nitInput);
+                }
+            });
+        });
+
+        // 4. Estandarización automática de Nombres Propios
+        var nameInputs = document.querySelectorAll('input[name*="Nombre" i], input[name*="Apellido" i], input[id*="Nombre" i], input[id*="Apellido" i]');
+        nameInputs.forEach(function(inp) {
+            if (inp.dataset.nameBound) return;
+            inp.dataset.nameBound = 'true';
+            inp.addEventListener('blur', function() {
+                var clean = inp.value.replace(/\s+/g, ' ').trim();
+                if (clean) {
+                    inp.value = capitalizarNombre(clean);
+                }
+            });
+        });
+
+        // 5. Máscara telefónica guatemalteca (####-####)
+        var telInputs = document.querySelectorAll('input[name*="Telefono" i], input[name*="Celular" i], input[id*="Telefono" i], input[id*="Celular" i]');
+        telInputs.forEach(function(telInput) {
+            if (telInput.dataset.telBound) return;
+            telInput.dataset.telBound = 'true';
+            telInput.addEventListener('input', function() {
+                var digits = telInput.value.replace(/\D/g, '').substring(0, 8);
+                if (digits.length > 4) {
+                    telInput.value = digits.substring(0, 4) + '-' + digits.substring(4);
+                } else {
+                    telInput.value = digits;
+                }
+            });
+        });
+
+        // 6. Modal de Confirmación en Pagos y Transacciones
         var transForm = document.querySelector('form[action*="Transaccion/Create"], form[action*="Transaccion/Retiro"], form[action*="Pago/Create"], form[action*="Micropago/Create"]');
         if (transForm && !transForm.dataset.antiErrorBound) {
             transForm.dataset.antiErrorBound = 'true';
@@ -151,7 +244,7 @@
                 submitBtn.addEventListener('click', function(e) {
                     var montoInput = transForm.querySelector('input[name="Monto"]');
                     var monto = montoInput ? parseFloat(montoInput.value) : 0;
-                    if (monto <= 0) return; // let validation handle it
+                    if (monto <= 0) return;
 
                     if (transForm.dataset.confirmed !== 'true') {
                         e.preventDefault();
@@ -160,6 +253,32 @@
                 });
             }
         }
+
+        // 7. Prevención de Doble Clic (Anti-Double-Submit)
+        document.querySelectorAll('form').forEach(function(form) {
+            if (form.dataset.antiDoubleClickBound) return;
+            form.dataset.antiDoubleClickBound = 'true';
+            form.addEventListener('submit', function(e) {
+                if (form.dataset.submitting === 'true') {
+                    e.preventDefault();
+                    return false;
+                }
+                form.dataset.submitting = 'true';
+                var btn = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (btn) {
+                    btn.classList.add('disabled');
+                    btn.setAttribute('disabled', 'disabled');
+                    var origHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
+                    setTimeout(function() {
+                        btn.classList.remove('disabled');
+                        btn.removeAttribute('disabled');
+                        btn.innerHTML = origHtml;
+                        form.dataset.submitting = 'false';
+                    }, 4000);
+                }
+            });
+        });
     }
 
     function showConfirmModal(monto, form) {
@@ -202,7 +321,6 @@
             btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
             btn.style.pointerEvents = 'none';
 
-            // Submit
             var submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
             if (submitBtn) {
                 submitBtn.click();
