@@ -1,8 +1,8 @@
 /**
- * Acción Cooperativa R.L. - Form Wizard & Smart Stepper Engine (v2)
+ * Acción Cooperativa R.L. - Form Wizard & Smart Stepper Engine (v3 Enterprise)
  * Automatically transforms multi-section forms (with h4, legend, or .box)
- * into modern, responsive, bite-sized multi-step wizards with real-time validation
- * and financial credit underwriting capacity analysis.
+ * into modern, responsive, bite-sized multi-step wizards with real-time validation,
+ * master error banners, mobile-sticky save button, and financial credit underwriting.
  */
 (function() {
     'use strict';
@@ -44,6 +44,145 @@
         });
     }
 
+    // Helper: extract human-friendly label for any form field
+    function getFriendlyLabel(input) {
+        if (!input) return 'Campo requerido';
+
+        // 1. Check for label element
+        var label = null;
+        if (input.id) {
+            label = document.querySelector('label[for="' + input.id + '"]');
+        }
+        if (!label) {
+            var fg = input.closest('.form-group');
+            if (fg) {
+                label = fg.querySelector('label');
+            }
+        }
+        if (label && label.textContent.trim()) {
+            return label.textContent.replace(/[*:\-\•]/g, '').trim();
+        }
+
+        // 2. Check placeholder or title
+        if (input.placeholder) return input.placeholder.trim();
+        if (input.title) return input.title.trim();
+
+        // 3. Known field map for GTcop
+        var nameOrId = (input.name || input.id || '').toLowerCase();
+        if (nameOrId.indexOf('docorden') >= 0 || nameOrId.indexOf('orden') >= 0) return 'Tipo de Documento';
+        if (nameOrId.indexOf('docregistro') >= 0 || nameOrId.indexOf('registro') >= 0 || nameOrId.indexOf('cui') >= 0 || nameOrId.indexOf('dpi') >= 0) return 'Número de Documento (CUI / DPI)';
+        if (nameOrId.indexOf('deptosiddoc') >= 0) return 'Departamento de Emisión del Documento';
+        if (nameOrId.indexOf('selecteddoc') >= 0) return 'Municipio de Emisión del Documento';
+        if (nameOrId.indexOf('primernombre') >= 0) return 'Primer Nombre';
+        if (nameOrId.indexOf('segundonombre') >= 0) return 'Segundo Nombre';
+        if (nameOrId.indexOf('primerapellido') >= 0) return 'Primer Apellido';
+        if (nameOrId.indexOf('segundoapellido') >= 0) return 'Segundo Apellido';
+        if (nameOrId.indexOf('estadocivil') >= 0) return 'Estado Civil';
+        if (nameOrId.indexOf('nombreconyugue') >= 0) return 'Nombre del Cónyuge';
+        if (nameOrId.indexOf('fechanacimiento') >= 0) return 'Fecha de Nacimiento';
+        if (nameOrId.indexOf('sexo') >= 0 || nameOrId.indexOf('genero') >= 0) return 'Género / Sexo';
+        if (nameOrId.indexOf('actividad') >= 0) return 'Actividad Económica';
+        if (nameOrId.indexOf('ingresopromedio') >= 0 || nameOrId.indexOf('ingresopersonal') >= 0) return 'Ingreso Promedio';
+        if (nameOrId.indexOf('egresopromedio') >= 0 || nameOrId.indexOf('egresomensual') >= 0) return 'Egreso Promedio';
+        if (nameOrId.indexOf('nohijos') >= 0) return 'Número de Hijos';
+        if (nameOrId.indexOf('direccion1') >= 0) return 'Dirección de Residencia';
+        if (nameOrId.indexOf('deptosiddir') >= 0) return 'Departamento de Residencia';
+        if (nameOrId.indexOf('selecteddir') >= 0) return 'Municipio de Residencia';
+        if (nameOrId.indexOf('telefono') >= 0) return 'Teléfono';
+        if (nameOrId.indexOf('celular') >= 0) return 'Celular';
+        if (nameOrId.indexOf('nit') >= 0) return 'NIT';
+
+        return input.name || input.id || 'Campo requerido';
+    }
+
+    // Helper: validate a single input element
+    function validateSingleInput(input) {
+        if (!input || input.type === 'hidden') return { valid: true };
+
+        var val = (input.value || '').trim();
+        var isRequired = input.hasAttribute('required') || 
+            (input.className && input.className.indexOf('validate[required') >= 0);
+
+        // Required check
+        if (isRequired) {
+            if (input.type === 'radio') {
+                var group = input.form ? input.form.querySelectorAll('input[name="' + input.name + '"]') : [];
+                var oneChecked = Array.from(group).some(function(r) { return r.checked; });
+                if (!oneChecked) {
+                    return { valid: false, message: 'Debe seleccionar una opción' };
+                }
+            } else if (!val || val === '' || val === '0' && (input.id.indexOf('Selected') >= 0 || input.id.indexOf('Deptos') >= 0)) {
+                return { valid: false, message: 'Este campo es obligatorio' };
+            }
+        }
+
+        // DPI / CUI specific check (Guatemala 13 numeric digits)
+        var nameOrId = (input.name || input.id || '').toLowerCase();
+        var isDpi = nameOrId.indexOf('cui') >= 0 || nameOrId.indexOf('dpi') >= 0 || input.id === 'docRegistro';
+        if (isDpi && val.length > 0) {
+            var docOrdenVal = '';
+            var docOrdenEl = document.getElementById('docOrden') || (input.form && input.form.querySelector('[name*="Orden"]'));
+            if (docOrdenEl) docOrdenVal = docOrdenEl.value;
+
+            // If doc type is DPI or default
+            if (!docOrdenVal || docOrdenVal === 'DPI' || docOrdenVal === 'CUI') {
+                var clean = val.replace(/[\s-]/g, '');
+                if (clean.length !== 13 || !/^\d+$/.test(clean)) {
+                    return { 
+                        valid: false, 
+                        message: 'El CUI / DPI debe tener exactamente 13 dígitos numéricos (actualmente tiene ' + clean.length + ')' 
+                    };
+                }
+            }
+        }
+
+        // Positive number check
+        if (input.className && input.className.indexOf('custom[number]') >= 0 && val.length > 0) {
+            var num = parseFloat(val);
+            if (isNaN(num) || num <= 0) {
+                return { valid: false, message: 'Debe ingresar una cantidad numérica mayor a 0' };
+            }
+        }
+
+        // Integer check
+        if (input.className && input.className.indexOf('custom[integer]') >= 0 && val.length > 0) {
+            var intVal = parseInt(val, 10);
+            if (isNaN(intVal) || intVal < 0) {
+                return { valid: false, message: 'Debe ingresar un número entero válido (0 o mayor)' };
+            }
+        }
+
+        return { valid: true };
+    }
+
+    // Apply error highlight and inline badge
+    function markFieldError(input, message) {
+        input.classList.add('field-error-highlight');
+        var fg = input.closest('.form-group') || input.parentElement;
+        if (fg) {
+            fg.classList.add('has-error');
+            // Remove previous error badge if any
+            var oldBadge = fg.querySelector('.wizard-inline-error');
+            if (oldBadge) oldBadge.remove();
+
+            var badge = document.createElement('div');
+            badge.className = 'wizard-inline-error';
+            badge.innerHTML = '<i class="fa fa-exclamation-circle"></i> ' + message;
+            fg.appendChild(badge);
+        }
+    }
+
+    // Clear error highlight and badge
+    function clearFieldError(input) {
+        input.classList.remove('field-error-highlight');
+        var fg = input.closest('.form-group') || input.parentElement;
+        if (fg) {
+            fg.classList.remove('has-error');
+            var oldBadge = fg.querySelector('.wizard-inline-error');
+            if (oldBadge) oldBadge.remove();
+        }
+    }
+
     // Common Wizard Builder Engine
     function buildWizardUI(form, stepsData, submitBtn) {
         form.dataset.wizardInitialized = 'true';
@@ -58,6 +197,15 @@
         var totalSteps = stepsData.length;
         var panes = [];
 
+        // 1. View Mode Switcher Button
+        var toggleModeBtn = document.createElement('button');
+        toggleModeBtn.type = 'button';
+        toggleModeBtn.className = 'btn btn-default btn-xs btn-mode-toggle';
+        toggleModeBtn.style.cssText = 'flex:0 0 auto; border-radius:20px; font-weight:700; padding:6px 14px; margin-right:8px; border:1px solid #CBD5E1; color:#0F528A;';
+        toggleModeBtn.innerHTML = '<i class="fa fa-th-list"></i> Ver Todo Continuo';
+        header.appendChild(toggleModeBtn);
+
+        // 2. Step Indicators
         stepsData.forEach(function(sData, idx) {
             var ind = document.createElement('div');
             ind.className = 'wizard-step-indicator' + (idx === 0 ? ' active' : '');
@@ -69,11 +217,16 @@
                 '</div>';
 
             ind.addEventListener('click', function() {
+                if (container.classList.contains('continuous-mode')) {
+                    panes[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
                 var cur = parseInt(container.dataset.currentStep || '0', 10);
                 if (idx < cur) {
                     goToStep(container, panes, header, actionsBar, submitBtn, idx);
                 } else if (idx > cur) {
-                    if (validatePane(panes[cur])) {
+                    var curErrors = validatePane(panes[cur], true);
+                    if (curErrors.length === 0) {
                         goToStep(container, panes, header, actionsBar, submitBtn, idx);
                     }
                 }
@@ -95,6 +248,11 @@
 
         container.insertBefore(header, container.firstChild);
 
+        // Master Error Banner Container
+        var masterBannerContainer = document.createElement('div');
+        masterBannerContainer.className = 'wizard-master-banner-wrap';
+        container.insertBefore(masterBannerContainer, header.nextSibling);
+
         // Actions Bar
         var actionsBar = document.createElement('div');
         actionsBar.className = 'wizard-actions-bar';
@@ -105,38 +263,93 @@
 
         container.appendChild(actionsBar);
 
-        // Append submit button to actions bar
-        if (submitBtn) {
-            submitBtn.style.display = 'none';
-            actionsBar.appendChild(submitBtn);
-
-            submitBtn.addEventListener('click', function(e) {
-                var cur = parseInt(container.dataset.currentStep || '0', 10);
-                if (!validatePane(panes[cur])) {
-                    e.preventDefault();
-                    return false;
-                }
-                var token = form.querySelector('input[name="__IdempotencyKey"]');
-                if (!token) {
-                    token = document.createElement('input');
-                    token.type = 'hidden';
-                    token.name = '__IdempotencyKey';
-                    token.value = Date.now() + '-' + Math.random().toString(36).substring(2, 9);
-                    form.appendChild(token);
-                }
-                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
-                submitBtn.style.pointerEvents = 'none';
-                submitBtn.style.opacity = '0.7';
-            });
+        // Setup Submit Button: ALWAYS VISIBLE ON ALL STEPS
+        if (!submitBtn) {
+            submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.className = 'btn btn-success btn-wizard-submit';
+            submitBtn.innerHTML = '<i class="fa fa-floppy-o"></i> Guardar Asociado';
+        } else {
+            submitBtn.classList.add('btn-wizard-submit');
+            // If button text is generic or short, make it prominent
+            if (!submitBtn.innerHTML || submitBtn.innerHTML.trim() === '' || submitBtn.innerHTML.indexOf('fa') < 0) {
+                submitBtn.innerHTML = '<i class="fa fa-floppy-o"></i> ' + (submitBtn.innerText || 'Guardar');
+            }
         }
+        submitBtn.style.display = 'inline-flex';
+        actionsBar.appendChild(submitBtn);
 
+        // Hook Submit Click with Full-Form Validation
+        submitBtn.addEventListener('click', function(e) {
+            var allErrors = [];
+            panes.forEach(function(p, pIdx) {
+                var pErrors = validatePane(p, true);
+                pErrors.forEach(function(err) {
+                    err.paneIndex = pIdx;
+                    err.stepTitle = stepsData[pIdx].title;
+                    allErrors.push(err);
+                });
+            });
+
+            if (allErrors.length > 0) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Show Master Error Banner
+                renderMasterErrorBanner(masterBannerContainer, allErrors, container, panes, header, actionsBar, submitBtn);
+
+                // Update Step Indicators with error flags
+                updateIndicatorErrors(header, allErrors);
+
+                // Jump to the step with the FIRST error
+                var firstErr = allErrors[0];
+                if (!container.classList.contains('continuous-mode')) {
+                    goToStep(container, panes, header, actionsBar, submitBtn, firstErr.paneIndex);
+                }
+
+                // Smooth scroll to the invalid field and focus it
+                setTimeout(function() {
+                    firstErr.input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    try { firstErr.input.focus(); } catch (ex) {}
+                }, 200);
+
+                if (window.toastr) {
+                    toastr.error('Por favor complete los ' + allErrors.length + ' campos obligatorios marcados en rojo.', 'Faltan Datos');
+                }
+                return false;
+            }
+
+            // Zero errors: clear banners and prepare submission
+            masterBannerContainer.innerHTML = '';
+            var token = form.querySelector('input[name="__IdempotencyKey"]');
+            if (!token) {
+                token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '__IdempotencyKey';
+                token.value = Date.now() + '-' + Math.random().toString(36).substring(2, 9);
+                form.appendChild(token);
+            }
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
+            submitBtn.style.pointerEvents = 'none';
+            submitBtn.style.opacity = '0.85';
+        });
+
+        // Prev & Next Buttons
         var btnPrev = actionsBar.querySelector('.btn-wizard-prev');
         var btnNext = actionsBar.querySelector('.btn-wizard-next');
 
         btnNext.addEventListener('click', function() {
             var cur = parseInt(container.dataset.currentStep || '0', 10);
-            if (validatePane(panes[cur])) {
+            var paneErrors = validatePane(panes[cur], true);
+            if (paneErrors.length === 0) {
                 goToStep(container, panes, header, actionsBar, submitBtn, cur + 1);
+            } else {
+                // Focus first error in pane
+                paneErrors[0].input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                try { paneErrors[0].input.focus(); } catch (ex) {}
+                if (window.toastr) {
+                    toastr.warning('Hay datos pendientes en este paso antes de continuar.', 'Paso Incompleto');
+                }
             }
         });
 
@@ -145,10 +358,107 @@
             goToStep(container, panes, header, actionsBar, submitBtn, cur - 1);
         });
 
+        // Mode Toggle handler
+        toggleModeBtn.addEventListener('click', function() {
+            var isContinuous = container.classList.toggle('continuous-mode');
+            if (isContinuous) {
+                toggleModeBtn.innerHTML = '<i class="fa fa-step-forward"></i> Ver por Pasos';
+                btnNext.style.display = 'none';
+                btnPrev.style.display = 'none';
+                actionsBar.querySelector('.wizard-progress-counter').style.display = 'none';
+            } else {
+                toggleModeBtn.innerHTML = '<i class="fa fa-th-list"></i> Ver Todo Continuo';
+                var cur = parseInt(container.dataset.currentStep || '0', 10);
+                updateStepViews(container, panes, header, actionsBar, submitBtn, cur);
+            }
+        });
+
+        // Real-time error clearing on inputs
+        form.querySelectorAll('input, select, textarea').forEach(function(inp) {
+            function clearOnInteraction() {
+                var res = validateSingleInput(inp);
+                if (res.valid) {
+                    clearFieldError(inp);
+                    // Check if all master banner errors are resolved
+                    var remaining = form.querySelectorAll('.field-error-highlight');
+                    if (remaining.length === 0) {
+                        masterBannerContainer.innerHTML = '';
+                        header.querySelectorAll('.wizard-step-indicator').forEach(function(ind) {
+                            ind.classList.remove('has-step-error');
+                        });
+                    }
+                }
+            }
+            inp.addEventListener('input', clearOnInteraction);
+            inp.addEventListener('change', clearOnInteraction);
+        });
+
         container.dataset.currentStep = '0';
         updateStepViews(container, panes, header, actionsBar, submitBtn, 0);
 
         return container;
+    }
+
+    function renderMasterErrorBanner(bannerWrap, allErrors, container, panes, header, actionsBar, submitBtn) {
+        bannerWrap.innerHTML = '';
+        var banner = document.createElement('div');
+        banner.className = 'wizard-error-banner';
+        
+        var listItems = allErrors.map(function(err, i) {
+            return '<li style="margin-bottom:6px;">' +
+                '<a class="error-jump-link" data-err-idx="' + i + '" style="font-weight:700;">' +
+                '[' + err.stepTitle + '] ' + err.label + ':</a> ' +
+                '<span style="color:#7F1D1D;">' + err.message + '</span>' +
+                '</li>';
+        }).join('');
+
+        banner.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<i class="fa fa-exclamation-triangle" style="font-size:22px; color:#DC2626;"></i>' +
+            '<div>' +
+            '<strong style="font-size:15px; color:#991B1B; display:block;">Atención: No se puede guardar aún</strong>' +
+            '<span style="font-size:12px; color:#7F1D1D;">Faltan ' + allErrors.length + ' campos obligatorios por completar:</span>' +
+            '</div>' +
+            '</div>' +
+            '<button type="button" class="close" style="color:#991B1B; opacity:0.8; font-size:22px; cursor:pointer;" onclick="this.closest(\'.wizard-error-banner\').remove();">&times;</button>' +
+            '</div>' +
+            '<ul style="margin:0; padding-left:22px; font-size:13px; line-height:1.5;">' + listItems + '</ul>';
+
+        // Add jump-to click handler on each error link
+        banner.querySelectorAll('.error-jump-link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                var idx = parseInt(link.dataset.errIdx, 10);
+                var err = allErrors[idx];
+                if (err) {
+                    if (!container.classList.contains('continuous-mode')) {
+                        goToStep(container, panes, header, actionsBar, submitBtn, err.paneIndex);
+                    }
+                    setTimeout(function() {
+                        err.input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        try { err.input.focus(); } catch (ex) {}
+                    }, 150);
+                }
+            });
+        });
+
+        bannerWrap.appendChild(banner);
+        banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateIndicatorErrors(header, allErrors) {
+        var errStepIndices = {};
+        allErrors.forEach(function(e) {
+            errStepIndices[e.paneIndex] = true;
+        });
+
+        header.querySelectorAll('.wizard-step-indicator').forEach(function(ind, idx) {
+            if (errStepIndices[idx]) {
+                ind.classList.add('has-step-error');
+            } else {
+                ind.classList.remove('has-step-error');
+            }
+        });
     }
 
     function buildWizardFromHeadings(form, headings) {
@@ -182,7 +492,11 @@
 
         if (stepsData.length < 2) return;
 
-        if (boxFooter) boxFooter.style.display = 'none';
+        if (boxFooter) {
+            // Keep Volver button if present, but hide boxFooter duplicate
+            boxFooter.style.display = 'none';
+        }
+
         var container = buildWizardUI(form, stepsData, submitBtn);
         boxBody.appendChild(container);
     }
@@ -213,7 +527,6 @@
         var boxCredito = boxes[1];
         var submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
 
-        // Locate rows & elements inside boxCredito
         var boxBodyCredito = boxCredito.querySelector('.box-body');
         if (!boxBodyCredito) return;
 
@@ -224,7 +537,7 @@
 
         if (!mainRow) return;
 
-        // Step 1 Elements: Asociado + Condiciones del Crédito
+        // Step 1: Asociado + Parámetros del Crédito
         var step1Container = document.createElement('div');
         step1Container.appendChild(boxAsociado);
 
@@ -236,7 +549,7 @@
         var step1Row = document.createElement('div');
         step1Row.className = 'row';
 
-        // Step 2 Elements: Estudio Socioeconómico y Capacidad de Pago
+        // Step 2: Estudio Socioeconómico
         var step2Container = document.createElement('div');
         step2Container.className = 'box box-primary';
         step2Container.innerHTML = '<div class="box-header with-border"><strong><i class="fa fa-line-chart"></i> Estudio Socioeconómico y Capacidad de Pago</strong></div>';
@@ -245,7 +558,7 @@
         var step2Row = document.createElement('div');
         step2Row.className = 'row';
 
-        // Underwriting Card (Live debt capacity analysis)
+        // Live Underwriting Card
         var uwCard = document.createElement('div');
         uwCard.className = 'underwriting-card';
         uwCard.innerHTML = '<div style="margin:10px 0 20px 0; background:linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%); border:1px solid #BFDBFE; border-radius:14px; padding:18px; box-shadow:0 4px 12px rgba(15,82,138,0.06);">' +
@@ -266,7 +579,6 @@
             '</div>';
         step2Body.appendChild(uwCard);
 
-        // Partition form groups in mainRow
         var formGroups = Array.from(mainRow.children);
         var socioEconomicFields = ['IngresoPersonal', 'IngresoFamiliar', 'EgresoMensual', 'EgresoFamiliar', 'MenajeCasa', 'TelefonoTrabajo', 'DireccionTrabajo'];
 
@@ -292,7 +604,7 @@
         step2Body.appendChild(step2Row);
         step2Container.appendChild(step2Body);
 
-        // Step 3 Elements: Garantías, Fiadores y Referencias
+        // Step 3: Garantías y Fiadores
         var step3Container = document.createElement('div');
         step3Container.className = 'box box-primary';
         step3Container.innerHTML = '<div class="box-header with-border"><strong><i class="fa fa-shield"></i> Garantías, Fiadores y Referencias</strong></div>';
@@ -305,7 +617,6 @@
 
         step3Container.appendChild(step3Body);
 
-        // Hide original boxCredito
         boxCredito.style.display = 'none';
 
         var stepsData = [
@@ -317,7 +628,6 @@
         var container = buildWizardUI(form, stepsData, submitBtn);
         form.appendChild(container);
 
-        // Bind Underwriting calculation
         bindUnderwritingCalculator(form);
     }
 
@@ -339,7 +649,7 @@
         form.appendChild(container);
     }
 
-    // Real-Time Debt Capacity & Risk Calculator
+    // Real-Time Underwriting Calculator
     function bindUnderwritingCalculator(form) {
         var inputMonto = form.querySelector('input[name*="Importe"]');
         var inputCuotas = form.querySelector('input[name*="NumeroCuotas"]');
@@ -363,14 +673,12 @@
             var totalEgresos = egresoMens + egresoFam;
             var disponible = totalIngresos - totalEgresos;
 
-            // Cuota estimada mensual: amortización capital + interés mensual
             var cuotaCapital = cuotas > 0 ? (monto / cuotas) : 0;
             var cuotaInteres = monto * (interesAnual / 100 / 12);
             var cuotaEstimada = cuotaCapital + cuotaInteres;
 
             var ratio = totalIngresos > 0 ? (cuotaEstimada / totalIngresos) * 100 : 0;
 
-            // UI Elements
             var elIngreso = document.getElementById('uw-ingreso-total');
             var elEgreso = document.getElementById('uw-egreso-total');
             var elDisp = document.getElementById('uw-disponible');
@@ -448,6 +756,8 @@
             ind.classList.remove('active');
             if (i === current) {
                 ind.classList.add('active');
+                // Ensure active step indicator is scrolled into view in horizontal stepper
+                ind.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             } else if (i < current) {
                 ind.classList.add('completed');
             }
@@ -460,44 +770,43 @@
         btnPrev.style.display = (current === 0) ? 'none' : 'inline-flex';
         counter.textContent = 'Paso ' + (current + 1) + ' de ' + total;
 
+        // Next button: hidden on final step
         if (current === total - 1) {
             btnNext.style.display = 'none';
-            if (submitBtn) submitBtn.style.display = 'inline-flex';
         } else {
             btnNext.style.display = 'inline-flex';
-            if (submitBtn) submitBtn.style.display = 'none';
+        }
+
+        // Submit button: ALWAYS VISIBLE AND PROMINENT
+        if (submitBtn) {
+            submitBtn.style.display = 'inline-flex';
         }
     }
 
-    function validatePane(pane) {
+    // Validates a specific pane, marks errors if showErrors = true, returns list of errors
+    function validatePane(pane, showErrors) {
         var inputs = pane.querySelectorAll('input:not([type="hidden"]), select, textarea');
-        var isValid = true;
-        var firstInvalid = null;
+        var errors = [];
 
         inputs.forEach(function(input) {
-            input.classList.remove('has-error');
-            var isRequired = input.hasAttribute('required') || (input.className && input.className.indexOf('validate[required') >= 0);
-            if (isRequired && !input.value.trim()) {
-                isValid = false;
-                input.classList.add('has-error');
-                if (!firstInvalid) firstInvalid = input;
-            }
-
-            if ((input.name && input.name.toLowerCase().indexOf('cui') >= 0) || input.id === 'Cui') {
-                var clean = input.value.replace(/[\s-]/g, '');
-                if (clean && (clean.length !== 13 || !/^\d+$/.test(clean))) {
-                    isValid = false;
-                    input.classList.add('has-error');
-                    alert('El CUI / DPI debe contener exactamente 13 dígitos numéricos.');
-                    if (!firstInvalid) firstInvalid = input;
+            var res = validateSingleInput(input);
+            if (!res.valid) {
+                errors.push({
+                    input: input,
+                    label: getFriendlyLabel(input),
+                    message: res.message
+                });
+                if (showErrors) {
+                    markFieldError(input, res.message);
+                }
+            } else {
+                if (showErrors) {
+                    clearFieldError(input);
                 }
             }
         });
 
-        if (!isValid && firstInvalid) {
-            firstInvalid.focus();
-        }
-        return isValid;
+        return errors;
     }
 
     if (document.readyState === 'loading') {
